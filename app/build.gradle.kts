@@ -86,4 +86,6 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     // Flow test
     androidTestImplementation(libs.turbine)
+    // Mockito
+    testImplementation(libs.mockito.kotlin)
 }
