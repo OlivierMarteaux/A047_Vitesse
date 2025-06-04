@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -94,7 +95,7 @@ private fun HomeBody(
                 SearchBarDefaults.InputField(
                     query = "",
                     onQueryChange = {},
-                    onSearch = {},
+                    onSearch = {query -> applicantList.filter { it.firstName.contains(query) || it.lastName.contains(query) }},
                     expanded = false,
                     onExpandedChange = onActiveChange,
                     enabled = true,
@@ -120,7 +121,7 @@ private fun HomeBody(
             },
         )
 
-        val tabs = listOf("All", "Bookmarked")
+        val tabs = listOf(stringResource(R.string.all), stringResource(R.string.favorites))
         var selectedTabIndex by remember { mutableIntStateOf(0) }
 
         PrimaryTabRow(
@@ -149,7 +150,7 @@ private fun HomeBody(
             )
 
             1 -> ApplicantList(
-                applicantList = applicantList,
+                applicantList = applicantList.filter { it.isFavorite },
                 onItemClick = onItemClick,
                 modifier = modifier,
             )
@@ -174,11 +175,11 @@ fun ApplicantCard(
             modifier = Modifier,
         ){
             Text(
-                text = "Alice Johnson",
+                text = "${applicant.firstName} ${applicant.lastName}",
                 modifier = Modifier,
             )
             Text(
-                text = "notes about applicant",
+                text = applicant.note,
             )
         }
     }

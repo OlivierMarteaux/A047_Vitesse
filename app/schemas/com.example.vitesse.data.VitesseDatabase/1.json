@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4c9b7aae50a31d786aeb4ead5e0daa59",
+    "identityHash": "eee4d7d28f7a901ff8d3b3f996144bd9",
     "entities": [
       {
         "tableName": "applicant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, `phone` TEXT NOT NULL, `email` TEXT NOT NULL, `date_of_birth` INTEGER NOT NULL, `salary` REAL NOT NULL, `note` TEXT NOT NULL, `photo_uri` TEXT NOT NULL, `bookmarked` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, `phone` TEXT NOT NULL, `email` TEXT NOT NULL, `date_of_birth` INTEGER NOT NULL, `salary` REAL NOT NULL, `note` TEXT NOT NULL, `photo_uri` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -63,8 +63,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "bookmarked",
-            "columnName": "bookmarked",
+            "fieldPath": "isFavorite",
+            "columnName": "isFavorite",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -79,7 +79,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4c9b7aae50a31d786aeb4ead5e0daa59')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'eee4d7d28f7a901ff8d3b3f996144bd9')"
     ]
   }
 }

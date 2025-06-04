@@ -24,11 +24,11 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
         catch (e: Exception) { Log.e("OM:ApplicantRepository.getApplicantById", e.message.toString()); emptyFlow()}
 
     /**
-     * Retrieves a flow of all bookmarked [Applicant] entities.
+     * Retrieves a flow of all favorite [Applicant] entities.
      */
-    fun getBookmarkedApplicants(): Flow<List<Applicant>> =
-        try {applicantDao.getBookmarkedApplicants()}
-        catch (e: Exception) { Log.e("OM:ApplicantRepository.getBookmarkedApplicants", e.message.toString()); emptyFlow()}
+    fun getFavoriteApplicants(): Flow<List<Applicant>> =
+        try {applicantDao.getFavoriteApplicants()}
+        catch (e: Exception) { Log.e("OM:ApplicantRepository.getFavoriteApplicants", e.message.toString()); emptyFlow()}
 
     /**
      * Retrieves a flow of all [Applicant] entities.

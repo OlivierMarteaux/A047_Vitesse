@@ -16,5 +16,5 @@ data class Applicant(
     val salary: Double,
     val note: String,
     @ColumnInfo(name = "photo_uri") val photoUri: String,
-    val bookmarked: Boolean
+    val isFavorite: Boolean
 )
