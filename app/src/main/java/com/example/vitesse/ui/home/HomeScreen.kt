@@ -1,8 +1,11 @@
 package com.example.vitesse.ui.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,11 +18,17 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
@@ -110,15 +119,84 @@ private fun HomeBody(
                     )
             },
         )
+
+        val tabs = listOf("All", "Bookmarked")
+        var selectedTabIndex by remember { mutableIntStateOf(0) }
+
         PrimaryTabRow(
-            selectedTabIndex = 0,
+            selectedTabIndex = selectedTabIndex,
+            modifier = Modifier.fillMaxWidth(),
+
         ) {
-            Column(){
-                    Text(text = "hello")
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTabIndex == index,
+                    onClick = { selectedTabIndex = index },
+                    text = { Text(
+                        text = title,
+                        fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal,
+                    ) }
+                )
+
             }
-            Column(){
-                Text(text = "hello")
-            }
+        }
+        // Tab content
+        when (selectedTabIndex) {
+            0 -> ApplicantList(
+                applicantList = applicantList,
+                onItemClick = onItemClick,
+                modifier = modifier,
+            )
+
+            1 -> ApplicantList(
+                applicantList = applicantList,
+                onItemClick = onItemClick,
+                modifier = modifier,
+            )
+        }
+    }
+}
+
+@Composable
+fun ApplicantCard(
+    applicant: Applicant,
+    modifier: Modifier = Modifier
+){
+    Row(
+        modifier = modifier
+    ){
+        Image(
+            painter = painterResource(R.drawable.ic_launcher_foreground),
+            contentDescription = null,
+            modifier = Modifier,
+        )
+        Column(
+            modifier = Modifier,
+        ){
+            Text(
+                text = "Alice Johnson",
+                modifier = Modifier,
+            )
+            Text(
+                text = "notes about applicant",
+            )
+        }
+    }
+}
+
+@Composable
+fun ApplicantList(
+    applicantList: List<Applicant>,
+    onItemClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+){
+    LazyColumn(
+        modifier = modifier,
+    ){
+        items(applicantList){applicant ->
+            ApplicantCard(
+                applicant = applicant,
+            )
         }
     }
 }
