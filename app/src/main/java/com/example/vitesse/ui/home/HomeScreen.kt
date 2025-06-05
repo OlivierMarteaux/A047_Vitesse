@@ -1,6 +1,8 @@
 package com.example.vitesse.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,9 +13,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
@@ -26,10 +30,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
@@ -45,13 +51,14 @@ object HomeDestination : NavigationDestination {
 /**
  * Entry route for Home screen
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val query = viewModel.query
+    val applicantList by viewModel.getApplicants(query).collectAsState(initial = listOf())
 
     Scaffold(
         modifier = modifier,
@@ -62,101 +69,147 @@ fun HomeScreen(
                 Icon(Icons.Filled.Add, "Localized description")
             }
         }
-
-    ){innerPadding ->
+    ){ innerPadding ->
         HomeBody(
-            applicantList = uiState.allApplicantList,
-            searchQuery = uiState.searchQuery,
+            applicantList = applicantList,
+            query = query,
             onItemClick = { /*TODO*/ },
             modifier = modifier.fillMaxSize(),
             contentPadding = innerPadding,
+            viewModel = viewModel,
+        )
+    }
+}
+
+@Composable
+private fun HomeBody(
+    applicantList: List<Applicant>,
+    query: String,
+    onItemClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    viewModel: HomeViewModel,
+    ){
+    Column(
+        modifier = modifier
+            .padding(contentPadding)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ){
+//        Text(text = stringResource(R.string.no_candidate))
+        ApplicantSearchBar(
+            query = query,
+            onQueryChange = viewModel::updateQuery,
+            modifier = Modifier,
+        )
+        ApplicantTabs(
+            applicantList = applicantList,
+            onItemClick = onItemClick,
+            modifier = modifier,
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeBody(
+fun ApplicantSearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+){
+    val onActiveChange = { active: Boolean ->}
+    val colors1 = SearchBarDefaults.colors()
+    SearchBar(
+        inputField = {
+            SearchBarDefaults.InputField(
+                query = query,
+                onQueryChange = onQueryChange,
+                onSearch = {},
+                expanded = false,
+                onExpandedChange = onActiveChange,
+                enabled = true,
+                placeholder = { Text(text = stringResource(R.string.search)) },
+                leadingIcon = null,
+                trailingIcon = { Icon(Icons.Filled.Search, stringResource(R.string.search)) },
+                interactionSource = null,
+            )
+        },
+        expanded = false,
+        onExpandedChange = onActiveChange,
+        modifier = modifier,
+        shape = SearchBarDefaults.inputFieldShape,
+        colors = colors1,
+        tonalElevation = SearchBarDefaults.TonalElevation,
+        shadowElevation = SearchBarDefaults.ShadowElevation,
+        windowInsets = SearchBarDefaults.windowInsets,
+        content = {},
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ApplicantTabs(
     applicantList: List<Applicant>,
-    searchQuery: String,
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
-    ){
-//    Text(
-//        text = "Hello!",
-//        modifier = modifier.padding(contentPadding),
-//    )
-    Column(
-        modifier = modifier.padding(contentPadding),
-    ){
-        val onActiveChange = { active: Boolean ->}
-        val colors1 = SearchBarDefaults.colors()
-        SearchBar(
-            inputField = {
-                SearchBarDefaults.InputField(
-                    query = searchQuery,
-                    onQueryChange = {},
-                    onSearch = {query -> applicantList.filter { it.firstName.contains(query) || it.lastName.contains(query) }},
-                    expanded = false,
-                    onExpandedChange = onActiveChange,
-                    enabled = true,
-                    placeholder = { Text(text = stringResource(R.string.search)) },
-                    leadingIcon = null,
-                    trailingIcon = null,
-                    interactionSource = null,
-                )
-            },
-            expanded = false,
-            onExpandedChange = onActiveChange,
-            modifier = Modifier,
-            shape = SearchBarDefaults.inputFieldShape,
-            colors = colors1,
-            tonalElevation = SearchBarDefaults.TonalElevation,
-            shadowElevation = SearchBarDefaults.ShadowElevation,
-            windowInsets = SearchBarDefaults.windowInsets,
-            {
-                Text(
-                    text = "Hello!",
-                    modifier = modifier.padding(contentPadding),
-                    )
-            },
+){
+    val tabs = listOf(stringResource(R.string.all), stringResource(R.string.favorites))
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+
+    PrimaryTabRow(
+        selectedTabIndex = selectedTabIndex,
+        modifier = Modifier.fillMaxWidth(),
+        ) {
+        tabs.forEachIndexed { index, title ->
+            Tab(
+                selected = selectedTabIndex == index,
+                onClick = { selectedTabIndex = index },
+                text = { Text(
+                    text = title,
+                    fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal,
+                ) }
+            )
+
+        }
+    }
+    // Tab content
+    when (selectedTabIndex) {
+        0 -> ApplicantCardList(
+            applicantList = applicantList,
+            onItemClick = onItemClick,
+            modifier = modifier,
         )
 
-        val tabs = listOf(stringResource(R.string.all), stringResource(R.string.favorites))
-        var selectedTabIndex by remember { mutableIntStateOf(0) }
+        1 -> ApplicantCardList(
+            applicantList = applicantList.filter{it.isFavorite},
+            onItemClick = onItemClick,
+            modifier = modifier,
+        )
+    }
+}
 
-        PrimaryTabRow(
-            selectedTabIndex = selectedTabIndex,
-            modifier = Modifier.fillMaxWidth(),
-
-        ) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
-                    text = { Text(
-                        text = title,
-                        fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal,
-                    ) }
-                )
-
+@Composable
+fun ApplicantCardList(
+    applicantList: List<Applicant>,
+    onItemClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+){
+    if (applicantList.isNotEmpty()) {
+        LazyColumn(modifier = modifier) {
+            items(applicantList) { applicant ->
+                ApplicantCard(applicant = applicant)
             }
         }
-        // Tab content
-        when (selectedTabIndex) {
-            0 -> ApplicantList(
-                applicantList = applicantList,
-                onItemClick = onItemClick,
-                modifier = modifier,
-            )
-
-            1 -> ApplicantList(
-                applicantList = applicantList.filter { it.isFavorite },
-                onItemClick = onItemClick,
-                modifier = modifier,
-            )
-        }
+    } else Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = stringResource(R.string.no_candidate),
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }
 
@@ -182,23 +235,6 @@ fun ApplicantCard(
             )
             Text(
                 text = applicant.note,
-            )
-        }
-    }
-}
-
-@Composable
-fun ApplicantList(
-    applicantList: List<Applicant>,
-    onItemClick: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-){
-    LazyColumn(
-        modifier = modifier,
-    ){
-        items(applicantList){applicant ->
-            ApplicantCard(
-                applicant = applicant,
             )
         }
     }

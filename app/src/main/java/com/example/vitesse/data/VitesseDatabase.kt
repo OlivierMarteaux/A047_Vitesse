@@ -12,6 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.vitesse.data.converter.DateConverter
 import com.example.vitesse.data.dao.ApplicantDao
 import com.example.vitesse.data.model.Applicant
+import com.example.vitesse.data.model.ApplicantFts
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -25,7 +26,7 @@ import java.time.LocalDate
  * Annotated with [@Database] to specify the entities and version.
  * Annotated with [@TypeConverters] to handle custom data types like [LocalDate].
  */
-@Database(entities = [Applicant::class], version = 1, exportSchema = true)
+@Database(entities = [Applicant::class, ApplicantFts::class], version = 1, exportSchema = true)
 @TypeConverters(DateConverter::class)
 abstract class VitesseDatabase: RoomDatabase() {
 

@@ -2,6 +2,7 @@ package com.example.vitesse.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Fts4
 import androidx.room.PrimaryKey
 import java.time.LocalDate
 
@@ -17,4 +18,11 @@ data class Applicant(
     val note: String,
     @ColumnInfo(name = "photo_uri") val photoUri: String,
     val isFavorite: Boolean
+)
+
+@Fts4(contentEntity = Applicant::class)
+@Entity(tableName = "applicant_fts")
+data class ApplicantFts(
+    @ColumnInfo(name = "first_name") val firstName: String,
+    @ColumnInfo(name = "last_name") val lastName: String,
 )

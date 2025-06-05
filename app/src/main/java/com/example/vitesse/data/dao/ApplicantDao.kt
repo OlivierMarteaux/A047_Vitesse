@@ -23,4 +23,11 @@ interface ApplicantDao {
 
     @Delete
     suspend fun deleteApplicant(applicant: Applicant)
+
+    @Query("""
+        SELECT applicant.* FROM applicant
+        JOIN applicant_fts ON applicant.id = applicant_fts.rowid
+        WHERE applicant_fts MATCH :query
+    """)
+    fun getApplicants(query: String): Flow<List<Applicant>>
 }

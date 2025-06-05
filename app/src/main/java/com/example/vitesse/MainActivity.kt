@@ -26,32 +26,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    Greeting(
-//                        name = "Android",
-//                    )
                     VitesseApp()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Scaffold(
-        modifier = modifier,
-    ) { innerPadding ->
-        Text(
-            text = "Hello $name!",
-            modifier = modifier.padding(innerPadding),
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    A047_VitesseTheme {
-        Greeting("Android")
     }
 }

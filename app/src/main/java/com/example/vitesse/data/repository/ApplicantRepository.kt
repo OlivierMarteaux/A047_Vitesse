@@ -62,4 +62,23 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
     suspend fun deleteApplicant(applicant: Applicant) =
         try { applicantDao.deleteApplicant(applicant)}
         catch (e: Exception) { Log.e("OM:ApplicantRepository.deleteApplicant", e.message.toString())}
+
+    /**
+     * Retrieves a flow of applicants matching the given search query.
+     *
+     * @param query The search query.
+     * @return A [Flow] emitting the list of matching applicants.
+     */
+    fun getApplicants(query: String): Flow<List<Applicant>> =
+        try {applicantDao.getApplicants(formatSqlQuery(query))}
+        catch (e: Exception) { Log.e("OM:ApplicantRepository.getApplicants", e.message.toString()); emptyFlow()}
+
+    private fun formatSqlQuery(rawQuery: String): String{
+        return rawQuery
+            .trim()
+            .lowercase()
+            .split("\\s+".toRegex())           // Split by any whitespace
+            .filter { it.isNotBlank() }        // Remove empty strings
+            .joinToString(" ") { "$it*" }      // Append '*' to each term
+    }
 }

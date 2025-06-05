@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "eee4d7d28f7a901ff8d3b3f996144bd9",
+    "identityHash": "78a61a5d3cbeb094ac89fb77ecba0f4f",
     "entities": [
       {
         "tableName": "applicant",
@@ -75,11 +75,50 @@
             "id"
           ]
         }
+      },
+      {
+        "tableName": "applicant_fts",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, content=`applicant`)",
+        "fields": [
+          {
+            "fieldPath": "firstName",
+            "columnName": "first_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastName",
+            "columnName": "last_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": []
+        },
+        "ftsVersion": "FTS4",
+        "ftsOptions": {
+          "tokenizer": "simple",
+          "tokenizerArgs": [],
+          "contentTable": "applicant",
+          "languageIdColumnName": "",
+          "matchInfo": "FTS4",
+          "notIndexedColumns": [],
+          "prefixSizes": [],
+          "preferredOrder": "ASC"
+        },
+        "contentSyncTriggers": [
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_applicant_fts_BEFORE_UPDATE BEFORE UPDATE ON `applicant` BEGIN DELETE FROM `applicant_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_applicant_fts_BEFORE_DELETE BEFORE DELETE ON `applicant` BEGIN DELETE FROM `applicant_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_applicant_fts_AFTER_UPDATE AFTER UPDATE ON `applicant` BEGIN INSERT INTO `applicant_fts`(`docid`, `first_name`, `last_name`) VALUES (NEW.`rowid`, NEW.`first_name`, NEW.`last_name`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_applicant_fts_AFTER_INSERT AFTER INSERT ON `applicant` BEGIN INSERT INTO `applicant_fts`(`docid`, `first_name`, `last_name`) VALUES (NEW.`rowid`, NEW.`first_name`, NEW.`last_name`); END"
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'eee4d7d28f7a901ff8d3b3f996144bd9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '78a61a5d3cbeb094ac89fb77ecba0f4f')"
     ]
   }
 }
