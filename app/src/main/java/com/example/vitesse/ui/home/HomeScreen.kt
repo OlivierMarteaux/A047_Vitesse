@@ -40,6 +40,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.AppViewModelProvider
+import com.example.vitesse.ui.home.HomeUiState.Empty
+import com.example.vitesse.ui.home.HomeUiState.Error
+import com.example.vitesse.ui.home.HomeUiState.Loading
+import com.example.vitesse.ui.home.HomeUiState.Success
 import com.example.vitesse.ui.navigation.NavigationDestination
 
 object HomeDestination : NavigationDestination {
@@ -217,21 +221,21 @@ fun ApplicantCardList(
 //        )
 //    }
     when (homeUiState) {
-        is HomeUiState.Success -> {
+        is Success -> {
             LazyColumn(modifier = modifier) {
                 items(applicantList) { applicant ->
                     ApplicantCard(applicant = applicant)
                 }
             }
         }
-        is HomeUiState.Loading -> {
+        is Loading -> {
             Column(
                 modifier = modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 ) { CircularProgressIndicator() }
         }
-        is HomeUiState.Empty -> {
+        is Empty -> {
             Column(
                 modifier = modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -243,7 +247,7 @@ fun ApplicantCardList(
                 )
             }
         }
-        is HomeUiState.Error -> {
+        is Error -> {
             Column(
                 modifier = modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
