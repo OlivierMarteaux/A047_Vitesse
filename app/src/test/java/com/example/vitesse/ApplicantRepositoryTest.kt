@@ -29,7 +29,7 @@ class ApplicantRepositoryTest {
         salary = 60000.0,
         note = "Strong Java and Kotlin background.",
         photoUri = "https://randomuser.me/api/portraits/women/12.jpg",
-        bookmarked = true
+        isFavorite = true
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -49,12 +49,12 @@ class ApplicantRepositoryTest {
     }
 
     @Test
-    fun applicantRepository_GetBookmarkedApplicants_CallsDaoGetBookmarkedApplicants() = runTest {
+    fun applicantRepository_GetIsFavoriteApplicants_CallsDaoGetIsFavoriteApplicants() = runTest {
         // When
-        repository.getBookmarkedApplicants()
+        repository.getFavoriteApplicants()
         testDispatcher.scheduler.advanceUntilIdle()
         // Then
-        verify(mockApplicantDao).getBookmarkedApplicants()
+        verify(mockApplicantDao).getFavoriteApplicants()
     }
 
     @Test

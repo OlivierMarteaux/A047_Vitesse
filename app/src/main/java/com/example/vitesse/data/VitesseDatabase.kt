@@ -12,6 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.vitesse.data.converter.DateConverter
 import com.example.vitesse.data.dao.ApplicantDao
 import com.example.vitesse.data.model.Applicant
+import com.example.vitesse.data.model.ApplicantFts
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -25,7 +26,7 @@ import java.time.LocalDate
  * Annotated with [@Database] to specify the entities and version.
  * Annotated with [@TypeConverters] to handle custom data types like [LocalDate].
  */
-@Database(entities = [Applicant::class], version = 1, exportSchema = true)
+@Database(entities = [Applicant::class, ApplicantFts::class], version = 1, exportSchema = true)
 @TypeConverters(DateConverter::class)
 abstract class VitesseDatabase: RoomDatabase() {
 
@@ -93,7 +94,7 @@ abstract class VitesseDatabase: RoomDatabase() {
                     salary = 60000.0,
                     note = "Strong Java and Kotlin background.",
                     photoUri = "https://randomuser.me/api/portraits/women/12.jpg",
-                    bookmarked = true
+                    isFavorite = true
                 ),
                 Applicant(
                     firstName = "Bob",
@@ -104,7 +105,7 @@ abstract class VitesseDatabase: RoomDatabase() {
                     salary = 72000.0,
                     note = "Experienced in full-stack web development.",
                     photoUri = "https://randomuser.me/api/portraits/men/34.jpg",
-                    bookmarked = false
+                    isFavorite = false
                 ),
                 Applicant(
                     firstName = "Claire",
@@ -115,7 +116,7 @@ abstract class VitesseDatabase: RoomDatabase() {
                     salary = 58000.0,
                     note = "UI/UX designer with a background in front-end.",
                     photoUri = "https://randomuser.me/api/portraits/women/45.jpg",
-                    bookmarked = true
+                    isFavorite = true
                 ),
                 Applicant(
                     firstName = "David",
@@ -126,7 +127,7 @@ abstract class VitesseDatabase: RoomDatabase() {
                     salary = 90000.0,
                     note = "Senior architect, looking for leadership roles.",
                     photoUri = "https://randomuser.me/api/portraits/men/9.jpg",
-                    bookmarked = false
+                    isFavorite = false
                 ),
                 Applicant(
                     firstName = "Emma",
@@ -137,7 +138,7 @@ abstract class VitesseDatabase: RoomDatabase() {
                     salary = 64000.0,
                     note = "Mobile app developer with Kotlin/Jetpack Compose.",
                     photoUri = "https://randomuser.me/api/portraits/women/27.jpg",
-                    bookmarked = true
+                    isFavorite = true
                 )
             )
             prepopulatedApplicants.forEach { applicant ->

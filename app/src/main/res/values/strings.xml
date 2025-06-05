@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">A047_Vitesse</string>
+    <string name="home_screen">Home Screen</string>
+    <string name="all">All</string>
+    <string name="favorites">Favorites</string>
+    <string name="search">Search</string>
+    <string name="no_candidate">No candidate</string>
 </resources>

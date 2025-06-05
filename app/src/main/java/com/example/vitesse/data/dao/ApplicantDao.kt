@@ -15,12 +15,19 @@ interface ApplicantDao {
     @Query("SELECT * FROM applicant WHERE id = :id")
     fun getApplicantById(id: Int): Flow<Applicant?>
 
-    @Query("SELECT * FROM applicant WHERE bookmarked = 1")
-    fun getBookmarkedApplicants(): Flow<List<Applicant>>
+    @Query("SELECT * FROM applicant WHERE isFavorite = 1")
+    fun getFavoriteApplicants(): Flow<List<Applicant>>
 
     @Upsert
     suspend fun upsertApplicant(applicant: Applicant)
 
     @Delete
     suspend fun deleteApplicant(applicant: Applicant)
+
+    @Query("""
+        SELECT applicant.* FROM applicant
+        JOIN applicant_fts ON applicant.id = applicant_fts.rowid
+        WHERE applicant_fts MATCH :query
+    """)
+    fun getApplicants(query: String): Flow<List<Applicant>>
 }

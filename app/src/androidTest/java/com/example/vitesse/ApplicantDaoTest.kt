@@ -31,7 +31,7 @@ class ApplicantDaoTest {
             salary = 60000.0,
             note = "Strong Java and Kotlin background.",
             photoUri = "https://randomuser.me/api/portraits/women/12.jpg",
-            bookmarked = true
+            isFavorite = true
         ),
         Applicant(
             id = 2,
@@ -43,7 +43,7 @@ class ApplicantDaoTest {
             salary = 72000.0,
             note = "Experienced in full-stack web development.",
             photoUri = "https://randomuser.me/api/portraits/men/34.jpg",
-            bookmarked = false
+            isFavorite = false
         ),
         Applicant(
             id = 3,
@@ -55,7 +55,7 @@ class ApplicantDaoTest {
             salary = 58000.0,
             note = "UI/UX designer with a background in front-end.",
             photoUri = "https://randomuser.me/api/portraits/women/45.jpg",
-            bookmarked = true
+            isFavorite = true
         ),
         Applicant(
             id = 4,
@@ -67,7 +67,7 @@ class ApplicantDaoTest {
             salary = 90000.0,
             note = "Senior architect, looking for leadership roles.",
             photoUri = "https://randomuser.me/api/portraits/men/9.jpg",
-            bookmarked = false
+            isFavorite = false
         ),
         Applicant(
             id = 5,
@@ -79,7 +79,7 @@ class ApplicantDaoTest {
             salary = 64000.0,
             note = "Mobile app developer with Kotlin/Jetpack Compose.",
             photoUri = "https://randomuser.me/api/portraits/women/27.jpg",
-            bookmarked = true
+            isFavorite = true
         )
     )
 
@@ -139,13 +139,61 @@ class ApplicantDaoTest {
     }
 
     @Test
-    fun applicantDao_GetBookmarkedApplicants_ReturnsBookmarkedApplicants() = runTest {
+    fun applicantDao_GetIsFavoriteApplicants_ReturnsIsFavoriteApplicants() = runTest {
         // Given applicants are added to the database:
         applicantList.forEach { database.applicantDao().upsertApplicant(it) }
-        // When bookmarked applicants are retrieved:
-        database.applicantDao().getBookmarkedApplicants().test {
-            // Then the retrieved list should contain only the bookmarked applicants
-            assertEquals(applicantList.filter { it.bookmarked }, awaitItem())
+        // When isFavorite applicants are retrieved:
+        database.applicantDao().getFavoriteApplicants().test {
+            // Then the retrieved list should contain only the isFavorite applicants
+            assertEquals(applicantList.filter { it.isFavorite }, awaitItem())
+            cancel()
+        }
+    }
+
+    @Test
+    fun applicantDao_getApplicantByPartialFirstName_ReturnsCorrectApplicant() = runTest {
+        // Given applicants are added to the database:
+        applicantList.forEach { database.applicantDao().upsertApplicant(it) }
+        // When an applicant is retrieved by its first name:
+        database.applicantDao().getApplicants("Alic*").test {
+            // Then the retrieved list should contain only the applicants with the given name
+            assertEquals(listOf(applicantList[0]), awaitItem())
+            cancel()
+        }
+    }
+
+    @Test
+    fun applicantDao_getApplicantByPartialLastName_ReturnsCorrectApplicant() = runTest {
+        // Given applicants are added to the database:
+        applicantList.forEach { database.applicantDao().upsertApplicant(it) }
+        // When an applicant is retrieved by its first name:
+        database.applicantDao().getApplicants("Johnso").test {
+            // Then the retrieved list should contain only the applicants with the given name
+            assertEquals(listOf(applicantList[0]), awaitItem())
+            cancel()
+        }
+    }
+
+    @Test
+    fun applicantDao_getApplicantByPartialFullName_ReturnsCorrectApplicant() = runTest {
+        // Given applicants are added to the database:
+        applicantList.forEach { database.applicantDao().upsertApplicant(it) }
+        // When an applicant is retrieved by its first name:
+        database.applicantDao().getApplicants("Alice Johnso").test {
+            // Then the retrieved list should contain only the applicants with the given name
+            assertEquals(listOf(applicantList[0]), awaitItem())
+            cancel()
+        }
+    }
+
+    @Test
+    fun applicantDao_getApplicantByPartialFullNameInverted_ReturnsCorrectApplicant() = runTest {
+        // Given applicants are added to the database:
+        applicantList.forEach { database.applicantDao().upsertApplicant(it) }
+        // When an applicant is retrieved by its first name:
+        database.applicantDao().getApplicants("Johnson Alic").test {
+            // Then the retrieved list should contain only the applicants with the given name
+            assertEquals(listOf(applicantList[0]), awaitItem())
             cancel()
         }
     }

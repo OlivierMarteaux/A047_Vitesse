@@ -24,11 +24,11 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
         catch (e: Exception) { Log.e("OM:ApplicantRepository.getApplicantById", e.message.toString()); emptyFlow()}
 
     /**
-     * Retrieves a flow of all bookmarked [Applicant] entities.
+     * Retrieves a flow of all favorite [Applicant] entities.
      */
-    fun getBookmarkedApplicants(): Flow<List<Applicant>> =
-        try {applicantDao.getBookmarkedApplicants()}
-        catch (e: Exception) { Log.e("OM:ApplicantRepository.getBookmarkedApplicants", e.message.toString()); emptyFlow()}
+    fun getFavoriteApplicants(): Flow<List<Applicant>> =
+        try {applicantDao.getFavoriteApplicants()}
+        catch (e: Exception) { Log.e("OM:ApplicantRepository.getFavoriteApplicants", e.message.toString()); emptyFlow()}
 
     /**
      * Retrieves a flow of all [Applicant] entities.
@@ -37,11 +37,14 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
      * Logs an error and returns an empty flow if an exception occurs.
      */
     fun getAllApplicants(): Flow<List<Applicant>> =
-        try {applicantDao.getAllApplicants()}
-        catch (e: Exception) {
-            Log.e("OM:ApplicantRepository.getAllApplicants", e.message.toString())
-            emptyFlow()
-        }
+        try {
+            applicantDao.getAllApplicants()
+        } catch (e: Exception) { Log.e("OM:ApplicantRepository.getAllApplicants", e.message.toString()); emptyFlow()}
+//    fun getAllApplicants(): DatabaseState<Flow<List<Applicant>>> =
+//        try {
+//            DatabaseState.Loading
+//            DatabaseState.Success(applicantDao.getAllApplicants())
+//        } catch (e: Exception) { DatabaseState.Error(e) }
 
     /**
      * Inserts a new [Applicant] or updates it if it already exists.
@@ -62,4 +65,32 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
     suspend fun deleteApplicant(applicant: Applicant) =
         try { applicantDao.deleteApplicant(applicant)}
         catch (e: Exception) { Log.e("OM:ApplicantRepository.deleteApplicant", e.message.toString())}
+
+    /**
+     * Retrieves a flow of applicants matching the given search query.
+     *
+     * @param query The search query.
+     * @return A [Flow] emitting the list of matching applicants.
+     */
+    fun getApplicants(query: String): Flow<List<Applicant>> =
+        try {applicantDao.getApplicants(formatSqlQuery(query))}
+        catch (e: Exception) { Log.e("OM:ApplicantRepository.getApplicants", e.message.toString()); emptyFlow()}
+
+    private fun formatSqlQuery(rawQuery: String): String{
+        return rawQuery
+            .trim()
+            .lowercase()
+            .split("\\s+".toRegex())           // Split by any whitespace
+            .filter { it.isNotBlank() }        // Remove empty strings
+            .joinToString(" ") { "$it*" }      // Append '*' to each term
+    }
+
+//    private suspend fun <T> databaseProcessing(function: () -> T): DatabaseState<T> =
+//        try {
+//            DatabaseState.Loading
+//            delay(1000)
+//            DatabaseState.Success(function())
+//        } catch (e: Exception) {
+//            DatabaseState.Error(e)
+//        }
 }
