@@ -14,6 +14,7 @@ data class HomeUiState(
     val allApplicantList: List<Applicant> = listOf(),
     val isLoading: Boolean = true,
     val isEmpty: Boolean? = null,
+    val searchQuery: String = "",
 )
 class HomeViewModel(private val applicantRepository: ApplicantRepository): ViewModel() {
 

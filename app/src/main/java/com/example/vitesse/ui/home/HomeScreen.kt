@@ -66,6 +66,7 @@ fun HomeScreen(
     ){innerPadding ->
         HomeBody(
             applicantList = uiState.allApplicantList,
+            searchQuery = uiState.searchQuery,
             onItemClick = { /*TODO*/ },
             modifier = modifier.fillMaxSize(),
             contentPadding = innerPadding,
@@ -77,6 +78,7 @@ fun HomeScreen(
 @Composable
 private fun HomeBody(
     applicantList: List<Applicant>,
+    searchQuery: String,
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -93,13 +95,13 @@ private fun HomeBody(
         SearchBar(
             inputField = {
                 SearchBarDefaults.InputField(
-                    query = "",
+                    query = searchQuery,
                     onQueryChange = {},
                     onSearch = {query -> applicantList.filter { it.firstName.contains(query) || it.lastName.contains(query) }},
                     expanded = false,
                     onExpandedChange = onActiveChange,
                     enabled = true,
-                    placeholder = null,
+                    placeholder = { Text(text = stringResource(R.string.search)) },
                     leadingIcon = null,
                     trailingIcon = null,
                     interactionSource = null,
