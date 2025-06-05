@@ -37,11 +37,14 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
      * Logs an error and returns an empty flow if an exception occurs.
      */
     fun getAllApplicants(): Flow<List<Applicant>> =
-        try {applicantDao.getAllApplicants()}
-        catch (e: Exception) {
-            Log.e("OM:ApplicantRepository.getAllApplicants", e.message.toString())
-            emptyFlow()
-        }
+        try {
+            applicantDao.getAllApplicants()
+        } catch (e: Exception) { Log.e("OM:ApplicantRepository.getAllApplicants", e.message.toString()); emptyFlow()}
+//    fun getAllApplicants(): DatabaseState<Flow<List<Applicant>>> =
+//        try {
+//            DatabaseState.Loading
+//            DatabaseState.Success(applicantDao.getAllApplicants())
+//        } catch (e: Exception) { DatabaseState.Error(e) }
 
     /**
      * Inserts a new [Applicant] or updates it if it already exists.
@@ -81,4 +84,13 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
             .filter { it.isNotBlank() }        // Remove empty strings
             .joinToString(" ") { "$it*" }      // Append '*' to each term
     }
+
+//    private suspend fun <T> databaseProcessing(function: () -> T): DatabaseState<T> =
+//        try {
+//            DatabaseState.Loading
+//            delay(1000)
+//            DatabaseState.Success(function())
+//        } catch (e: Exception) {
+//            DatabaseState.Error(e)
+//        }
 }

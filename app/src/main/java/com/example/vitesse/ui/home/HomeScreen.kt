@@ -2,7 +2,6 @@ package com.example.vitesse.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -35,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
@@ -56,7 +55,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val uiState by viewModel.uiState.collectAsState()
     val query = viewModel.query
     val applicantList by viewModel.getApplicants(query).collectAsState(initial = listOf())
 
@@ -71,6 +69,7 @@ fun HomeScreen(
         }
     ){ innerPadding ->
         HomeBody(
+//            homeUiState = viewModel.uiState,
             applicantList = applicantList,
             query = query,
             onItemClick = { /*TODO*/ },
@@ -83,6 +82,7 @@ fun HomeScreen(
 
 @Composable
 private fun HomeBody(
+//    homeUiState: HomeUiState,
     applicantList: List<Applicant>,
     query: String,
     onItemClick: (Int) -> Unit,
@@ -104,6 +104,7 @@ private fun HomeBody(
             modifier = Modifier,
         )
         ApplicantTabs(
+            homeUiState = viewModel.uiState,
             applicantList = applicantList,
             onItemClick = onItemClick,
             modifier = modifier,
@@ -150,6 +151,7 @@ fun ApplicantSearchBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplicantTabs(
+    homeUiState: HomeUiState,
     applicantList: List<Applicant>,
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -176,12 +178,14 @@ fun ApplicantTabs(
     // Tab content
     when (selectedTabIndex) {
         0 -> ApplicantCardList(
+            homeUiState = homeUiState,
             applicantList = applicantList,
             onItemClick = onItemClick,
             modifier = modifier,
         )
 
         1 -> ApplicantCardList(
+            homeUiState = homeUiState,
             applicantList = applicantList.filter{it.isFavorite},
             onItemClick = onItemClick,
             modifier = modifier,
@@ -191,25 +195,66 @@ fun ApplicantTabs(
 
 @Composable
 fun ApplicantCardList(
+    homeUiState: HomeUiState,
     applicantList: List<Applicant>,
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ){
-    if (applicantList.isNotEmpty()) {
-        LazyColumn(modifier = modifier) {
-            items(applicantList) { applicant ->
-                ApplicantCard(applicant = applicant)
+//    if (applicantList.isNotEmpty()) {
+//        LazyColumn(modifier = modifier) {
+//            items(applicantList) { applicant ->
+//                ApplicantCard(applicant = applicant)
+//            }
+//        }
+//    } else Column(
+//        modifier = modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally,
+//    ) {
+//        Text(
+//            text = stringResource(R.string.no_candidate),
+//            style = MaterialTheme.typography.bodyLarge
+//        )
+//    }
+    when (homeUiState) {
+        is HomeUiState.Success -> {
+            LazyColumn(modifier = modifier) {
+                items(applicantList) { applicant ->
+                    ApplicantCard(applicant = applicant)
+                }
             }
         }
-    } else Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = stringResource(R.string.no_candidate),
-            style = MaterialTheme.typography.bodyLarge
-        )
+        is HomeUiState.Loading -> {
+            Column(
+                modifier = modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                ) { CircularProgressIndicator() }
+        }
+        is HomeUiState.Empty -> {
+            Column(
+                modifier = modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                Text(
+                    text = stringResource(R.string.no_candidate),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
+        is HomeUiState.Error -> {
+            Column(
+                modifier = modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "error",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
     }
 }
 
