@@ -88,11 +88,22 @@ fun ApplicantDetailScreen (
             }
             Card(
                 modifier = modifier
-                    .padding(12.dp)
-                    .fillMaxWidth()
+                    .padding(
+                        start = dimensionResource(R.dimen.padding_margin),
+                        end = dimensionResource(R.dimen.padding_margin)
+                    )
+                    .fillMaxWidth(),
             ){
                 Column(){
-                    Text(text = "text_exemple")
+                    Text(
+                        text = stringResource(R.string.about),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = modifier.padding(
+                            start = dimensionResource(R.dimen.padding_xlarge),
+                            top = dimensionResource(R.dimen.padding_large),
+                            bottom = dimensionResource(R.dimen.padding_large)
+                        )
+                    )
                     Text(text = "text_exemple")
                     Text(text = "text_exemple")
                 }
@@ -122,7 +133,7 @@ fun ApplicantDetailTopAppBar(
     TopAppBar (
         title = { Text(
             text = "Alice JOHNSON",
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleLarge
         )},
         modifier = modifier.padding(
             top = dimensionResource(R.dimen.padding_medium),
@@ -172,20 +183,24 @@ fun ApplicantContactIcon(
             is IconResource.Vector -> Icon(
                 imageVector = icon.imageVector,
                 contentDescription = null,
-                modifier = Modifier.border(
-                    width = Dp.Hairline,
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = CircleShape
-                ).padding(8.dp)
+                modifier = Modifier
+                    .border(
+                        width = Dp.Hairline,
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape
+                    )
+                    .padding(8.dp)
             )
             is IconResource.Paint -> Icon(
                 painter = icon.painter,
                 contentDescription = null,
-                modifier = Modifier.border(
-                    width = Dp.Hairline,
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = CircleShape
-                ).padding(8.dp)
+                modifier = Modifier
+                    .border(
+                        width = Dp.Hairline,
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape
+                    )
+                    .padding(8.dp)
             )
         }}
         Text(
