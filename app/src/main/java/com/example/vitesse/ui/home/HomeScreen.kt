@@ -1,6 +1,7 @@
 package com.example.vitesse.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -57,7 +58,8 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navigateToApplicantDetail: (Int) -> Unit,
 ) {
     val query = viewModel.query
     val applicantList by viewModel.getApplicants(query).collectAsState(initial = listOf())
@@ -73,13 +75,13 @@ fun HomeScreen(
         }
     ){ innerPadding ->
         HomeBody(
-//            homeUiState = viewModel.uiState,
             applicantList = applicantList,
             query = query,
             onItemClick = { /*TODO*/ },
             modifier = modifier.fillMaxSize(),
             contentPadding = innerPadding,
             viewModel = viewModel,
+            navigateToApplicantDetail = navigateToApplicantDetail,
         )
     }
 }
@@ -93,6 +95,7 @@ private fun HomeBody(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     viewModel: HomeViewModel,
+    navigateToApplicantDetail: (Int) -> Unit,
     ){
     Column(
         modifier = modifier
@@ -101,7 +104,6 @@ private fun HomeBody(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-//        Text(text = stringResource(R.string.no_candidate))
         ApplicantSearchBar(
             query = query,
             onQueryChange = viewModel::updateQuery,
@@ -110,7 +112,7 @@ private fun HomeBody(
         ApplicantTabs(
             homeUiState = viewModel.uiState,
             applicantList = applicantList,
-            onItemClick = onItemClick,
+            navigateToApplicantDetail = navigateToApplicantDetail,
             modifier = modifier,
         )
     }
@@ -157,7 +159,7 @@ fun ApplicantSearchBar(
 fun ApplicantTabs(
     homeUiState: HomeUiState,
     applicantList: List<Applicant>,
-    onItemClick: (Int) -> Unit,
+    navigateToApplicantDetail: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ){
     val tabs = listOf(stringResource(R.string.all), stringResource(R.string.favorites))
@@ -184,14 +186,14 @@ fun ApplicantTabs(
         0 -> ApplicantCardList(
             homeUiState = homeUiState,
             applicantList = applicantList,
-            onItemClick = onItemClick,
+            navigateToApplicantDetail = navigateToApplicantDetail,
             modifier = modifier,
         )
 
         1 -> ApplicantCardList(
             homeUiState = homeUiState,
             applicantList = applicantList.filter{it.isFavorite},
-            onItemClick = onItemClick,
+            navigateToApplicantDetail = navigateToApplicantDetail,
             modifier = modifier,
         )
     }
@@ -201,30 +203,17 @@ fun ApplicantTabs(
 fun ApplicantCardList(
     homeUiState: HomeUiState,
     applicantList: List<Applicant>,
-    onItemClick: (Int) -> Unit,
+    navigateToApplicantDetail: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ){
-//    if (applicantList.isNotEmpty()) {
-//        LazyColumn(modifier = modifier) {
-//            items(applicantList) { applicant ->
-//                ApplicantCard(applicant = applicant)
-//            }
-//        }
-//    } else Column(
-//        modifier = modifier.fillMaxSize(),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//    ) {
-//        Text(
-//            text = stringResource(R.string.no_candidate),
-//            style = MaterialTheme.typography.bodyLarge
-//        )
-//    }
     when (homeUiState) {
         is Success -> {
             LazyColumn(modifier = modifier) {
                 items(applicantList) { applicant ->
-                    ApplicantCard(applicant = applicant)
+                    ApplicantCard(
+                        applicant = applicant,
+                        modifier = modifier.clickable{navigateToApplicantDetail(applicant.id)},
+                        )
                 }
             }
         }
@@ -265,10 +254,10 @@ fun ApplicantCardList(
 @Composable
 fun ApplicantCard(
     applicant: Applicant,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ){
     Row(
-        modifier = modifier
+        modifier = modifier,
     ){
         Image(
             painter = painterResource(R.drawable.ic_launcher_foreground),

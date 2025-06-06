@@ -3,9 +3,13 @@ package com.example.vitesse.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.example.vitesse.ui.home.HomeDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.example.vitesse.ui.applicantDetail.ApplicantDetailDestination
+import com.example.vitesse.ui.applicantDetail.ApplicantDetailScreen
+import com.example.vitesse.ui.home.HomeDestination
 import com.example.vitesse.ui.home.HomeScreen
 
 /**
@@ -23,7 +27,16 @@ fun VitesseNavHost(
     ){
         composable(route = HomeDestination.route) {
             HomeScreen(
-
+                navigateToApplicantDetail = { navController.navigate("${ApplicantDetailDestination.route}/${it}") },
+            )
+        }
+        composable(
+            route = ApplicantDetailDestination.routeWithArgs,
+            arguments = listOf(navArgument(ApplicantDetailDestination.ApplicantIdArg){
+                type = NavType.IntType})
+        ){
+            ApplicantDetailScreen(
+//                navigateBack = { navController.navigateUp() },
             )
         }
     }
