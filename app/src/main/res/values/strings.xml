@@ -6,4 +6,7 @@
     <string name="search">Search</string>
     <string name="no_candidate">No candidate</string>
     <string name="applicant_detail_screen">Applicant Detail Screen</string>
+    <string name="call">Call</string>
+    <string name="sms">SMS</string>
+    <string name="email">Email</string>
 </resources>

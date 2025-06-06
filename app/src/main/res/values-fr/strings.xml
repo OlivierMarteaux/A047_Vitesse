@@ -6,4 +6,7 @@
     <string name="search">Rechercher un candidat</string>
     <string name="no_candidate">Aucun candidat</string>
     <string name="applicant_detail_screen">Ecran du profil du candidat</string>
+    <string name="call">Appel</string>
+    <string name="sms">SMS</string>
+    <string name="email">Email</string>
 </resources>
