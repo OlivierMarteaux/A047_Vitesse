@@ -10,4 +10,6 @@
     <string name="sms">SMS</string>
     <string name="email">Email</string>
     <string name="about">A propos</string>
+    <string name="salary_expectations">Prétentions salariales</string>
+    <string name="notes">Notes</string>
 </resources>

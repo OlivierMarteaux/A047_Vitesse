@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="padding_margin">40dp</dimen>
-    <dimen name="padding_xlarge">16dp</dimen>
-    <dimen name="padding_large">12dp</dimen>
-    <dimen name="padding_medium">8dp</dimen>
-    <dimen name="padding_small">4dp</dimen>
+    <dimen name="padding_xxl">20dp</dimen>
+    <dimen name="padding_xl">16dp</dimen>
+    <dimen name="padding_l">14dp</dimen>
+    <dimen name="padding_m">12dp</dimen>
+    <dimen name="padding_s">8dp</dimen>
+    <dimen name="padding_xs">4dp</dimen>
 
     <dimen name="icon_size">48dp</dimen>
 

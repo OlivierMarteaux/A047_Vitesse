@@ -1,22 +1,28 @@
 package com.example.vitesse.ui.applicantDetail
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Call
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,20 +30,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
-import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.navigation.NavigationDestination
 
 object ApplicantDetailDestination : NavigationDestination {
@@ -50,79 +57,156 @@ object ApplicantDetailDestination : NavigationDestination {
 @Composable
 fun ApplicantDetailScreen (
     modifier: Modifier = Modifier,
-    viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    //viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = { ApplicantDetailTopAppBar() },
     ){ topAppBarPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(topAppBarPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+        ApplicantDetailBody(
+            modifier = modifier.padding(topAppBarPadding)
+        )
+    }
+}
+
+@Composable
+fun ApplicantDetailBody(
+    modifier: Modifier = Modifier
+){
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Image(
+            painter = painterResource(R.drawable.martyna_siddeswara),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .height(195.dp)
+                .padding(14.dp),
+            contentDescription = null)
+        Row(
+            horizontalArrangement = Arrangement.Center
         ){
-            Image(
-                painter = painterResource(R.drawable.martyna_siddeswara),
-                contentScale = ContentScale.Crop,
-                modifier = modifier.height(195.dp),
-                contentDescription = null)
-            Row(
-                horizontalArrangement = Arrangement.Center
-            ){
-                ApplicantContactIcon(
-                    icon = IconResource.Vector(Icons.Filled.Star),
-                    text = stringResource(R.string.call),
-                    onClick = { /*TODO*/ }
-                )
-                ApplicantContactIcon(
-                    icon = IconResource.Paint(painterResource(R.drawable.chat_24px)),
-                    text = stringResource(R.string.sms),
-                    onClick = { /*TODO*/ }
-                )
-                ApplicantContactIcon(
-                    icon = IconResource.Vector(Icons.Filled.Email),
-                    text = stringResource(R.string.email),
-                    onClick = { /*TODO*/ }
-                )
-            }
-            Card(
-                modifier = modifier
-                    .padding(
-                        start = dimensionResource(R.dimen.padding_margin),
-                        end = dimensionResource(R.dimen.padding_margin)
-                    )
-                    .fillMaxWidth(),
-            ){
-                Column(){
-                    Text(
-                        text = stringResource(R.string.about),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = modifier.padding(
-                            start = dimensionResource(R.dimen.padding_xlarge),
-                            top = dimensionResource(R.dimen.padding_large),
-                            bottom = dimensionResource(R.dimen.padding_large)
-                        )
-                    )
-                    Text(text = "text_exemple")
-                    Text(text = "text_exemple")
-                }
-            }
-            Card(){
-                Column(){
-                    Text(text = "text_exemple")
-                    Text(text = "text_exemple")
-                    Text(text = "text_exemple")
-                }
-            }
-            Card(){
-                Column(){
-                    Text(text = "text_exemple")
-                    Text(text = "text_exemple")
-                }
-            }
+            ApplicantDetailContact(
+                icon = IconResource.Vector(Icons.Outlined.Call),
+                text = stringResource(R.string.call),
+                onClick = { /*TODO*/ }
+            )
+            ApplicantDetailContact(
+                icon = IconResource.Paint(painterResource(R.drawable.chat_24px)),
+                text = stringResource(R.string.sms),
+                onClick = { /*TODO*/ }
+            )
+            ApplicantDetailContact(
+                icon = IconResource.Vector(Icons.Outlined.Email),
+                text = stringResource(R.string.email),
+                onClick = { /*TODO*/ }
+            )
+        }
+        ApplicantDetailCard(header = stringResource(R.string.about)){
+            TextBodyLarge(
+                text = "text_exemple",
+            )
+            TextBodyMedium(
+                text = "text_exemple",
+                modifier = Modifier.padding(bottom = 11.dp)
+            )
+        }
+        ApplicantDetailCard(header = stringResource(R.string.salary_expectations)){
+            TextBodyLarge(
+                text = "text_exemple",
+                modifier = Modifier.padding(bottom = 32.dp)
+            )
+            TextBodyMedium(text = "text_exemple")
+        }
+        ApplicantDetailCard(header = stringResource(R.string.notes)){
+            Text(
+                text = "text_exemple",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
+}
+
+@Composable
+fun ApplicantDetailCard(
+    modifier: Modifier = Modifier,
+    header: String,
+    content: @Composable () -> Unit
+){
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+            ),
+        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 14.dp)
+    ){
+        Column(
+            modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+        ){
+            TextTitleMedium(
+                text = header,
+                modifier = Modifier.padding(bottom = 40.dp)
+            )
+            content()
+        }
+    }
+}
+
+@Composable
+fun TextTitleMedium (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = modifier
+    )
+}
+@Composable
+fun TextBodyLarge (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = modifier
+    )
+}
+@Composable
+fun TextBodyMedium (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier
+    )
+}
+@Composable
+fun TextBodySmall (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodySmall,
+        color = Color.Black,
+        modifier = modifier
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -135,29 +219,32 @@ fun ApplicantDetailTopAppBar(
             text = "Alice JOHNSON",
             style = MaterialTheme.typography.titleLarge
         )},
-        modifier = modifier.padding(
-            top = dimensionResource(R.dimen.padding_medium),
-            bottom = dimensionResource(R.dimen.padding_medium),
-            start = dimensionResource(R.dimen.padding_small),
-            end = dimensionResource(R.dimen.padding_small)),
-        navigationIcon = { TopAppBarIconButton(
-            icon = Icons.AutoMirrored.Filled.ArrowBack,
+        colors = TopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            scrolledContainerColor = Color.Transparent,
+        ),
+        modifier = modifier.windowInsetsPadding(WindowInsets(4,8,4,8)),
+        navigationIcon = { ApplicantDetailIconButton(
+            icon = IconResource.Vector(Icons.AutoMirrored.Filled.ArrowBack),
             onClick = { /*TODO*/ },
             modifier = modifier
         )},
         actions = {
-            TopAppBarIconButton(
-                icon = Icons.Filled.Star,
+            ApplicantDetailIconButton(
+                icon = IconResource.Vector(Icons.Outlined.Star),
                 onClick = { /*TODO*/ },
                 modifier = modifier
             )
-            TopAppBarIconButton(
-                icon = Icons.Filled.Edit,
+            ApplicantDetailIconButton(
+                icon = IconResource.Vector(Icons.Outlined.Edit),
                 onClick = { /*TODO*/ },
                 modifier = modifier
             )
-            TopAppBarIconButton(
-                icon = Icons.Filled.Delete,
+            ApplicantDetailIconButton(
+                icon = IconResource.Vector(Icons.Outlined.Delete),
                 onClick = { /*TODO*/ },
                 modifier = modifier
             )
@@ -166,7 +253,7 @@ fun ApplicantDetailTopAppBar(
 }
 
 @Composable
-fun ApplicantContactIcon(
+fun ApplicantDetailContact(
     icon: IconResource,
     text: String,
     onClick: () -> Unit,
@@ -174,59 +261,55 @@ fun ApplicantContactIcon(
 ){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(12.dp)
+        modifier = modifier.padding(horizontal = 16.dp)
     ){
-        IconButton(
+        ApplicantDetailIconButton(
+            icon = icon,
             onClick = onClick,
-            modifier = modifier,
-        ){when (icon) {
-            is IconResource.Vector -> Icon(
-                imageVector = icon.imageVector,
-                contentDescription = null,
-                modifier = Modifier
-                    .border(
-                        width = Dp.Hairline,
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = CircleShape
-                    )
-                    .padding(8.dp)
-            )
-            is IconResource.Paint -> Icon(
-                painter = icon.painter,
-                contentDescription = null,
-                modifier = Modifier
-                    .border(
-                        width = Dp.Hairline,
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = CircleShape
-                    )
-                    .padding(8.dp)
-            )
-        }}
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodySmall
+            modifier = modifier
+                .padding(4.dp)
+                .border(
+                    width = Dp.Hairline,
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = CircleShape
+                )
+                .padding(8.dp)
         )
+        TextBodySmall(text = text,)
     }
 }
 
 @Composable
-fun TopAppBarIconButton(
-    icon: ImageVector,
+fun ApplicantDetailIconButton(
+    icon: IconResource,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
     IconButton(
         onClick = onClick,
-        modifier = modifier,
-    ){Icon(
-        imageVector = icon,
-        contentDescription = null,
-        modifier = modifier.padding(dimensionResource(R.dimen.padding_medium))
-    )}
+        modifier = Modifier.size(dimensionResource(R.dimen.icon_size)),
+    ){when (icon) {
+        is IconResource.Vector -> Icon(
+            imageVector = icon.imageVector,
+            contentDescription = null,
+            modifier = modifier
+
+        )
+        is IconResource.Paint -> Icon(
+            painter = icon.painter,
+            contentDescription = null,
+            modifier = modifier
+        )
+    }}
 }
 
 sealed class IconResource {
     data class Vector(val imageVector: ImageVector) : IconResource()
     data class Paint(val painter: Painter) : IconResource()
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun ApplicantDetailScreenPreview(){
+    ApplicantDetailScreen()
 }
