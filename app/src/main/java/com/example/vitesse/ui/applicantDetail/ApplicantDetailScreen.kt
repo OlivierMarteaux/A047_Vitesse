@@ -60,9 +60,9 @@ fun ApplicantDetailScreen (
     modifier: Modifier = Modifier,
     //viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
-    val systemUiController = rememberSystemUiController()
 
     // Set status bar color to white and use dark icons
+    val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
         color = Color.White,
         darkIcons = true
@@ -115,9 +115,7 @@ fun ApplicantDetailBody(
             )
         }
         ApplicantDetailCard(header = stringResource(R.string.about)){
-            TextBodyLarge(
-                text = "text_exemple",
-            )
+            TextBodyLarge(text = "text_exemple",)
             TextBodyMedium(
                 text = "text_exemple",
                 modifier = Modifier.padding(bottom = 11.dp)
@@ -131,11 +129,7 @@ fun ApplicantDetailBody(
             TextBodyMedium(text = "text_exemple")
         }
         ApplicantDetailCard(header = stringResource(R.string.notes)){
-            Text(
-                text = "text_exemple",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            TextBodyMedium(text = "text_exemple")
         }
     }
 }
@@ -153,7 +147,7 @@ fun ApplicantDetailCard(
             ),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
         shape = MaterialTheme.shapes.medium,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 14.dp)
     ){
@@ -167,55 +161,6 @@ fun ApplicantDetailCard(
             content()
         }
     }
-}
-
-@Composable
-fun TextTitleMedium (
-    text:String,
-    modifier: Modifier = Modifier
-){
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onSurface,
-        modifier = modifier
-    )
-}
-@Composable
-fun TextBodyLarge (
-    text:String,
-    modifier: Modifier = Modifier
-){
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurface,
-        modifier = modifier
-    )
-}
-@Composable
-fun TextBodyMedium (
-    text:String,
-    modifier: Modifier = Modifier
-){
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = modifier
-    )
-}
-@Composable
-fun TextBodySmall (
-    text:String,
-    modifier: Modifier = Modifier
-){
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodySmall,
-        color = Color.Black,
-        modifier = modifier
-    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -315,6 +260,55 @@ fun ApplicantDetailIconButton(
 sealed class IconResource {
     data class Vector(val imageVector: ImageVector) : IconResource()
     data class Paint(val painter: Painter) : IconResource()
+}
+
+@Composable
+fun TextTitleMedium (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = modifier
+    )
+}
+@Composable
+fun TextBodyLarge (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = modifier
+    )
+}
+@Composable
+fun TextBodyMedium (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier
+    )
+}
+@Composable
+fun TextBodySmall (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodySmall,
+        color = Color.Black,
+        modifier = modifier
+    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)
