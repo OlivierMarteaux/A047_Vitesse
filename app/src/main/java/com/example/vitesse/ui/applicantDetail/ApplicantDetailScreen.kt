@@ -24,7 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -41,7 +40,6 @@ import com.example.vitesse.TextTitleMedium
 import com.example.vitesse.VitesseIconButton
 import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.ui.navigation.NavigationDestination
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 object ApplicantDetailDestination : NavigationDestination {
     override val route = "applicant_detail"
@@ -56,13 +54,6 @@ fun ApplicantDetailScreen (
     navigateBack: () -> Unit = {},
     //viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
-
-    // Set status bar color to white and use dark icons
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(
-        color = Color.White,
-        darkIcons = true
-    )
 
     Scaffold(
         modifier = modifier.fillMaxSize(),

@@ -21,6 +21,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.vitesse.ui.navigation.VitesseNavHost
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 /**
  * Top level composable that represents screens for the application.
@@ -29,6 +30,13 @@ import com.example.vitesse.ui.navigation.VitesseNavHost
 fun VitesseApp(
     navController: NavHostController = rememberNavController()
 ) {
+    // Set status bar color to white and use dark icons
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(
+        color = Color.White,
+        darkIcons = true
+    )
+
     VitesseNavHost(navController = navController)
 }
 
@@ -154,12 +162,39 @@ fun TextBodyMedium (
 @Composable
 fun TextBodySmall (
     text:String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    color: Color = Color.Black
 ){
     Text(
         text = text,
         style = MaterialTheme.typography.bodySmall,
-        color = Color.Black,
+        color = color,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun TextLabelLarge(
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun TextHeadLineLarge(
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.headlineLarge,
+        color = MaterialTheme.colorScheme.onSurface,
         modifier = modifier
     )
 }

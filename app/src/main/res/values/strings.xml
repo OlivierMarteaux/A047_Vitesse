@@ -17,4 +17,6 @@
     <string name="last_name">Last name</string>
     <string name="phone_number">Phone number</string>
     <string name="birthday">Birthday</string>
+    <string name="select_a_date">Select a date</string>
+    <string name="input_a_date">Input a date</string>
 </resources>
