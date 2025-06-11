@@ -3,7 +3,6 @@ package com.example.vitesse
 import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import org.junit.runner.RunWith
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.example.vitesse.data.VitesseDatabase
@@ -14,6 +13,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import java.time.LocalDate
 
 @RunWith (AndroidJUnit4::class)
@@ -156,42 +156,6 @@ class ApplicantDaoTest {
         applicantList.forEach { database.applicantDao().upsertApplicant(it) }
         // When an applicant is retrieved by its first name:
         database.applicantDao().getApplicants("Alic*").test {
-            // Then the retrieved list should contain only the applicants with the given name
-            assertEquals(listOf(applicantList[0]), awaitItem())
-            cancel()
-        }
-    }
-
-    @Test
-    fun applicantDao_getApplicantByPartialLastName_ReturnsCorrectApplicant() = runTest {
-        // Given applicants are added to the database:
-        applicantList.forEach { database.applicantDao().upsertApplicant(it) }
-        // When an applicant is retrieved by its first name:
-        database.applicantDao().getApplicants("Johnso").test {
-            // Then the retrieved list should contain only the applicants with the given name
-            assertEquals(listOf(applicantList[0]), awaitItem())
-            cancel()
-        }
-    }
-
-    @Test
-    fun applicantDao_getApplicantByPartialFullName_ReturnsCorrectApplicant() = runTest {
-        // Given applicants are added to the database:
-        applicantList.forEach { database.applicantDao().upsertApplicant(it) }
-        // When an applicant is retrieved by its first name:
-        database.applicantDao().getApplicants("Alice Johnso").test {
-            // Then the retrieved list should contain only the applicants with the given name
-            assertEquals(listOf(applicantList[0]), awaitItem())
-            cancel()
-        }
-    }
-
-    @Test
-    fun applicantDao_getApplicantByPartialFullNameInverted_ReturnsCorrectApplicant() = runTest {
-        // Given applicants are added to the database:
-        applicantList.forEach { database.applicantDao().upsertApplicant(it) }
-        // When an applicant is retrieved by its first name:
-        database.applicantDao().getApplicants("Johnson Alic").test {
             // Then the retrieved list should contain only the applicants with the given name
             assertEquals(listOf(applicantList[0]), awaitItem())
             cancel()

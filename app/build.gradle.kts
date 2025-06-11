@@ -64,6 +64,12 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Google accompanist for SystemUiController
+    implementation(libs.google.accompanist.systemuicontroller)
+
+    // google material for icons
+    implementation(libs.material)
+
     // Navigation
     implementation(libs.androidx.navigation.compose)
 

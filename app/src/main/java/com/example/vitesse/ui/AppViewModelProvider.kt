@@ -2,7 +2,6 @@ package com.example.vitesse.ui
 
 import android.app.Application
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -22,12 +21,12 @@ object AppViewModelProvider {
             HomeViewModel(vitesseApplication().container.applicantRepository)
         }
 
-        // Initializer for AddApplicantViewModel
+        // Initializer for AddViewModel
         initializer {
             AddApplicantViewModel(vitesseApplication().container.applicantRepository)
         }
 
-        // Initializer for ApplicantDetailViewModel
+        // Initializer for DetailViewModel
         initializer {
             ApplicantDetailViewModel(
                 vitesseApplication().container.applicantRepository

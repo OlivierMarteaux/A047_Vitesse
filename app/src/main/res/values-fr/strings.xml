@@ -5,4 +5,11 @@
     <string name="favorites">Favoris</string>
     <string name="search">Rechercher un candidat</string>
     <string name="no_candidate">Aucun candidat</string>
+    <string name="applicant_detail_screen">Ecran du profil du candidat</string>
+    <string name="call">Appel</string>
+    <string name="sms">SMS</string>
+    <string name="email">Email</string>
+    <string name="about">A propos</string>
+    <string name="salary_expectations">Prétentions salariales</string>
+    <string name="notes">Notes</string>
 </resources>
