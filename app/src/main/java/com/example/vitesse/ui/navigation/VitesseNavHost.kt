@@ -46,7 +46,7 @@ fun VitesseNavHost(
         composable(
             route = AddApplicantDestination.route){
             AddApplicantScreen(
-//                navigateBack = { navController.navigateUp() },
+                navigateBack = { navController.popBackStack() }
 //                onNavigateUp = { navController.navigateUp() }
             )
         }

@@ -13,4 +13,8 @@
     <string name="salary_expectations">Salary expectations</string>
     <string name="notes">Notes</string>
     <string name="add_applicant_screen">Add applicant screen</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="phone_number">Phone number</string>
+    <string name="birthday">Birthday</string>
 </resources>

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Call
@@ -20,25 +19,26 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.vitesse.R
+import com.example.vitesse.TextBodyLarge
+import com.example.vitesse.TextBodyMedium
+import com.example.vitesse.TextBodySmall
+import com.example.vitesse.TextTitleMedium
+import com.example.vitesse.VitesseIconButton
 import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.ui.navigation.NavigationDestination
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -71,18 +71,18 @@ fun ApplicantDetailScreen (
             modifier = Modifier,
             navigateBack = navigateBack,
             actions = {
-                ApplicantDetailIconButton(
-                    icon = IconResource.Vector(Icons.Outlined.Star),
+                VitesseIconButton(
+                    icon = Icons.Outlined.Star,
                     onClick = { /*TODO*/ },
                     modifier = modifier
                 )
-                ApplicantDetailIconButton(
-                    icon = IconResource.Vector(Icons.Outlined.Edit),
+                VitesseIconButton(
+                    icon = Icons.Outlined.Edit,
                     onClick = { /*TODO*/ },
                     modifier = modifier
                 )
-                ApplicantDetailIconButton(
-                    icon = IconResource.Vector(Icons.Outlined.Delete),
+                VitesseIconButton(
+                    icon = Icons.Outlined.Delete,
                     onClick = { /*TODO*/ },
                     modifier = modifier
                 )
@@ -111,22 +111,23 @@ fun ApplicantDetailBody(
             modifier = Modifier
                 .height(195.dp)
                 .padding(14.dp),
-            contentDescription = null)
+            contentDescription = null
+        )
         Row(
             horizontalArrangement = Arrangement.Center
         ){
             ApplicantDetailContact(
-                icon = IconResource.Vector(Icons.Outlined.Call),
+                icon = Icons.Outlined.Call,
                 text = stringResource(R.string.call),
                 onClick = { /*TODO*/ }
             )
             ApplicantDetailContact(
-                icon = IconResource.Paint(painterResource(R.drawable.chat_24px)),
+                icon = ImageVector.vectorResource(R.drawable.chat_24px),
                 text = stringResource(R.string.sms),
                 onClick = { /*TODO*/ }
             )
             ApplicantDetailContact(
-                icon = IconResource.Vector(Icons.Outlined.Email),
+                icon = Icons.Outlined.Email,
                 text = stringResource(R.string.email),
                 onClick = { /*TODO*/ }
             )
@@ -182,7 +183,7 @@ fun ApplicantDetailCard(
 
 @Composable
 fun ApplicantDetailContact(
-    icon: IconResource,
+    icon: ImageVector,
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -191,7 +192,7 @@ fun ApplicantDetailContact(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.padding(horizontal = 16.dp)
     ){
-        ApplicantDetailIconButton(
+        VitesseIconButton(
             icon = icon,
             onClick = onClick,
             modifier = modifier
@@ -205,84 +206,6 @@ fun ApplicantDetailContact(
         )
         TextBodySmall(text = text,)
     }
-}
-
-@Composable
-fun ApplicantDetailIconButton(
-    icon: IconResource,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-){
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier.size(dimensionResource(R.dimen.icon_size)),
-    ){when (icon) {
-        is IconResource.Vector -> Icon(
-            imageVector = icon.imageVector,
-            contentDescription = null,
-            modifier = modifier
-
-        )
-        is IconResource.Paint -> Icon(
-            painter = icon.painter,
-            contentDescription = null,
-            modifier = modifier
-        )
-    }}
-}
-
-sealed class IconResource {
-    data class Vector(val imageVector: ImageVector) : IconResource()
-    data class Paint(val painter: Painter) : IconResource()
-}
-
-@Composable
-fun TextTitleMedium (
-    text:String,
-    modifier: Modifier = Modifier
-){
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onSurface,
-        modifier = modifier
-    )
-}
-@Composable
-fun TextBodyLarge (
-    text:String,
-    modifier: Modifier = Modifier
-){
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurface,
-        modifier = modifier
-    )
-}
-@Composable
-fun TextBodyMedium (
-    text:String,
-    modifier: Modifier = Modifier
-){
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = modifier
-    )
-}
-@Composable
-fun TextBodySmall (
-    text:String,
-    modifier: Modifier = Modifier
-){
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodySmall,
-        color = Color.Black,
-        modifier = modifier
-    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)

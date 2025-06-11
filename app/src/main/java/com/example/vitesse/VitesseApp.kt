@@ -1,10 +1,14 @@
 package com.example.vitesse
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -12,10 +16,10 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.vitesse.ui.applicantDetail.ApplicantDetailIconButton
-import com.example.vitesse.ui.applicantDetail.IconResource
 import com.example.vitesse.ui.navigation.VitesseNavHost
 
 /**
@@ -33,7 +37,7 @@ fun VitesseApp(
 fun VitesseTopAppBar(
     modifier: Modifier = Modifier,
     title: String,
-    actions: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
     navigateBack: () -> Unit
 ){
     TopAppBar (
@@ -50,12 +54,112 @@ fun VitesseTopAppBar(
             scrolledContainerColor = Color.Transparent,
         ),
         modifier = modifier.windowInsetsPadding(WindowInsets(4,8,4,8)),
-        navigationIcon = { ApplicantDetailIconButton(
-            icon = IconResource.Vector(Icons.AutoMirrored.Filled.ArrowBack),
+        navigationIcon = { VitesseIconButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
             onClick = navigateBack,
             modifier = modifier
         )
         },
-        actions = { actions() }
+        actions = actions
+    )
+}
+
+@Composable
+fun VitesseIconButton(
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+){
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier.size(dimensionResource(R.dimen.icon_size)),
+    ){
+        VitesseIcon(icon = icon, modifier = modifier)
+    }
+}
+
+@Composable
+fun VitesseIcon(
+    icon: ImageVector,
+    modifier: Modifier = Modifier
+) {
+    Icon(
+        imageVector = icon,
+        contentDescription = null,
+        modifier = modifier
+    )
+}
+
+//@Composable
+//fun VitesseIcon(
+//    icon: IconResource,
+//    modifier: Modifier = Modifier
+//) {
+//    when (icon) {
+//        is IconResource.Vector -> Icon(
+//            imageVector = icon.imageVector,
+//            contentDescription = null,
+//            modifier = modifier
+//        )
+//
+//        is IconResource.Paint -> Icon(
+//            painter = icon.painter,
+//            contentDescription = null,
+//            modifier = modifier
+//        )
+//    }
+//}
+
+//sealed class IconResource {
+//    data class Vector(val imageVector: ImageVector) : IconResource()
+//    data class Paint(val painter: Painter) : IconResource()
+//}
+
+@Composable
+fun TextTitleMedium (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = modifier
+    )
+}
+@Composable
+fun TextBodyLarge (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = modifier
+    )
+}
+@Composable
+fun TextBodyMedium (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier
+    )
+}
+@Composable
+fun TextBodySmall (
+    text:String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodySmall,
+        color = Color.Black,
+        modifier = modifier
     )
 }
