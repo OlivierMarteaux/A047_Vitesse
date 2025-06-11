@@ -6,16 +6,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
@@ -23,14 +20,11 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.vitesse.R
+import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.ui.navigation.NavigationDestination
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -58,6 +53,7 @@ object ApplicantDetailDestination : NavigationDestination {
 @Composable
 fun ApplicantDetailScreen (
     modifier: Modifier = Modifier,
+    navigateBack: () -> Unit = {},
     //viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
 
@@ -70,7 +66,28 @@ fun ApplicantDetailScreen (
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { ApplicantDetailTopAppBar() },
+        topBar = { VitesseTopAppBar(
+            title = "Alice JOHNSON",
+            modifier = Modifier,
+            navigateBack = navigateBack,
+            actions = {
+                ApplicantDetailIconButton(
+                    icon = IconResource.Vector(Icons.Outlined.Star),
+                    onClick = { /*TODO*/ },
+                    modifier = modifier
+                )
+                ApplicantDetailIconButton(
+                    icon = IconResource.Vector(Icons.Outlined.Edit),
+                    onClick = { /*TODO*/ },
+                    modifier = modifier
+                )
+                ApplicantDetailIconButton(
+                    icon = IconResource.Vector(Icons.Outlined.Delete),
+                    onClick = { /*TODO*/ },
+                    modifier = modifier
+                )
+            }
+        ) },
     ){ topAppBarPadding ->
         ApplicantDetailBody(
             modifier = modifier.padding(topAppBarPadding)
@@ -161,49 +178,6 @@ fun ApplicantDetailCard(
             content()
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ApplicantDetailTopAppBar(
-    modifier: Modifier = Modifier
-){
-    TopAppBar (
-        title = { Text(
-            text = "Alice JOHNSON",
-            style = MaterialTheme.typography.titleLarge
-        )},
-        colors = TopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            scrolledContainerColor = Color.Transparent,
-        ),
-        modifier = modifier.windowInsetsPadding(WindowInsets(4,8,4,8)),
-        navigationIcon = { ApplicantDetailIconButton(
-            icon = IconResource.Vector(Icons.AutoMirrored.Filled.ArrowBack),
-            onClick = { /*TODO*/ },
-            modifier = modifier
-        )},
-        actions = {
-            ApplicantDetailIconButton(
-                icon = IconResource.Vector(Icons.Outlined.Star),
-                onClick = { /*TODO*/ },
-                modifier = modifier
-            )
-            ApplicantDetailIconButton(
-                icon = IconResource.Vector(Icons.Outlined.Edit),
-                onClick = { /*TODO*/ },
-                modifier = modifier
-            )
-            ApplicantDetailIconButton(
-                icon = IconResource.Vector(Icons.Outlined.Delete),
-                onClick = { /*TODO*/ },
-                modifier = modifier
-            )
-        }
-    )
 }
 
 @Composable
