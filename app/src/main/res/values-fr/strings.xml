@@ -12,4 +12,5 @@
     <string name="about">A propos</string>
     <string name="salary_expectations">Prétentions salariales</string>
     <string name="notes">Notes</string>
+    <string name="add_applicant_screen">Ecran d\'ajout d\'un candidat</string>
 </resources>

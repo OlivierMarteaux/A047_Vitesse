@@ -69,6 +69,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateToApplicantDetail: (Int) -> Unit,
+    navigateToAddApplicant: () -> Unit,
 ) {
     val query = viewModel.query
     val applicantList by viewModel.getApplicants(query).collectAsState(initial = listOf())
@@ -79,7 +80,7 @@ fun HomeScreen(
             FloatingActionButton(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 contentColor = MaterialTheme.colorScheme.primary,
-                onClick = { /* do something */ },
+                onClick = navigateToAddApplicant,
                 modifier = Modifier.padding(bottom = 16.dp)
             ) {
                 Icon(Icons.Filled.Add, "Localized description")
