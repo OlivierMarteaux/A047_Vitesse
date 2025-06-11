@@ -45,10 +45,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
+import com.example.vitesse.TextBodyLarge
+import com.example.vitesse.TextBodyMedium
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.AppViewModelProvider
-import com.example.vitesse.ui.applicantDetail.TextBodyLarge
-import com.example.vitesse.ui.applicantDetail.TextBodyMedium
 import com.example.vitesse.ui.home.HomeUiState.Empty
 import com.example.vitesse.ui.home.HomeUiState.Error
 import com.example.vitesse.ui.home.HomeUiState.Loading
@@ -69,6 +69,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateToApplicantDetail: (Int) -> Unit,
+    navigateToAddApplicant: () -> Unit,
 ) {
     val query = viewModel.query
     val applicantList by viewModel.getApplicants(query).collectAsState(initial = listOf())
@@ -79,7 +80,7 @@ fun HomeScreen(
             FloatingActionButton(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 contentColor = MaterialTheme.colorScheme.primary,
-                onClick = { /* do something */ },
+                onClick = navigateToAddApplicant,
                 modifier = Modifier.padding(bottom = 16.dp)
             ) {
                 Icon(Icons.Filled.Add, "Localized description")
