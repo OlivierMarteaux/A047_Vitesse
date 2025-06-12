@@ -19,4 +19,6 @@
     <string name="birthday">Birthday</string>
     <string name="select_a_date">Select a date</string>
     <string name="input_a_date">Input a date</string>
+    <string name="edit_applicant_screen">Edit Applicant Screen</string>
+    <string name="edit_a_candidate">Edit a candidate</string>
 </resources>

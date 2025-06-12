@@ -69,25 +69,22 @@ fun AddApplicantScreen(
             )
         },
         floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = { SaveFab(onClick = { /*TODO*/ }) }
+        floatingActionButton = { SaveFab(onClick = { TODO()}) }
     ) { topAppBarPadding ->
         AddOrEditApplicantBody(
-            modifier = modifier
-                .padding(topAppBarPadding)
-                .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-        }
+            modifier = modifier.padding(topAppBarPadding),
+        )
     }
 }
 
 @Composable
 fun AddOrEditApplicantBody(
     modifier: Modifier = Modifier,
-    onSave: () -> Unit
 ){
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .padding(horizontal = 20.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
         Image(
