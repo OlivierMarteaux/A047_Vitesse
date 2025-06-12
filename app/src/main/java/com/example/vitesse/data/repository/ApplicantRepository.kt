@@ -52,7 +52,7 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
      * @param applicant The applicant to add.
      * Logs an error if an exception occurs.
      */
-    suspend fun addApplicant(applicant: Applicant) =
+    suspend fun upsertApplicant(applicant: Applicant) =
         try {applicantDao.upsertApplicant(applicant)}
         catch (e: Exception) { Log.e("OM:ApplicantRepository.addApplicant", e.message.toString())}
 

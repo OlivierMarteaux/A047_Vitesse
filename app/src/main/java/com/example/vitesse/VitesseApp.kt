@@ -1,14 +1,19 @@
 package com.example.vitesse
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -20,12 +25,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.navigation.VitesseNavHost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.launch
 
 /**
  * Top level composable that represents screens for the application.
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VitesseApp(
     navController: NavHostController = rememberNavController()
@@ -76,13 +84,31 @@ fun VitesseTopAppBar(
 fun VitesseIconButton(
     icon: ImageVector,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ){
     IconButton(
         onClick = onClick,
         modifier = Modifier.size(dimensionResource(R.dimen.icon_size)),
     ){
         VitesseIcon(icon = icon, modifier = modifier)
+    }
+}
+
+@Composable
+fun VitesseIconToggle(
+    iconChecked: ImageVector,
+    iconUnchecked: ImageVector,
+    modifier :Modifier = Modifier,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    IconToggleButton(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        modifier = modifier
+    ) {
+        if (checked) VitesseIcon(iconChecked)
+        else VitesseIcon(iconUnchecked)
     }
 }
 

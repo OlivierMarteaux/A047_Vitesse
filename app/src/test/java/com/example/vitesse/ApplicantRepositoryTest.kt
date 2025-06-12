@@ -69,7 +69,7 @@ class ApplicantRepositoryTest {
     @Test
     fun applicantRepository_AddApplicant_CallsDaoAddApplicant() = runTest {
         // When
-        repository.addApplicant(applicant)
+        repository.upsertApplicant(applicant)
         testDispatcher.scheduler.advanceUntilIdle()
         // Then
         verify(mockApplicantDao).upsertApplicant(applicant)

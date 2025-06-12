@@ -1,5 +1,7 @@
 package com.example.vitesse.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -19,6 +21,7 @@ import com.example.vitesse.ui.home.HomeScreen
 /**
  * Provides Navigation graph for the application.
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VitesseNavHost(
     navController: NavHostController,
@@ -43,7 +46,7 @@ fun VitesseNavHost(
             ApplicantDetailScreen(
 //                navigateBack = { navController.navigateUp() },
                 navigateBack = { navController.popBackStack() },
-                navigateToEditApplicant = { navController.navigate("${AddApplicantDestination.route}/$it") }
+                navigateToEditApplicant = { navController.navigate("${EditApplicantDestination.route}/$it") }
             )
         }
         composable(

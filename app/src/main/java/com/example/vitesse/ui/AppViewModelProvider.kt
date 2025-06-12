@@ -1,7 +1,10 @@
 package com.example.vitesse.ui
 
 import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -15,6 +18,7 @@ import com.example.vitesse.ui.home.HomeViewModel
  * Provides Factory to create instance of ViewModel for the entire Vitesse app
  */
 object AppViewModelProvider {
+    @RequiresApi(Build.VERSION_CODES.O)
     val Factory = viewModelFactory {
 
         // Initializer for HomeViewModel
@@ -35,7 +39,9 @@ object AppViewModelProvider {
         // Initializer for DetailViewModel
         initializer {
             ApplicantDetailViewModel(
-                vitesseApplication().container.applicantRepository
+                this.createSavedStateHandle(),
+                vitesseApplication().container.applicantRepository,
+                vitesseApplication().container.currencyRepository
             )
         }
     }

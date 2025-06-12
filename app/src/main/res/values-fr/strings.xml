@@ -16,9 +16,14 @@
     <string name="first_name">Prénom</string>
     <string name="last_name">Nom</string>
     <string name="phone_number">Téléphone</string>
-    <string name="birthday">Date de naissance</string>
+    <string name="birthday">Anniversaire</string>
     <string name="select_a_date">Sélectionner une date</string>
     <string name="input_a_date">Entrer une date</string>
     <string name="edit_applicant_screen">Edit Applicant Screen</string>
     <string name="edit_a_candidate">Edit a candidate</string>
+    <string name="or">soit %1$s</string>
+    <string name="deletion">Suppression</string>
+    <string name="are_you_sure_you_want_to_delete_this_candidate_this_action_cannot_be_undone">Etes-vous sûr de vouloir supprimer ce candidat? Cette action est irréversible.</string>
+    <string name="confirm">Confirmer</string>
+    <string name="cancel">Annuler</string>
 </resources>
