@@ -52,6 +52,7 @@ object ApplicantDetailDestination : NavigationDestination {
 fun ApplicantDetailScreen (
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit = {},
+    navigateToEditApplicant: (Int) -> Unit = {},
     //viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
 
@@ -69,7 +70,7 @@ fun ApplicantDetailScreen (
                 )
                 VitesseIconButton(
                     icon = Icons.Outlined.Edit,
-                    onClick = { /*TODO*/ },
+                    onClick = { navigateToEditApplicant(1) },
                     modifier = modifier
                 )
                 VitesseIconButton(

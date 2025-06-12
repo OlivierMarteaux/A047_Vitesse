@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.vitesse.VitesseApplication
 import com.example.vitesse.ui.addApplicant.AddApplicantViewModel
 import com.example.vitesse.ui.applicantDetail.ApplicantDetailViewModel
+import com.example.vitesse.ui.editApplicant.EditApplicantViewModel
 import com.example.vitesse.ui.home.HomeViewModel
 
 /**
@@ -24,6 +25,11 @@ object AppViewModelProvider {
         // Initializer for AddViewModel
         initializer {
             AddApplicantViewModel(vitesseApplication().container.applicantRepository)
+        }
+
+        // Initializer for EditViewModel
+        initializer {
+            EditApplicantViewModel(vitesseApplication().container.applicantRepository)
         }
 
         // Initializer for DetailViewModel

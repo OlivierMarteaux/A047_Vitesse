@@ -135,6 +135,7 @@ fun TextTitleMedium (
         modifier = modifier
     )
 }
+
 @Composable
 fun TextBodyLarge (
     text:String,
@@ -147,6 +148,7 @@ fun TextBodyLarge (
         modifier = modifier
     )
 }
+
 @Composable
 fun TextBodyMedium (
     text:String,
@@ -159,6 +161,7 @@ fun TextBodyMedium (
         modifier = modifier
     )
 }
+
 @Composable
 fun TextBodySmall (
     text:String,
