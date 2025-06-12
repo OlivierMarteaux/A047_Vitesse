@@ -1,5 +1,7 @@
 package com.example.vitesse.ui.applicantDetail
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -32,6 +34,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
 import com.example.vitesse.TextBodyLarge
 import com.example.vitesse.TextBodyMedium
@@ -39,6 +42,8 @@ import com.example.vitesse.TextBodySmall
 import com.example.vitesse.TextTitleMedium
 import com.example.vitesse.VitesseIconButton
 import com.example.vitesse.VitesseTopAppBar
+import com.example.vitesse.data.model.Applicant
+import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.navigation.NavigationDestination
 
 object ApplicantDetailDestination : NavigationDestination {
@@ -48,18 +53,21 @@ object ApplicantDetailDestination : NavigationDestination {
     val routeWithArgs = "$route/{$ApplicantIdArg}"
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ApplicantDetailScreen (
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit = {},
     navigateToEditApplicant: (Int) -> Unit = {},
-    //viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
+    val applicant = viewModel.uiState.applicant
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = { VitesseTopAppBar(
-            title = "Alice JOHNSON",
+//            title = with (applicant) { "$firstName $lastName" },
+            title = applicant.run { "$firstName $lastName" },
             modifier = Modifier,
             navigateBack = navigateBack,
             actions = {
@@ -82,14 +90,16 @@ fun ApplicantDetailScreen (
         ) },
     ){ topAppBarPadding ->
         ApplicantDetailBody(
-            modifier = modifier.padding(topAppBarPadding)
+            modifier = modifier.padding(topAppBarPadding),
+            applicant = applicant
         )
     }
 }
 
 @Composable
 fun ApplicantDetailBody(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    applicant: Applicant
 ){
     Column(
         modifier = modifier
@@ -125,9 +135,9 @@ fun ApplicantDetailBody(
             )
         }
         ApplicantDetailCard(header = stringResource(R.string.about)){
-            TextBodyLarge(text = "text_exemple",)
+            TextBodyLarge(text = applicant.birthDate.toString(),)
             TextBodyMedium(
-                text = "text_exemple",
+                text = stringResource(R.string.birthday),
                 modifier = Modifier.padding(bottom = 11.dp)
             )
         }
