@@ -21,4 +21,9 @@
     <string name="input_a_date">Input a date</string>
     <string name="edit_applicant_screen">Edit Applicant Screen</string>
     <string name="edit_a_candidate">Edit a candidate</string>
+    <string name="or">or %1$s</string>
+    <string name="deletion">Deletion</string>
+    <string name="are_you_sure_you_want_to_delete_this_candidate_this_action_cannot_be_undone">Are you sure you want to delete this candidate? This action cannot be undone.</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>
