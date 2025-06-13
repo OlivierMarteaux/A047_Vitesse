@@ -104,7 +104,7 @@ fun ApplicantDetailScreen (
                     iconChecked = Icons.Outlined.Star,
                     iconUnchecked = ImageVector.vectorResource(R.drawable.star_24dp),
                     checked = applicant.isFavorite,
-                    onCheckedChange = { viewModel.update(applicant.copy(isFavorite = !applicant.isFavorite)) },
+                    onCheckedChange = { viewModel.updateApplicant(applicant.copy(isFavorite = !applicant.isFavorite)) },
                     modifier = modifier,
                 )
                 VitesseIconButton(

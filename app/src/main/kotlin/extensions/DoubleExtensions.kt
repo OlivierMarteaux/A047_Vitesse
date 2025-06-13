@@ -19,3 +19,5 @@ fun Double.toBritishPoundString(): String {
     val formattedNumber = formatter.format(this)
     return "£ $formattedNumber" // add space between £ and number
 }
+
+

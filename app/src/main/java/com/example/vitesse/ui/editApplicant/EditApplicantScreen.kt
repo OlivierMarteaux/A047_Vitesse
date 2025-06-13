@@ -1,5 +1,7 @@
 package com.example.vitesse.ui.editApplicant
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FabPosition
@@ -8,8 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
 import com.example.vitesse.VitesseTopAppBar
+import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.addApplicant.AddOrEditApplicantBody
 import com.example.vitesse.ui.addApplicant.SaveFab
 import com.example.vitesse.ui.navigation.NavigationDestination
@@ -21,11 +25,12 @@ object EditApplicantDestination : NavigationDestination {
     val routeWithArgs = "$route/{$ApplicantIdArg}"
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditApplicantScreen (
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit = {},
-    //viewModel: EditApplicantViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: EditApplicantViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
 
     Scaffold(
@@ -41,10 +46,13 @@ fun EditApplicantScreen (
     ){ topAppBarPadding ->
         AddOrEditApplicantBody(
             modifier = modifier.padding(topAppBarPadding),
+            applicant = viewModel.uiState.applicant,
+            onApplicantEdit = viewModel::updateApplicant
         )
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun EditApplicantScreenPreview(){

@@ -1,5 +1,7 @@
 package com.example.vitesse.ui.addApplicant
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,10 +9,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -38,24 +42,32 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
 import com.example.vitesse.TextHeadLineLarge
 import com.example.vitesse.TextLabelLarge
 import com.example.vitesse.VitesseIcon
 import com.example.vitesse.VitesseTopAppBar
+import com.example.vitesse.data.model.Applicant
+import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.navigation.NavigationDestination
+import java.time.LocalDate
+import kotlin.math.round
 
 object AddApplicantDestination : NavigationDestination {
     override val route = "add_applicant"
     override val titleRes = R.string.add_applicant_screen
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddApplicantScreen(
     modifier: Modifier = Modifier,
-//    viewModel: AddApplicantViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModel: AddApplicantViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateBack: () -> Unit
 ) {
 
@@ -63,7 +75,7 @@ fun AddApplicantScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             VitesseTopAppBar(
-                title = "Alice JOHNSON",
+                title = stringResource(R.string.add_a_candidate),
                 modifier = Modifier,
                 navigateBack = navigateBack,
             )
@@ -73,71 +85,101 @@ fun AddApplicantScreen(
     ) { topAppBarPadding ->
         AddOrEditApplicantBody(
             modifier = modifier.padding(topAppBarPadding),
+            applicant = viewModel.uiState.applicant,
+            onApplicantEdit = viewModel::updateApplicant
         )
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddOrEditApplicantBody(
     modifier: Modifier = Modifier,
+    applicant: Applicant,
+    onApplicantEdit: (Applicant) -> Unit,
 ){
     Column(
         modifier = modifier
             .padding(horizontal = 20.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .imePadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        Image(
-            painter = painterResource(R.drawable.martyna_siddeswara),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .height(dimensionResource(R.dimen.image_height))
-                .padding(14.dp),
-            contentDescription = null
-        )
-        AddOrEditApplicantCard(
-            icon = Icons.Default.Person,
-            label = stringResource(R.string.first_name)
-        )
-        AddOrEditApplicantCard(
-            label = stringResource(R.string.last_name)
-        )
-        AddOrEditApplicantCard(
-            icon = Icons.Outlined.Call,
-            label = stringResource(R.string.phone_number)
-        )
-        AddOrEditApplicantCard(
-            icon = ImageVector.vectorResource(id = R.drawable.chat_24px),
-            label = stringResource(R.string.email)
-        )
-        DatePickerModalInput(
-            onDateSelected = {},
-            onDismiss = {},
-            icon = ImageVector.vectorResource(id = R.drawable.cake_24dp)
-        )
+        with (applicant) {
+            Image(
+                painter = painterResource(R.drawable.martyna_siddeswara),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.image_height))
+                    .padding(14.dp),
+                contentDescription = null
+            )
+            AddOrEditApplicantCard(
+                icon = Icons.Default.Person,
+                label = stringResource(R.string.first_name),
+                onValueChange = { onApplicantEdit(copy(firstName = it)) },
+                value = firstName,
+            )
+            AddOrEditApplicantCard(
+                label = stringResource(R.string.last_name),
+                onValueChange = { onApplicantEdit(copy(lastName = it)) },
+                value = lastName,
+            )
+            AddOrEditApplicantCard(
+                icon = Icons.Outlined.Call,
+                label = stringResource(R.string.phone_number),
+                onValueChange = { onApplicantEdit(copy(phone = it)) },
+                value = phone,
+                keyboardType = KeyboardType.Phone
+            )
+            AddOrEditApplicantCard(
+                icon = ImageVector.vectorResource(id = R.drawable.chat_24px),
+                label = stringResource(R.string.email),
+                onValueChange = { onApplicantEdit(copy(email = it)) },
+                value = email,
+                keyboardType = KeyboardType.Email
+            )
+            DatePickerModalInput(
+                onDateSelected = {},
+                onDismiss = {},
+                icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
+                onValueChange = { onApplicantEdit(copy(birthDate = it)) },
+            )
 //        VitesseDatePicker(
 //            state = rememberDatePickerState(),
 //            onDateSelected = {},
 //            onDismiss = {},
 //            icon = ImageVector.vectorResource(id = R.drawable.cake_24dp)
 //        )
-        AddOrEditApplicantCard(
-            icon = ImageVector.vectorResource(id = R.drawable.money_24dp),
-            label = stringResource(R.string.salary_expectations)
-        )
-        AddOrEditApplicantCard(
-            icon = Icons.Outlined.Edit,
-            label = stringResource(R.string.notes),
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
+            AddOrEditApplicantCard(
+                icon = ImageVector.vectorResource(id = R.drawable.money_24dp),
+                label = stringResource(R.string.salary_expectations),
+                onValueChange = { onApplicantEdit(copy(salary = it.toDoubleOrNull() ?: 0.0)) },
+                value = round(salary).toInt().toString().run { if (this == "0") "" else this },
+                keyboardType = KeyboardType.Number
+            )
+            AddOrEditApplicantCard(
+                icon = Icons.Outlined.Edit,
+                label = stringResource(R.string.notes),
+                modifier = Modifier.padding(bottom = 10.dp),
+                onValueChange = { onApplicantEdit(copy(note = it)) },
+                value = note,
+                imeAction = ImeAction.Done,
+            )
+        }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddOrEditApplicantCard(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     label: String,
+    onValueChange: (String) -> Unit,
+    value: String,
+    imeAction: ImeAction = ImeAction.Next,
+    keyboardType: KeyboardType = KeyboardType.Text
 ){
     Row(
         modifier = modifier.padding(bottom = 45.dp),
@@ -146,8 +188,8 @@ fun AddOrEditApplicantCard(
             ?: Spacer(Modifier.size(24.dp))
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = value,
+            onValueChange = onValueChange,
             label = {Text(label)},
             placeholder = { Text(label) },
             singleLine = true,
@@ -162,6 +204,10 @@ fun AddOrEditApplicantCard(
                 focusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
+            keyboardOptions = KeyboardOptions(
+                imeAction = imeAction,
+                keyboardType = keyboardType
+            ),
             modifier = modifier
                 .padding(start = 15.dp)
                 .weight(1f)
@@ -175,7 +221,8 @@ fun DatePickerModalInput(
     onDateSelected: (Long?) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    icon: ImageVector
+    icon: ImageVector,
+    onValueChange: (LocalDate) -> Unit,
 ) {
     val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
 
@@ -279,6 +326,7 @@ fun SaveFab(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun AddApplicantScreenPreview() {
