@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -47,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -70,6 +72,7 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import kotlin.math.round
@@ -161,13 +164,14 @@ fun AddOrEditApplicantBody(
                     icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
                     onValueChange = { onApplicantEdit(copy(birthDate = it)) },
                 )
-//                DatePickerTextField(
-//                    label = "date",
-////                    onValueChange = {onApplicantEdit(copy(birthDate = LocalDate.parse(it)))},
-//                    value = applicant.birthDate.toString(),
-////                    imeAction = ImeAction.Next,
-////                    keyboardType = KeyboardType.Number
-//                )
+                DatePickerTextField(
+                    label = "date",
+//                    onValueChange = {onApplicantEdit(copy(birthDate = LocalDate.parse(it)))},
+                    value = applicant.birthDate.toString(),
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Number,
+                    onDateSelected = {onApplicantEdit(copy(birthDate = it))},
+                )
             }
             AddOrEditApplicantCard(
                 icon = ImageVector.vectorResource(id = R.drawable.money_24dp),
@@ -188,34 +192,47 @@ fun AddOrEditApplicantBody(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DatePickerTextField(
     modifier: Modifier = Modifier,
     label: String,
-//    onValueChange: (String) -> Unit,
     value: String,
-//    imeAction: ImeAction = ImeAction.Next,
-//    keyboardType: KeyboardType = KeyboardType.Number,
+    imeAction: ImeAction = ImeAction.Next,
+    keyboardType: KeyboardType = KeyboardType.Number,
+    onDateSelected: (LocalDate) -> Unit
 ){
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
         modifier = modifier.padding(start = 53.dp, top = 120.dp, end = 14.dp)
     ) {
+        var text by remember { mutableStateOf(value) }
         OutlinedTextField(
-            value = value,
-            onValueChange = {},//onValueChange,
-            label = {Text(label)},
+            value = text,
+            onValueChange = { text = it},
+            label = { Text(label) },
             placeholder = { Text(label) },
             singleLine = true,
             shape = MaterialTheme.shapes.extraSmall,
-//            keyboardOptions = KeyboardOptions(
-//                imeAction = imeAction,
-//                keyboardType = keyboardType
-//            ),
+            keyboardOptions = KeyboardOptions(
+                imeAction = imeAction,
+                keyboardType = keyboardType
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                    // Optional: parse and validate date
+                    runCatching {
+                        val date = LocalDate.parse(value, formatter)
+                        onDateSelected(date)
+                    }
+                }
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
-            readOnly = true
         )
     }
 }
