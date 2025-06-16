@@ -1,6 +1,13 @@
 package com.example.vitesse.ui.addApplicant
 
+import android.content.Context
+import android.net.Uri
 import android.os.Build
+import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -49,16 +56,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.rememberAsyncImagePainter
 import com.example.vitesse.R
 import com.example.vitesse.TextHeadLineLarge
 import com.example.vitesse.TextLabelLarge
@@ -69,6 +78,8 @@ import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.navigation.NavigationDestination
 import extensions.isValidEmail
 import extensions.upTo
+import java.io.File
+import java.io.FileOutputStream
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -107,7 +118,7 @@ fun AddApplicantScreen(
         AddOrEditApplicantBody(
             modifier = modifier.padding(topAppBarPadding),
             applicant = viewModel.uiState.applicant,
-            onApplicantEdit = viewModel::updateApplicant
+            onApplicantEdit = viewModel::updateApplicant,
         )
     }
 }
@@ -120,6 +131,15 @@ fun AddOrEditApplicantBody(
     applicant: Applicant,
     onApplicantEdit: (Applicant) -> Unit,
 ){
+//    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Get the launcher and callback
+    val imagePickerLauncher = VitesseImagePicker { uri ->
+//        selectedImageUri = uri
+        // Optionally update applicant object
+        onApplicantEdit(applicant.copy(photoUri = uri.toString())) // if you store uri as string
+    }
+
     Column(
         modifier = modifier
             .padding(horizontal = 20.dp)
@@ -128,14 +148,26 @@ fun AddOrEditApplicantBody(
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
         applicant.run {
-            Image(
-                painter = painterResource(R.drawable.martyna_siddeswara),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.image_height))
-                    .padding(14.dp),
-                contentDescription = null
-            )
+//            selectedImageUri?.let{
+                Image(
+                    painter = rememberAsyncImagePainter(applicant.photoUri),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .clickable { imagePickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) }
+                        .height(dimensionResource(R.dimen.image_height))
+                        .padding(14.dp),
+                    contentDescription = null
+                )
+//            }
+//                ?: Image(
+//                painter = painterResource(R.drawable.martyna_siddeswara),
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier
+//                    .clickable { imagePickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) }
+//                    .height(dimensionResource(R.dimen.image_height))
+//                    .padding(14.dp),
+//                contentDescription = null
+//                )
             AddOrEditApplicantCard(
                 icon = Icons.Default.Person,
                 label = stringResource(R.string.first_name),
@@ -463,6 +495,47 @@ fun SaveApplicantFab(
             .alpha(if (enabled) 1f else 0.5f),
     ) {
         Text("Save", style = MaterialTheme.typography.labelLarge)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun VitesseImagePicker(
+    onImagePicked: (Uri) -> Unit
+): ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?> {
+// Registers a photo picker activity launcher in single-select mode.
+    val context = LocalContext.current
+    val pickMedia =
+        rememberLauncherForActivityResult(PickVisualMedia()) { pickedUri ->
+            // Callback is invoked after the user selects a media item or closes the
+            // photo picker.
+            pickedUri?.let { uri ->
+                Log.d("OM_TAG:PhotoPicker", "Picked URI: $uri")
+                val persistentUri = copyImageToInternalStorage(context, uri)
+//                onImagePicked(it)
+                persistentUri?.let { onImagePicked(it) }
+                Log.d("OM_TAG:PhotoPicker", "Persistent URI: $persistentUri")
+            } ?: Log.d("OM_TAG:PhotoPicker", "No media selected")
+        }
+    return pickMedia
+}
+
+fun copyImageToInternalStorage(context: Context, uri: Uri): Uri? {
+    return try {
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val fileName = "image_${System.currentTimeMillis()}.jpg"
+        val file = File(context.filesDir, fileName)
+        val outputStream = FileOutputStream(file)
+
+        inputStream.copyTo(outputStream)
+
+        inputStream.close()
+        outputStream.close()
+
+        file.toUri() // Return a persistent URI
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
     }
 }
 

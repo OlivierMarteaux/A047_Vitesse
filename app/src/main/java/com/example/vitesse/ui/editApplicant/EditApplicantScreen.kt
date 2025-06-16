@@ -50,7 +50,7 @@ fun EditApplicantScreen (
         AddOrEditApplicantBody(
             modifier = modifier.padding(topAppBarPadding),
             applicant = viewModel.uiState.applicant,
-            onApplicantEdit = viewModel::updateApplicant
+            onApplicantEdit = viewModel::updateApplicant,
         )
     }
 }

@@ -1,9 +1,10 @@
 package com.example.vitesse.ui.applicantDetail
 
+import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,18 +39,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.ImageLoader
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.size.Scale
+import coil3.size.Size
+import coil3.toUri
 import com.example.vitesse.R
 import com.example.vitesse.TextBodyLarge
 import com.example.vitesse.TextBodyMedium
 import com.example.vitesse.TextBodySmall
 import com.example.vitesse.TextTitleMedium
+import com.example.vitesse.VitesseApplication
 import com.example.vitesse.VitesseIconButton
 import com.example.vitesse.VitesseIconToggle
 import com.example.vitesse.VitesseTopAppBar
@@ -79,7 +87,10 @@ fun ApplicantDetailScreen (
     navigateToEditApplicant: (Int) -> Unit = {},
     viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
+    val context = LocalContext.current
+    val loader: ImageLoader = VitesseApplication().newImageLoader(context)
     val applicant = viewModel.uiState.applicant
+    Log.d("OM_TAG", "applicant: $applicant")
     val currency = viewModel.uiState.currency
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
@@ -143,13 +154,20 @@ fun ApplicantDetailBody(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Image(
-            painter = painterResource(R.drawable.martyna_siddeswara),
-            contentScale = ContentScale.Crop,
+//        Image(
+//            painter = rememberAsyncImagePainter(applicant.photoUri),
+//            contentScale = ContentScale.Crop,
+//            modifier = Modifier
+//                .height(195.dp)
+//                .padding(14.dp),
+//            contentDescription = null
+//        )
+        VitesseAsyncImage(
+            applicant = applicant,
+            loader = VitesseApplication().newImageLoader(context),
+            context = context,
             modifier = Modifier
                 .height(195.dp)
-                .padding(14.dp),
-            contentDescription = null
         )
         Row(
             horizontalArrangement = Arrangement.Center
@@ -248,7 +266,7 @@ fun ApplicantDetailContact(
                 )
                 .padding(8.dp)
         )
-        TextBodySmall(text = text,)
+        TextBodySmall(text = text)
     }
 }
 
@@ -267,7 +285,7 @@ fun DeleteConfirmationDialog(
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text(stringResource(R.string.confirm), /*color = Color.Red*/)
+                Text(stringResource(R.string.confirm) /*color = Color.Red*/)
             }
         },
         dismissButton = {
@@ -277,6 +295,32 @@ fun DeleteConfirmationDialog(
         }
     )
 }
+
+@Composable
+fun VitesseAsyncImage(
+    modifier: Modifier = Modifier,
+    applicant: Applicant,
+    loader: ImageLoader,
+    context: Context,
+    contentScale: ContentScale = ContentScale.Fit,
+){
+    val uri = applicant.photoUri.toUri()
+//    val uri = applicant.photoUri.par
+    val request = ImageRequest.Builder(context = context)
+        .data(uri)
+        .size(Size.ORIGINAL)
+        .scale(Scale.FILL)
+        .crossfade(true)
+        .build()
+    AsyncImage(
+        model = request,
+        imageLoader = loader,
+        contentDescription = null,
+        contentScale = contentScale,
+        modifier = modifier
+    )
+}
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)

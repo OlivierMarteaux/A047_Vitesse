@@ -65,6 +65,13 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // activity dependency for Google ImagePicker
+    implementation(libs.androidx.activity.ktx)
+    // Coil for image viewing
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.coil.video)
+
     // Google accompanist for SystemUiController
     implementation(libs.google.accompanist.systemuicontroller)
 
