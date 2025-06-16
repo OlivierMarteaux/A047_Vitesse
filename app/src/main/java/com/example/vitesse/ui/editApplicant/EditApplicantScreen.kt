@@ -43,6 +43,7 @@ fun EditApplicantScreen (
         ) },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {SaveApplicantFab(
+            enabled = viewModel.uiState.isEnabled,
             onClick = { viewModel.saveApplicant(); navigateBack() }
         )}
     ){ topAppBarPadding ->

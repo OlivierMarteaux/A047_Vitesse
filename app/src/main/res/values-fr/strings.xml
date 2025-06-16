@@ -27,4 +27,6 @@
     <string name="confirm">Confirmer</string>
     <string name="cancel">Annuler</string>
     <string name="add_a_candidate">Ajouter un candidat</string>
+    <string name="mandatory_field">Champ obligatoire</string>
+    <string name="invalid_format">Invalid format</string>
 </resources>

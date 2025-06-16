@@ -44,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -66,6 +67,7 @@ import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.navigation.NavigationDestination
+import extensions.isValidEmail
 import extensions.upTo
 import java.time.Instant
 import java.time.LocalDate
@@ -98,6 +100,7 @@ fun AddApplicantScreen(
         },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {SaveApplicantFab(
+            enabled = viewModel.uiState.isEnabled,
             onClick = { viewModel.saveApplicant(); navigateBack() }
         )}
     ) { topAppBarPadding ->
@@ -138,17 +141,23 @@ fun AddOrEditApplicantBody(
                 label = stringResource(R.string.first_name),
                 onValueChange = { onApplicantEdit(copy(firstName = it)) },
                 value = firstName,
+                isError = firstName.isEmpty(),
+                errorText = stringResource(R.string.mandatory_field)
             )
             AddOrEditApplicantCard(
                 label = stringResource(R.string.last_name),
                 onValueChange = { onApplicantEdit(copy(lastName = it)) },
                 value = lastName,
+                isError = lastName.isEmpty(),
+                errorText = stringResource(R.string.mandatory_field)
             )
             AddOrEditApplicantCard(
                 icon = Icons.Outlined.Call,
                 label = stringResource(R.string.phone_number),
                 onValueChange = { onApplicantEdit(copy(phone = it)) },
                 value = phone,
+                isError = phone.isEmpty(),
+                errorText = stringResource(R.string.mandatory_field),
                 keyboardType = KeyboardType.Phone
             )
             AddOrEditApplicantCard(
@@ -156,6 +165,12 @@ fun AddOrEditApplicantBody(
                 label = stringResource(R.string.email),
                 onValueChange = { onApplicantEdit(copy(email = it)) },
                 value = email,
+                isError = email.run { isEmpty() || !isValidEmail()},
+                errorText = when {
+                    email.isEmpty() -> stringResource(R.string.mandatory_field)
+                    !email.isValidEmail() -> stringResource(R.string.invalid_format)
+                    else -> ""
+                                 },
                 keyboardType = KeyboardType.Email
             )
             Box {
@@ -201,6 +216,8 @@ fun AddOrEditApplicantCard(
     value: String,
     imeAction: ImeAction = ImeAction.Next,
     keyboardType: KeyboardType = KeyboardType.Text,
+    errorText: String = "null",
+    isError: Boolean = false,
 ){
     Row(
         modifier = modifier.padding(bottom = 45.dp),
@@ -229,6 +246,8 @@ fun AddOrEditApplicantCard(
                 imeAction = imeAction,
                 keyboardType = keyboardType
             ),
+            isError = isError,
+            supportingText = { if (isError) Text(errorText) },
             modifier = Modifier
                 .padding(start = 15.dp)
                 .weight(1f)
@@ -434,13 +453,14 @@ fun SaveApplicantFab(
     FloatingActionButton(
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
-        onClick = onClick,
+        onClick = if (enabled) onClick else ({}),
         shape = CircleShape,
         modifier = Modifier
             .height(40.dp)
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
             .padding(bottom = 16.dp)
+            .alpha(if (enabled) 1f else 0.5f),
     ) {
         Text("Save", style = MaterialTheme.typography.labelLarge)
     }

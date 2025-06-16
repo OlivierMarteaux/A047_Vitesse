@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.repository.ApplicantRepository
 import com.example.vitesse.ui.addApplicant.ApplicantUiState
+import extensions.isValidEmail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class EditApplicantViewModel (
     private val applicantRepository: ApplicantRepository,
 ): ViewModel() {
 
-    var uiState by mutableStateOf(ApplicantUiState())
+    var uiState by mutableStateOf(ApplicantUiState(isEnabled = true))
 
     private val applicantId: Int = checkNotNull(savedStateHandle[EditApplicantDestination.ApplicantIdArg])
     private val getApplicantById: Flow<Applicant> = applicantRepository.getApplicantById(this.applicantId).filterNotNull()
@@ -29,13 +30,22 @@ class EditApplicantViewModel (
     init {
         viewModelScope.launch {
             getApplicantById.collect {
-                uiState = ApplicantUiState(it)
+                uiState = ApplicantUiState(applicant = it, isEnabled = true)
             }
         }
     }
 
     fun updateApplicant(applicant: Applicant){
-        uiState = ApplicantUiState(applicant = applicant)
+        uiState = uiState.copy(
+            applicant = applicant,
+            isEnabled = with(applicant) {
+                firstName.isNotBlank() &&
+                        lastName.isNotBlank() &&
+                        phone.isNotBlank() &&
+                        email.isNotBlank() &&
+                        email.isValidEmail()
+            }
+        )
     }
 
     fun saveApplicant(){

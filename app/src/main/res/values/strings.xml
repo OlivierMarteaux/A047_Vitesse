@@ -27,4 +27,6 @@
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="add_a_candidate">Add a candidate</string>
+    <string name="mandatory_field">Mandatory field</string>
+    <string name="invalid_format">Invalid format</string>
 </resources>
