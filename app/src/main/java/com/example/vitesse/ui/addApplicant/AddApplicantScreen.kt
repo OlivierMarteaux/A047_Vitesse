@@ -97,9 +97,9 @@ fun AddApplicantScreen(
             )
         },
         floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = { SaveFab(
+        floatingActionButton = {SaveApplicantFab(
             onClick = { viewModel.saveApplicant(); navigateBack() }
-        ) }
+        )}
     ) { topAppBarPadding ->
         AddOrEditApplicantBody(
             modifier = modifier.padding(topAppBarPadding),
@@ -426,7 +426,7 @@ fun DatePickerTextField(
 //}
 
 @Composable
-fun SaveFab(
+fun SaveApplicantFab(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     enabled: Boolean = false,

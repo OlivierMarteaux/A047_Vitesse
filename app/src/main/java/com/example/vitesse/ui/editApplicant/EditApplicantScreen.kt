@@ -15,7 +15,7 @@ import com.example.vitesse.R
 import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.addApplicant.AddOrEditApplicantBody
-import com.example.vitesse.ui.addApplicant.SaveFab
+import com.example.vitesse.ui.addApplicant.SaveApplicantFab
 import com.example.vitesse.ui.navigation.NavigationDestination
 
 object EditApplicantDestination : NavigationDestination {
@@ -42,7 +42,9 @@ fun EditApplicantScreen (
             actions = {}
         ) },
         floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = { SaveFab(onClick = { TODO()}) }
+        floatingActionButton = {SaveApplicantFab(
+            onClick = { viewModel.saveApplicant(); navigateBack() }
+        )}
     ){ topAppBarPadding ->
         AddOrEditApplicantBody(
             modifier = modifier.padding(topAppBarPadding),

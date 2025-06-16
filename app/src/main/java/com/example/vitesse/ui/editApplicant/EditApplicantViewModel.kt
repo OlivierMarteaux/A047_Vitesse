@@ -18,14 +18,13 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.O)
 class EditApplicantViewModel (
     savedStateHandle: SavedStateHandle,
-    applicantRepository: ApplicantRepository,
+    private val applicantRepository: ApplicantRepository,
 ): ViewModel() {
 
     var uiState by mutableStateOf(ApplicantUiState())
 
     private val applicantId: Int = checkNotNull(savedStateHandle[EditApplicantDestination.ApplicantIdArg])
     private val getApplicantById: Flow<Applicant> = applicantRepository.getApplicantById(this.applicantId).filterNotNull()
-
 
     init {
         viewModelScope.launch {
@@ -37,5 +36,11 @@ class EditApplicantViewModel (
 
     fun updateApplicant(applicant: Applicant){
         uiState = ApplicantUiState(applicant = applicant)
+    }
+
+    fun saveApplicant(){
+        viewModelScope.launch {
+            applicantRepository.upsertApplicant(uiState.applicant)
+        }
     }
 }

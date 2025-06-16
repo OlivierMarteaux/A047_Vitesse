@@ -106,3 +106,37 @@ dependencies {
     // Mockito
     testImplementation(libs.mockito.kotlin)
 }
+
+/**
+ * Helper function to force application run to be performed on physical device.
+ */
+val targetDevice = "adb-cb4d0d70-D3BuA7._adb-tls-connect._tcp" // ← Replace with your actual device ID
+val checkPhysicalDevice = tasks.register("checkPhysicalDevice") {
+    doFirst {
+        val adbOutput = ProcessBuilder("adb", "devices")
+            .redirectErrorStream(true)
+            .start()
+            .inputStream
+            .bufferedReader()
+            .readText()
+
+        val connectedDevices = adbOutput.lines().filter { line ->
+            line.isNotBlank() &&
+                    !line.startsWith("List") &&
+                    line.contains("device") &&
+                    !line.startsWith("emulator-")
+        }
+
+        if (connectedDevices.none { it.startsWith(targetDevice) }) {
+            throw GradleException("ERROR: Required physical device ($targetDevice) is not connected.")
+        } else {
+            println("✅ Physical device ($targetDevice) is connected. Proceeding with build.")
+        }
+    }
+}
+//// Attach the check to install tasks
+//tasks.configureEach {
+//    if (name == "installDebug" || name == "installRelease") {
+//        dependsOn(checkPhysicalDevice)
+//    }
+//}
