@@ -3,7 +3,7 @@ package com.example.vitesse.ui.addApplicant
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +20,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Edit
@@ -46,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -57,24 +57,20 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
 import com.example.vitesse.TextHeadLineLarge
 import com.example.vitesse.TextLabelLarge
 import com.example.vitesse.VitesseIcon
-import com.example.vitesse.VitesseIconButton
 import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.navigation.NavigationDestination
-import java.text.SimpleDateFormat
+import extensions.upTo
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
 import kotlin.math.round
 import kotlin.time.ExperimentalTime
 
@@ -111,6 +107,7 @@ fun AddApplicantScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddOrEditApplicantBody(
@@ -164,14 +161,14 @@ fun AddOrEditApplicantBody(
                     icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
                     onValueChange = { onApplicantEdit(copy(birthDate = it)) },
                 )
-                DatePickerTextField(
-                    label = "date",
-//                    onValueChange = {onApplicantEdit(copy(birthDate = LocalDate.parse(it)))},
-                    value = applicant.birthDate.toString(),
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Number,
-                    onDateSelected = {onApplicantEdit(copy(birthDate = it))},
-                )
+//                DatePickerTextField(
+//                    label = "date",
+////                    onValueChange = {onApplicantEdit(copy(birthDate = LocalDate.parse(it)))},
+//                    value = applicant.birthDate.toString(),
+//                    imeAction = ImeAction.Next,
+//                    keyboardType = KeyboardType.Number,
+//                    onDateSelected = {onApplicantEdit(copy(birthDate = it))},
+//                )
             }
             AddOrEditApplicantCard(
                 icon = ImageVector.vectorResource(id = R.drawable.money_24dp),
@@ -189,51 +186,6 @@ fun AddOrEditApplicantBody(
                 imeAction = ImeAction.Done,
             )
         }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun DatePickerTextField(
-    modifier: Modifier = Modifier,
-    label: String,
-    value: String,
-    imeAction: ImeAction = ImeAction.Next,
-    keyboardType: KeyboardType = KeyboardType.Number,
-    onDateSelected: (LocalDate) -> Unit
-){
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
-        modifier = modifier.padding(start = 53.dp, top = 120.dp, end = 14.dp)
-    ) {
-        var text by remember { mutableStateOf(value) }
-        OutlinedTextField(
-            value = text,
-            onValueChange = { text = it},
-            label = { Text(label) },
-            placeholder = { Text(label) },
-            singleLine = true,
-            shape = MaterialTheme.shapes.extraSmall,
-            keyboardOptions = KeyboardOptions(
-                imeAction = imeAction,
-                keyboardType = keyboardType
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    keyboardController?.hide()
-                    // Optional: parse and validate date
-                    runCatching {
-                        val date = LocalDate.parse(value, formatter)
-                        onDateSelected(date)
-                    }
-                }
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-        )
     }
 }
 
@@ -290,7 +242,12 @@ fun DockedDatePicker(
     icon: ImageVector,
     onValueChange: (LocalDate) -> Unit,
 ) {
-    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+    // a date picker state that allows only past dates to be selected.
+    val today = LocalDate.now()
+    val datePickerState = rememberDatePickerState(
+        initialDisplayMode = DisplayMode.Input,
+        selectableDates = LocalDate.now().upTo()
+    )
 
     val selectedDateMillis = datePickerState.selectedDateMillis
     selectedDateMillis?.let {
@@ -303,96 +260,168 @@ fun DockedDatePicker(
     Row( modifier = modifier.padding(bottom = 11.dp)) {
 
         VitesseIcon(icon = icon, modifier = Modifier.padding(top = 14.dp, end = 15.dp))
-        DatePicker(
-            state = datePickerState,
-            title = {
-                TextLabelLarge(
-                    text = stringResource(R.string.select_a_date),
-                    modifier = Modifier.padding(top = 16.dp, start = 24.dp),
-                )
-            },
-            headline = {
-                TextHeadLineLarge(
-                    text = stringResource(R.string.input_a_date),
-                    modifier = Modifier.padding(start = 24.dp, bottom = 16.dp),
-                )
-            },
-            colors = DatePickerDefaults.colors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            ),
-            modifier = Modifier.clip(shape = MaterialTheme.shapes.extraLarge)
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun VitesseDatePicker2(
-    modifier: Modifier = Modifier,
-    icon: ImageVector,
-    onValueChange: (LocalDate) -> Unit,
-){
-    var showDatePicker by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
-    val selectedDate = datePickerState.selectedDateMillis?.let {
-        convertMillisToDate(it)
-    } ?: ""
-
-    Row (
-        modifier = modifier
-            .padding(bottom = 11.dp)
-            .fillMaxWidth(),
-    ){
-        VitesseIcon(icon = icon, modifier = Modifier.padding(top = 14.dp, end = 15.dp))
-        Card (modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                TextLabelLarge(
-                    text = stringResource(R.string.select_a_date),
-                    modifier = Modifier.padding(top = 16.dp, start = 24.dp),
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
+        Box {
+            DatePicker(
+                state = datePickerState,
+                title = {
+                    TextLabelLarge(
+                        text = stringResource(R.string.select_a_date),
+                        modifier = Modifier.padding(top = 16.dp, start = 24.dp),
+                    )
+                },
+                headline = {
                     TextHeadLineLarge(
                         text = stringResource(R.string.input_a_date),
                         modifier = Modifier.padding(start = 24.dp, bottom = 16.dp),
                     )
-                    VitesseIconButton(
-                        icon = Icons.Default.DateRange,
-                        onClick = { showDatePicker = true },
-                        )
-                }
+                },
+                colors = DatePickerDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                ),
+                modifier = Modifier.clip(shape = MaterialTheme.shapes.extraLarge)
+            )
 
-                if (showDatePicker) {
-                    Popup(
-                        onDismissRequest = { showDatePicker = false },
-                        alignment = Alignment.TopStart
-                    ) { DatePicker(
-                        state = datePickerState,
-                        modifier = Modifier.padding(horizontal = 20.dp)
-                    ) }
-                } else {
-                    var text = "text"
-                    OutlinedTextField(
-                        value = "text",
-                        onValueChange = {it:String -> text = it },
-                        modifier = Modifier.fillMaxWidth(),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
-                        )
-                    )
-                }
-            }
+//            Surface(
+//                color = Color.Transparent,
+//                modifier = modifier
+//                    .padding(start = 14.dp, top = 130.dp, end = 14.dp)
+//                    .height(70.dp)
+//                    .fillMaxWidth()
+//                    .clickable { datePickerState.displayMode = DisplayMode.Picker }
+//                    .border(width = 1.dp, color = Color.Black)
+//            ) {}
+//            Surface(
+//                color = Color.Transparent,
+//                modifier = modifier
+//                    .padding(top = 59.dp, end = 12.dp)
+//                    .size(50.dp)
+//                    .clickable {
+//
+//                        datePickerState.displayMode = DisplayMode.Input
+//                    }
+//                    .border(width = 1.dp, color = Color.Black)
+//                    .align(alignment = Alignment.TopEnd)
+//            ) {}
         }
     }
 }
 
-fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
-    return formatter.format(Date(millis))
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun DatePickerTextField(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    imeAction: ImeAction = ImeAction.Next,
+    keyboardType: KeyboardType = KeyboardType.Number,
+    onDateSelected: (LocalDate) -> Unit
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    Card(
+//        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+        colors = CardDefaults.cardColors(containerColor = Color.Gray),
+        modifier = modifier.padding(start = 53.dp, top = 120.dp, end = 14.dp)
+    ) {
+        var text by remember { mutableStateOf(value) }
+        OutlinedTextField(
+            value = text,
+            onValueChange = { text = it},
+            label = { Text(label) },
+            placeholder = { Text(label) },
+            singleLine = true,
+            shape = MaterialTheme.shapes.extraSmall,
+            keyboardOptions = KeyboardOptions(
+                imeAction = imeAction,
+                keyboardType = keyboardType
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                    // Optional: parse and validate date
+                    runCatching {
+                        val date = LocalDate.parse(value, formatter)
+                        onDateSelected(date)
+                    }
+                }
+            ),
+            readOnly = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {}
+                .padding(10.dp),
+        )
+    }
 }
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun VitesseDatePicker2(
+//    modifier: Modifier = Modifier,
+//    icon: ImageVector,
+//    onValueChange: (LocalDate) -> Unit,
+//){
+//    var showDatePicker by remember { mutableStateOf(false) }
+//    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
+//    val selectedDate = datePickerState.selectedDateMillis?.let {
+//        convertMillisToDate(it)
+//    } ?: ""
+//
+//    Row (
+//        modifier = modifier
+//            .padding(bottom = 11.dp)
+//            .fillMaxWidth(),
+//    ){
+//        VitesseIcon(icon = icon, modifier = Modifier.padding(top = 14.dp, end = 15.dp))
+//        Card (modifier = Modifier.fillMaxWidth()) {
+//            Column(modifier = Modifier.fillMaxWidth()) {
+//                TextLabelLarge(
+//                    text = stringResource(R.string.select_a_date),
+//                    modifier = Modifier.padding(top = 16.dp, start = 24.dp),
+//                )
+//                Row(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                ) {
+//                    TextHeadLineLarge(
+//                        text = stringResource(R.string.input_a_date),
+//                        modifier = Modifier.padding(start = 24.dp, bottom = 16.dp),
+//                    )
+//                    VitesseIconButton(
+//                        icon = Icons.Default.DateRange,
+//                        onClick = { showDatePicker = true },
+//                        )
+//                }
+//
+//                if (showDatePicker) {
+//                    Popup(
+//                        onDismissRequest = { showDatePicker = false },
+//                        alignment = Alignment.TopStart
+//                    ) { DatePicker(
+//                        state = datePickerState,
+//                        modifier = Modifier.padding(horizontal = 20.dp)
+//                    ) }
+//                } else {
+//                    var text = "text"
+//                    OutlinedTextField(
+//                        value = "text",
+//                        onValueChange = {it:String -> text = it },
+//                        modifier = Modifier.fillMaxWidth(),
+//                        keyboardOptions = KeyboardOptions(
+//                            keyboardType = KeyboardType.Number,
+//                            imeAction = ImeAction.Done
+//                        )
+//                    )
+//                }
+//            }
+//        }
+//    }
+//}
+
+//fun convertMillisToDate(millis: Long): String {
+//    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+//    return formatter.format(Date(millis))
+//}
 
 @Composable
 fun SaveFab(
