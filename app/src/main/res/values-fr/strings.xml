@@ -10,7 +10,7 @@
     <string name="sms">SMS</string>
     <string name="email">Email</string>
     <string name="about">A propos</string>
-    <string name="salary_expectations">Prétentions salariales</string>
+    <string name="expected_salary">Prétentions salariales</string>
     <string name="notes">Notes</string>
     <string name="add_applicant_screen">Ecran d\'ajout d\'un candidat</string>
     <string name="first_name">Prénom</string>

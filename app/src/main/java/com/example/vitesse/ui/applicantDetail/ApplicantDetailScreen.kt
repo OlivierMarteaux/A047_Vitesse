@@ -177,7 +177,7 @@ fun ApplicantDetailBody(
                 modifier = Modifier.padding(bottom = 11.dp)
             )
         }
-        ApplicantDetailCard(header = stringResource(R.string.salary_expectations)){
+        ApplicantDetailCard(header = stringResource(R.string.expected_salary)){
             TextBodyLarge(
                 text = applicant.salary.toLocalCurrencyString(),
                 modifier = Modifier.padding(bottom = 32.dp)

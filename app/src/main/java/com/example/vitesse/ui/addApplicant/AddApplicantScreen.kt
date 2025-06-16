@@ -172,7 +172,7 @@ fun AddOrEditApplicantBody(
             }
             AddOrEditApplicantCard(
                 icon = ImageVector.vectorResource(id = R.drawable.money_24dp),
-                label = stringResource(R.string.salary_expectations),
+                label = stringResource(R.string.expected_salary),
                 onValueChange = { onApplicantEdit(copy(salary = it.toDoubleOrNull() ?: 0.0)) },
                 value = round(salary).toInt().toString().run { if (this == "0") "" else this },
                 keyboardType = KeyboardType.Number
