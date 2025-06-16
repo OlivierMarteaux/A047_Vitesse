@@ -6,8 +6,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.repository.ApplicantRepository
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 data class ApplicantUiState(
@@ -24,7 +26,9 @@ class AddApplicantViewModel(private val applicantRepository: ApplicantRepository
         uiState = uiState.copy(applicant = applicant)
     }
 
-    suspend fun addApplicant(){
-        applicantRepository.upsertApplicant(uiState.applicant)
+    fun saveApplicant(){
+        viewModelScope.launch {
+            applicantRepository.upsertApplicant(uiState.applicant)
+        }
     }
 }

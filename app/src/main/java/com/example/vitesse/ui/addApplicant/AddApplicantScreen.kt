@@ -97,7 +97,9 @@ fun AddApplicantScreen(
             )
         },
         floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = { SaveFab(onClick = { TODO()}) }
+        floatingActionButton = { SaveFab(
+            onClick = { viewModel.saveApplicant(); navigateBack() }
+        ) }
     ) { topAppBarPadding ->
         AddOrEditApplicantBody(
             modifier = modifier.padding(topAppBarPadding),
@@ -122,7 +124,7 @@ fun AddOrEditApplicantBody(
             .imePadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        with (applicant) {
+        applicant.run {
             Image(
                 painter = painterResource(R.drawable.martyna_siddeswara),
                 contentScale = ContentScale.Crop,
