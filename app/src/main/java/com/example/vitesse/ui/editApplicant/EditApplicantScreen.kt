@@ -8,8 +8,10 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.ImageLoader
@@ -18,6 +20,7 @@ import com.example.vitesse.VitesseApplication
 import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.addApplicant.AddOrEditApplicantBody
+import com.example.vitesse.ui.addApplicant.DockedDatePicker
 import com.example.vitesse.ui.addApplicant.SaveApplicantFab
 import com.example.vitesse.ui.navigation.NavigationDestination
 
@@ -37,6 +40,7 @@ fun EditApplicantScreen (
 ){
     val context = LocalContext.current
     val imageLoader: ImageLoader = VitesseApplication().newImageLoader(context)
+    val applicant = viewModel.uiState.applicant
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -57,8 +61,16 @@ fun EditApplicantScreen (
             applicant = viewModel.uiState.applicant,
             onApplicantEdit = viewModel::updateApplicant,
             imageLoader = imageLoader,
-            context = context
-        )
+            context = context,
+        ){
+            applicant.birthDate?.let{
+                DockedDatePicker(
+                    initialDate = applicant.birthDate,
+                    icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
+                    onValueChange = { viewModel.updateApplicant(applicant.copy(birthDate = it)) },
+                )
+            }
+        }
     }
 }
 

@@ -11,6 +11,7 @@ import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.repository.ApplicantRepository
 import extensions.isValidEmail
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 data class ApplicantUiState(
@@ -21,8 +22,11 @@ data class ApplicantUiState(
 @RequiresApi(Build.VERSION_CODES.O)
 class AddApplicantViewModel(private val applicantRepository: ApplicantRepository): ViewModel() {
 
-    var uiState: ApplicantUiState by mutableStateOf(ApplicantUiState(isEnabled = false))
-    private set
+    var uiState by mutableStateOf(ApplicantUiState(
+        applicant = Applicant(birthDate = LocalDate.now()),
+        isEnabled = true)
+    )
+        private set
 
     fun updateApplicant(applicant: Applicant){
         uiState = uiState.copy(

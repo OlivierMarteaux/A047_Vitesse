@@ -23,6 +23,7 @@ class EditApplicantViewModel (
 ): ViewModel() {
 
     var uiState by mutableStateOf(ApplicantUiState(isEnabled = true))
+        private set
 
     private val applicantId: Int = checkNotNull(savedStateHandle[EditApplicantDestination.ApplicantIdArg])
     private val getApplicantById: Flow<Applicant> = applicantRepository.getApplicantById(this.applicantId).filterNotNull()

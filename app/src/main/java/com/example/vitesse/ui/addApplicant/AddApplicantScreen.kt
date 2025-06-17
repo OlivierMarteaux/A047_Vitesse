@@ -106,6 +106,7 @@ fun AddApplicantScreen(
 ) {
     val context = LocalContext.current
     val imageLoader: ImageLoader = VitesseApplication().newImageLoader(context)
+    val applicant: Applicant = viewModel.uiState.applicant
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -128,7 +129,14 @@ fun AddApplicantScreen(
             onApplicantEdit = viewModel::updateApplicant,
             imageLoader = imageLoader,
             context = context
-        )
+        ){
+//            applicant.birthDate?.let{
+                DockedDatePicker(
+                    icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
+                    onValueChange = { viewModel.updateApplicant(applicant.copy(birthDate = it)) },
+                )
+//            }
+        }
     }
 }
 
@@ -140,7 +148,8 @@ fun AddOrEditApplicantBody(
     applicant: Applicant,
     onApplicantEdit: (Applicant) -> Unit,
     imageLoader: ImageLoader,
-    context: Context
+    context: Context,
+    datePicker: @Composable () -> Unit
 ){
 //    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -219,11 +228,14 @@ fun AddOrEditApplicantBody(
                                  },
                 keyboardType = KeyboardType.Email
             )
-            DockedDatePicker(
-                initialDate = birthDate,
-                icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
-                onValueChange = { onApplicantEdit(copy(birthDate = it)) },
-            )
+            datePicker()
+//            birthDate?.let{
+//                DockedDatePicker(
+//                    initialDate = birthDate,
+//                    icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
+//                    onValueChange = { onApplicantEdit(copy(birthDate = it)) },
+//                )
+//            }
             Log.d("OM_TAG", "1)$birthDate")
             AddOrEditApplicantCard(
                 icon = ImageVector.vectorResource(id = R.drawable.money_24dp),
@@ -297,26 +309,20 @@ fun AddOrEditApplicantCard(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun DockedDatePicker(
-    initialDate: LocalDate?,
     modifier: Modifier = Modifier,
+    initialDate: LocalDate? = null,
     icon: ImageVector,
     onValueChange: (LocalDate) -> Unit,
 ) {
-//    val initialSelectedDateMillis = remember(initialDate) { initialDate.toLong() }
 
     Log.d("OM_TAG", "initialDate: ${initialDate?.toLocalDateString()?:"null"}")
+
     // a date picker state that allows only past dates to be selected.
     val datePickerState = rememberDatePickerState(
         initialDisplayMode = DisplayMode.Input,
         selectableDates = LocalDate.now().upTo(),
         initialSelectedDateMillis = initialDate?.toLong()
     )
-    initialDate?.let {datePickerState.selectedDateMillis = it.toLong()}
-
-//    // 🧠 Ensure date is updated once loaded (important when initialDate comes from async data)
-//    LaunchedEffect(initialSelectedDateMillis) {
-//        datePickerState.selectedDateMillis = initialSelectedDateMillis
-//    }
 
     // 🔄 Propagate changes to parent
     val selectedDateMillis = datePickerState.selectedDateMillis
