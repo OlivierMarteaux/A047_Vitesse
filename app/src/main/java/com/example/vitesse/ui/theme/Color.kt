@@ -2,6 +2,13 @@ package com.example.vitesse.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+//val primaryLight = Color(0xFFDF9780)
+//val primaryVariantLight = Color(0xFF749FB8)
+//val onPrimaryLight = Color(0xFFFFFFFF)
+//val secondaryLight = Color(0xFFE8B952)
+//val secondaryVariantLight = Color(0xFFE8B952)
+//val onSecondaryLight = Color(0xFFFFFFFF)
+
 val primaryLight = Color(0xFF4F378A)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFF6750A4)
