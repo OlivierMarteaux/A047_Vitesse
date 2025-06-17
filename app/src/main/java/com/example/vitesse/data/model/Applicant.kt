@@ -16,7 +16,7 @@ data class Applicant(
     @ColumnInfo(name = "last_name") val lastName: String = "",
     val phone: String = "",
     val email: String = "",
-    @ColumnInfo(name = "date_of_birth") val birthDate: LocalDate = LocalDate.now(),
+    @ColumnInfo(name = "date_of_birth") val birthDate: LocalDate? = null,
     val salary: Double = 0.0,
     val note: String = "",
     @ColumnInfo(name = "photo_uri") val photoUri: String? = null,

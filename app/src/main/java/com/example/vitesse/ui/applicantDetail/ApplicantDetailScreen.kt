@@ -191,7 +191,7 @@ fun ApplicantDetailBody(
             )
         }
         ApplicantDetailCard(header = stringResource(R.string.about)){
-            TextBodyLarge(text = applicant.birthDate.toLocalDateString())
+            TextBodyLarge(text = applicant.birthDate?.toLocalDateString()?:"")
             TextBodyMedium(
                 text = stringResource(R.string.birthday),
                 modifier = Modifier.padding(bottom = 11.dp)

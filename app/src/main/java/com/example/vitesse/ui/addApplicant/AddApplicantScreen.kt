@@ -42,6 +42,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -79,6 +80,8 @@ import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.navigation.NavigationDestination
 import extensions.isValidEmail
+import extensions.toLocalDateString
+import extensions.toLong
 import extensions.upTo
 import java.io.File
 import java.io.FileOutputStream
@@ -160,7 +163,13 @@ fun AddOrEditApplicantBody(
                     painter = rememberAsyncImagePainter(photoUri?:R.drawable.placeholder),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .clickable { imagePickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) }
+                        .clickable {
+                            imagePickerLauncher.launch(
+                                PickVisualMediaRequest(
+                                    PickVisualMedia.ImageOnly
+                                )
+                            )
+                        }
                         .height(dimensionResource(R.dimen.image_height))
                         .padding(top = 7.dp, bottom = 22.dp),
                     contentDescription = null
@@ -210,20 +219,12 @@ fun AddOrEditApplicantBody(
                                  },
                 keyboardType = KeyboardType.Email
             )
-            Box {
-                DockedDatePicker(
-                    icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
-                    onValueChange = { onApplicantEdit(copy(birthDate = it)) },
-                )
-//                DatePickerTextField(
-//                    label = "date",
-////                    onValueChange = {onApplicantEdit(copy(birthDate = LocalDate.parse(it)))},
-//                    value = applicant.birthDate.toString(),
-//                    imeAction = ImeAction.Next,
-//                    keyboardType = KeyboardType.Number,
-//                    onDateSelected = {onApplicantEdit(copy(birthDate = it))},
-//                )
-            }
+            DockedDatePicker(
+                initialDate = birthDate,
+                icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
+                onValueChange = { onApplicantEdit(copy(birthDate = it)) },
+            )
+            Log.d("OM_TAG", "1)$birthDate")
             AddOrEditApplicantCard(
                 icon = ImageVector.vectorResource(id = R.drawable.money_24dp),
                 label = stringResource(R.string.expected_salary),
@@ -296,17 +297,28 @@ fun AddOrEditApplicantCard(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun DockedDatePicker(
+    initialDate: LocalDate?,
     modifier: Modifier = Modifier,
     icon: ImageVector,
     onValueChange: (LocalDate) -> Unit,
 ) {
+//    val initialSelectedDateMillis = remember(initialDate) { initialDate.toLong() }
+
+    Log.d("OM_TAG", "initialDate: ${initialDate?.toLocalDateString()?:"null"}")
     // a date picker state that allows only past dates to be selected.
-    val today = LocalDate.now()
     val datePickerState = rememberDatePickerState(
         initialDisplayMode = DisplayMode.Input,
-        selectableDates = LocalDate.now().upTo()
+        selectableDates = LocalDate.now().upTo(),
+        initialSelectedDateMillis = initialDate?.toLong()
     )
+    initialDate?.let {datePickerState.selectedDateMillis = it.toLong()}
 
+//    // 🧠 Ensure date is updated once loaded (important when initialDate comes from async data)
+//    LaunchedEffect(initialSelectedDateMillis) {
+//        datePickerState.selectedDateMillis = initialSelectedDateMillis
+//    }
+
+    // 🔄 Propagate changes to parent
     val selectedDateMillis = datePickerState.selectedDateMillis
     selectedDateMillis?.let {
         val selectedDate = Instant.ofEpochMilli(it)
@@ -339,27 +351,17 @@ fun DockedDatePicker(
                 modifier = Modifier.clip(shape = MaterialTheme.shapes.extraLarge)
             )
 
-//            Surface(
-//                color = Color.Transparent,
-//                modifier = modifier
-//                    .padding(start = 14.dp, top = 130.dp, end = 14.dp)
-//                    .height(70.dp)
-//                    .fillMaxWidth()
-//                    .clickable { datePickerState.displayMode = DisplayMode.Picker }
-//                    .border(width = 1.dp, color = Color.Black)
-//            ) {}
-//            Surface(
-//                color = Color.Transparent,
-//                modifier = modifier
-//                    .padding(top = 59.dp, end = 12.dp)
-//                    .size(50.dp)
-//                    .clickable {
-//
-//                        datePickerState.displayMode = DisplayMode.Input
-//                    }
-//                    .border(width = 1.dp, color = Color.Black)
-//                    .align(alignment = Alignment.TopEnd)
-//            ) {}
+            // a surface to make the outlinedTextField Read-Only and clickable:
+            if (datePickerState.displayMode == DisplayMode.Input){
+                Surface(
+                    color = Color.Transparent,
+                    modifier = modifier
+                        .padding(start = 14.dp, top = 130.dp, end = 14.dp)
+                        .height(70.dp)
+                        .fillMaxWidth()
+                        .clickable { datePickerState.displayMode = DisplayMode.Picker }
+//                        .border(width = 1.dp, color = Color.Black)
+                ){}}
         }
     }
 }

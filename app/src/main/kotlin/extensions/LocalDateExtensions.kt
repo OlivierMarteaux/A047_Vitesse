@@ -7,6 +7,7 @@ import androidx.compose.material3.SelectableDates
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -35,3 +36,9 @@ fun LocalDate.upTo(): SelectableDates {
         }
     }
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun LocalDate.toLong() = this
+    .atStartOfDay((ZoneOffset.UTC)) // Convert to ZonedDateTime
+    .toInstant()                          // Convert to Instant
+    .toEpochMilli()                       // Convert to epoch millis
