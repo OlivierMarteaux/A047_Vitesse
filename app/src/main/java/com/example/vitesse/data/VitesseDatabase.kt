@@ -86,6 +86,116 @@ abstract class VitesseDatabase: RoomDatabase() {
         suspend fun populateDatabase(applicantDao: ApplicantDao) {
             val prepopulatedApplicants = listOf(
                 Applicant(
+                    firstName = "Camille",
+                    lastName = "Dupont",
+                    phone = "06 12 34 56 78",
+                    email = "camille.dupont@example.com",
+                    birthDate = LocalDate.of(1992, 3, 12),
+                    salary = 35000.0,
+                    note = "Camille is a proactive developer who enjoys collaborating on challenging problems. She has a keen eye for detail and a strong understanding of user-centered design principles.",
+                    photoUri = "https://randomuser.me/api/portraits/women/1.jpg",
+                    isFavorite = false
+                ),
+                Applicant(
+                    firstName = "Julien",
+                    lastName = "Martin",
+                    phone = "07 89 45 23 67",
+                    email = "julien.martin@example.com",
+                    birthDate = LocalDate.of(1988, 11, 5),
+                    salary = 42000.0,
+                    note = "Julien brings over ten years of experience in software architecture. He communicates ideas clearly and is always looking for ways to optimize performance in large-scale systems.",
+                    photoUri = "https://randomuser.me/api/portraits/men/2.jpg",
+                    isFavorite = true
+                ),
+                Applicant(
+                    firstName = "Élise",
+                    lastName = "Moreau",
+                    phone = "06 98 76 54 32",
+                    email = "elise.moreau@example.com",
+                    birthDate = LocalDate.of(1995, 7, 19),
+                    salary = 39000.0,
+                    note = "Élise is passionate about front-end development and design systems. She consistently delivers polished interfaces and is enthusiastic about accessibility and clean code standards.",
+                    photoUri = "https://randomuser.me/api/portraits/women/3.jpg",
+                    isFavorite = false
+                ),
+                Applicant(
+                    firstName = "Lucas",
+                    lastName = "Girard",
+                    phone = "07 64 32 18 90",
+                    email = "lucas.girard@example.com",
+                    birthDate = LocalDate.of(1990, 1, 25),
+                    salary = 46000.0,
+                    note = "Lucas is a results-driven developer with a strong background in cloud infrastructure. His expertise with CI/CD pipelines enhances productivity across teams he collaborates with.",
+                    photoUri = "https://randomuser.me/api/portraits/men/4.jpg",
+                    isFavorite = true
+                ),
+                Applicant(
+                    firstName = "Chloé",
+                    lastName = "Renard",
+                    phone = "06 22 44 88 33",
+                    email = "chloe.renard@example.com",
+                    birthDate = LocalDate.of(1993, 5, 10),
+                    salary = 37500.0,
+                    note = "Chloé is known for her ability to manage complex projects with ease. Her organizational skills and clear communication ensure smooth collaboration across all departments.",
+                    photoUri = "https://randomuser.me/api/portraits/women/5.jpg",
+                    isFavorite = false
+                ),
+                Applicant(
+                    firstName = "Mathis",
+                    lastName = "Leclerc",
+                    phone = "07 11 22 33 44",
+                    email = "mathis.leclerc@example.com",
+                    birthDate = LocalDate.of(1987, 8, 3),
+                    salary = 48000.0,
+                    note = "Mathis combines strong analytical thinking with deep technical skills. He has been instrumental in optimizing legacy systems and mentoring junior team members.",
+                    photoUri = "https://randomuser.me/api/portraits/men/6.jpg",
+                    isFavorite = false
+                ),
+                Applicant(
+                    firstName = "Claire",
+                    lastName = "Benoit",
+                    phone = "06 77 55 44 33",
+                    email = "claire.benoit@example.com",
+                    birthDate = LocalDate.of(1991, 4, 28),
+                    salary = 41000.0,
+                    note = "Claire excels in agile environments where adaptability is key. She values continuous learning and often contributes to internal knowledge-sharing sessions.",
+                    photoUri = "https://randomuser.me/api/portraits/women/7.jpg",
+                    isFavorite = true
+                ),
+                Applicant(
+                    firstName = "Hugo",
+                    lastName = "Marchand",
+                    phone = "07 88 99 11 22",
+                    email = "hugo.marchand@example.com",
+                    birthDate = LocalDate.of(1994, 10, 15),
+                    salary = 44000.0,
+                    note = "Hugo is a strong team player who always steps up when deadlines approach. He thrives under pressure and consistently delivers quality code on time.",
+                    photoUri = "https://randomuser.me/api/portraits/men/8.jpg",
+                    isFavorite = false
+                ),
+                Applicant(
+                    firstName = "Sophie",
+                    lastName = "Perrot",
+                    phone = "06 33 66 99 00",
+                    email = "sophie.perrot@example.com",
+                    birthDate = LocalDate.of(1996, 2, 8),
+                    salary = 37000.0,
+                    note = "Sophie is a full-stack developer with a flair for UX. Her strong communication skills and empathy make her a great bridge between dev and design teams.",
+                    photoUri = "https://randomuser.me/api/portraits/women/9.jpg",
+                    isFavorite = false
+                ),
+                Applicant(
+                    firstName = "Antoine",
+                    lastName = "Lemoine",
+                    phone = "07 55 44 33 22",
+                    email = "antoine.lemoine@example.com",
+                    birthDate = LocalDate.of(1989, 6, 20),
+                    salary = 43000.0,
+                    note = "Antoine brings both technical leadership and people skills. He enjoys pair programming, teaching, and empowering junior developers to gain confidence and autonomy.",
+                    photoUri = "https://randomuser.me/api/portraits/men/10.jpg",
+                    isFavorite = true
+                ),
+                Applicant(
                     firstName = "Alice",
                     lastName = "Johnson",
                     phone = "+1-514-555-1234",

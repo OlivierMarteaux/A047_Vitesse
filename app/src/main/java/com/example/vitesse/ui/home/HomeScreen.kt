@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,6 +31,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,13 +41,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.rememberAsyncImagePainter
 import com.example.vitesse.R
 import com.example.vitesse.TextBodyLarge
 import com.example.vitesse.TextBodyMedium
@@ -185,7 +188,9 @@ fun ApplicantTabs(
 
     PrimaryTabRow(
         selectedTabIndex = selectedTabIndex,
-        modifier = Modifier.fillMaxWidth().padding( 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
         containerColor = Color.Transparent,
         ) {
         tabs.forEachIndexed { index, title ->
@@ -234,9 +239,13 @@ fun ApplicantCardList(
         is Success -> {
             LazyColumn(modifier = modifier) {
                 items(applicantList) { applicant ->
+                    val interactionSource = remember { MutableInteractionSource() }
                     ApplicantCard(
                         applicant = applicant,
-                        modifier = modifier.clickable{navigateToApplicantDetail(applicant.id)},
+                        modifier = modifier.clickable(
+                            interactionSource = interactionSource,
+                            indication = ripple(color = MaterialTheme.colorScheme.primary),
+                            ){navigateToApplicantDetail(applicant.id)},
                         )
                 }
             }
@@ -280,24 +289,25 @@ fun ApplicantCard(
     applicant: Applicant,
     modifier: Modifier = Modifier,
 ){
-    Row(
-        modifier = modifier.padding(start = 16.dp, top = 12.dp, end = 24.dp, bottom =12.dp),
-    ){
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_foreground),
-            contentDescription = null,
-            modifier = Modifier.size(56.dp).border(Dp.Hairline, Color.Black)
-        )
-        Column(
-            modifier = Modifier.padding(start = 16.dp),
+    with(applicant){
+        Row(
+            modifier = modifier.padding(start = 16.dp, top = 12.dp, end = 24.dp, bottom =12.dp),
         ){
-            TextBodyLarge(
-                text = "${applicant.firstName} ${applicant.lastName}",
-                modifier = Modifier,
+            Image(
+                painter = rememberAsyncImagePainter(photoUri?:R.drawable.placeholder),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(56.dp)
+                    .border(Dp.Hairline, MaterialTheme.colorScheme.outlineVariant)
             )
-            TextBodyMedium(
-                text = applicant.note,
-            )
+            Column(modifier = Modifier.padding(start = 16.dp)){
+                TextBodyLarge("$firstName ${lastName.uppercase()}")
+                TextBodyMedium(
+                    text = note,
+                    maxLines = 2,
+                    )
+            }
         }
     }
 }

@@ -65,6 +65,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    //material3 for custom ripple effect
+    implementation("androidx.compose.material3:material3:1.3.2")
+
     // activity dependency for Google ImagePicker
     implementation(libs.androidx.activity.ktx)
     // Coil for image viewing
