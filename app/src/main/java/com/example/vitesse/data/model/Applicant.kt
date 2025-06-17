@@ -19,7 +19,7 @@ data class Applicant(
     @ColumnInfo(name = "date_of_birth") val birthDate: LocalDate = LocalDate.now(),
     val salary: Double = 0.0,
     val note: String = "",
-    @ColumnInfo(name = "photo_uri") val photoUri: String = "",
+    @ColumnInfo(name = "photo_uri") val photoUri: String? = null,
     val isFavorite: Boolean = false
 )
 

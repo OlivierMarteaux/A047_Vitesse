@@ -67,10 +67,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.ImageLoader
 import coil3.compose.rememberAsyncImagePainter
 import com.example.vitesse.R
 import com.example.vitesse.TextHeadLineLarge
 import com.example.vitesse.TextLabelLarge
+import com.example.vitesse.VitesseApplication
 import com.example.vitesse.VitesseIcon
 import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.data.model.Applicant
@@ -99,6 +101,8 @@ fun AddApplicantScreen(
     viewModel: AddApplicantViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateBack: () -> Unit
 ) {
+    val context = LocalContext.current
+    val imageLoader: ImageLoader = VitesseApplication().newImageLoader(context)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -119,6 +123,8 @@ fun AddApplicantScreen(
             modifier = modifier.padding(topAppBarPadding),
             applicant = viewModel.uiState.applicant,
             onApplicantEdit = viewModel::updateApplicant,
+            imageLoader = imageLoader,
+            context = context
         )
     }
 }
@@ -130,6 +136,8 @@ fun AddOrEditApplicantBody(
     modifier: Modifier = Modifier,
     applicant: Applicant,
     onApplicantEdit: (Applicant) -> Unit,
+    imageLoader: ImageLoader,
+    context: Context
 ){
 //    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -148,26 +156,23 @@ fun AddOrEditApplicantBody(
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
         applicant.run {
-//            selectedImageUri?.let{
                 Image(
-                    painter = rememberAsyncImagePainter(applicant.photoUri),
+                    painter = rememberAsyncImagePainter(photoUri?:R.drawable.placeholder),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .clickable { imagePickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) }
                         .height(dimensionResource(R.dimen.image_height))
-                        .padding(14.dp),
+                        .padding(top = 7.dp, bottom = 22.dp),
                     contentDescription = null
                 )
-//            }
-//                ?: Image(
-//                painter = painterResource(R.drawable.martyna_siddeswara),
-//                contentScale = ContentScale.Crop,
+//            VitesseAsyncImage(
+//                applicant = applicant,
+//                imageLoader = imageLoader,
+//                context = context,
 //                modifier = Modifier
-//                    .clickable { imagePickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) }
-//                    .height(dimensionResource(R.dimen.image_height))
-//                    .padding(14.dp),
-//                contentDescription = null
-//                )
+//                    .height(195.dp)
+//            )
+//            }
             AddOrEditApplicantCard(
                 icon = Icons.Default.Person,
                 label = stringResource(R.string.first_name),
@@ -550,3 +555,4 @@ fun AddApplicantScreenPreview() {
 //fun DatePickerModalPreview() {
 //    DatePickerModalInput(onDateSelected = {}, onDismiss = {})
 //}
+

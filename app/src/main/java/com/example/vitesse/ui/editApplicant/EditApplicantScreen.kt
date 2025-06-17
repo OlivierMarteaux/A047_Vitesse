@@ -8,10 +8,13 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.ImageLoader
 import com.example.vitesse.R
+import com.example.vitesse.VitesseApplication
 import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.addApplicant.AddOrEditApplicantBody
@@ -32,6 +35,8 @@ fun EditApplicantScreen (
     navigateBack: () -> Unit = {},
     viewModel: EditApplicantViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
+    val context = LocalContext.current
+    val imageLoader: ImageLoader = VitesseApplication().newImageLoader(context)
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -51,6 +56,8 @@ fun EditApplicantScreen (
             modifier = modifier.padding(topAppBarPadding),
             applicant = viewModel.uiState.applicant,
             onApplicantEdit = viewModel::updateApplicant,
+            imageLoader = imageLoader,
+            context = context
         )
     }
 }

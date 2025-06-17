@@ -51,7 +51,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.size.Scale
 import coil3.size.Size
-import coil3.toUri
 import com.example.vitesse.R
 import com.example.vitesse.TextBodyLarge
 import com.example.vitesse.TextBodyMedium
@@ -88,7 +87,7 @@ fun ApplicantDetailScreen (
     viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     val context = LocalContext.current
-    val loader: ImageLoader = VitesseApplication().newImageLoader(context)
+    val imageLoader: ImageLoader = VitesseApplication().newImageLoader(context)
     val applicant = viewModel.uiState.applicant
     Log.d("OM_TAG", "applicant: $applicant")
     val currency = viewModel.uiState.currency
@@ -134,7 +133,8 @@ fun ApplicantDetailScreen (
         ApplicantDetailBody(
             modifier = modifier.padding(topAppBarPadding),
             applicant = applicant,
-            currency = currency
+            currency = currency,
+            imageLoader = imageLoader
         )
     }
 }
@@ -144,7 +144,8 @@ fun ApplicantDetailScreen (
 fun ApplicantDetailBody(
     modifier: Modifier = Modifier,
     applicant: Applicant,
-    currency: Currency
+    currency: Currency,
+    imageLoader: ImageLoader
 ){
     val context = LocalContext.current
     Column(
@@ -164,10 +165,11 @@ fun ApplicantDetailBody(
 //        )
         VitesseAsyncImage(
             applicant = applicant,
-            loader = VitesseApplication().newImageLoader(context),
+            imageLoader = imageLoader,
             context = context,
             modifier = Modifier
                 .height(195.dp)
+                .padding(14.dp)
         )
         Row(
             horizontalArrangement = Arrangement.Center
@@ -300,12 +302,11 @@ fun DeleteConfirmationDialog(
 fun VitesseAsyncImage(
     modifier: Modifier = Modifier,
     applicant: Applicant,
-    loader: ImageLoader,
+    imageLoader: ImageLoader,
     context: Context,
     contentScale: ContentScale = ContentScale.Fit,
 ){
-    val uri = applicant.photoUri.toUri()
-//    val uri = applicant.photoUri.par
+    val uri = applicant.photoUri
     val request = ImageRequest.Builder(context = context)
         .data(uri)
         .size(Size.ORIGINAL)
@@ -314,7 +315,7 @@ fun VitesseAsyncImage(
         .build()
     AsyncImage(
         model = request,
-        imageLoader = loader,
+        imageLoader = imageLoader,
         contentDescription = null,
         contentScale = contentScale,
         modifier = modifier

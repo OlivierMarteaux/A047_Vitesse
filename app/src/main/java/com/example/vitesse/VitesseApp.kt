@@ -1,6 +1,7 @@
 package com.example.vitesse
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
@@ -20,7 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.vitesse.ui.navigation.VitesseNavHost
@@ -41,6 +44,18 @@ fun VitesseApp(
         color = Color.White,
         darkIcons = true
     )
+
+    // Constructing a Resource URI for "placeholder" in the drawable folder
+    val context = LocalContext.current
+    val packageName = context.packageName   // e.g., "com.example.myapp"
+    val resourceUri = "android.resource://$packageName/drawable/placeholder".toUri()
+    // Opeening Uri via contentResolver
+    val contentResolver = context.contentResolver
+    contentResolver.openInputStream(resourceUri)?.use { inputStream ->
+        val bytes = inputStream.readBytes()  // reading the raw bytes
+        Log.d("OM_TAG: placeholder uri", "uri = $resourceUri")
+        Log.d("OM_TAG: placeholder uri", "Resource file size: ${bytes.size} bytes")
+    }
 
     DismissKeyboardOnTapOutside {
         VitesseNavHost(navController = navController)
@@ -226,3 +241,4 @@ fun TextHeadLineLarge(
         modifier = modifier
     )
 }
+
