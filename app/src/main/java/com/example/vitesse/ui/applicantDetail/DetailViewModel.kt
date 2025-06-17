@@ -36,11 +36,21 @@ class ApplicantDetailViewModel(
 
     var uiState: ApplicantDetailUiState by mutableStateOf(ApplicantDetailUiState())
         private set
+    var isFavorite by mutableStateOf(false)
+        private set
 
-    fun updateApplicant(applicant: Applicant){
+    fun updateApplicant(){
         viewModelScope.launch {
+//            applicantRepository.upsertApplicant(applicant)
+        val applicant = uiState.applicant.copy(isFavorite = isFavorite)
             applicantRepository.upsertApplicant(applicant)
         }
+    }
+
+    fun toggleFavorite() {
+        isFavorite = !isFavorite
+//        val updatedApplicant = uiState.applicant.copy(isFavorite = isFavorite)
+//        updateApplicant(updatedApplicant)
     }
 
     fun delete(applicant: Applicant){
@@ -55,6 +65,7 @@ class ApplicantDetailViewModel(
             getApplicantById.collect {
                 uiState = ApplicantDetailUiState(it)
                 uiState = uiState.copy(currency = getCurrency())
+                isFavorite = it.isFavorite
                 Log.d("OM_TAG", "uiState: $uiState")
             }
         }

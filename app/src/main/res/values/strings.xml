@@ -29,4 +29,7 @@
     <string name="add_a_candidate">Add a candidate</string>
     <string name="mandatory_field">Mandatory field</string>
     <string name="invalid_format">Invalid format</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="years_old">%1$s (%2$s years old)</string>
 </resources>

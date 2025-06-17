@@ -25,11 +25,13 @@ import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,6 +67,7 @@ import com.example.vitesse.data.model.Currency
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.navigation.NavigationDestination
 import extensions.callPhoneNumber
+import extensions.getAge
 import extensions.sendEmail
 import extensions.sendSms
 import extensions.toBritishPoundString
@@ -78,6 +81,7 @@ object ApplicantDetailDestination : NavigationDestination {
     val routeWithArgs = "$route/{$ApplicantIdArg}"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ApplicantDetailScreen (
@@ -93,6 +97,13 @@ fun ApplicantDetailScreen (
     val currency = viewModel.uiState.currency
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
+    // Save when screen is disposed
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.updateApplicant()
+        }
+    }
+
     if (showConfirmationDialog) {
         DeleteConfirmationDialog(
             onConfirm = {
@@ -106,26 +117,29 @@ fun ApplicantDetailScreen (
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = { VitesseTopAppBar(
-            title = applicant.run { "$firstName $lastName" },
+            title = applicant.run { "$firstName ${lastName.uppercase()}" },
             modifier = Modifier,
             navigateBack = navigateBack,
             actions = {
                 VitesseIconToggle(
                     iconChecked = Icons.Outlined.Star,
                     iconUnchecked = ImageVector.vectorResource(R.drawable.star_24dp),
-                    checked = applicant.isFavorite,
-                    onCheckedChange = { viewModel.updateApplicant(applicant.copy(isFavorite = !applicant.isFavorite)) },
+                    checked = viewModel.isFavorite,//applicant.isFavorite,
+                    onCheckedChange = { viewModel.toggleFavorite() },//{ viewModel.updateApplicant(applicant.copy(isFavorite = !applicant.isFavorite)) },
                     modifier = modifier,
+                    tooltip = { Text(text = stringResource(R.string.favorites)) }
                 )
                 VitesseIconButton(
                     icon = Icons.Outlined.Edit,
                     onClick = { navigateToEditApplicant(applicant.id) },
-                    modifier = modifier
+                    modifier = modifier,
+                    tooltip = { Text(text = stringResource(R.string.edit)) }
                 )
                 VitesseIconButton(
                     icon = Icons.Outlined.Delete,
                     onClick = { showConfirmationDialog = true },
-                    modifier = modifier
+                    modifier = modifier,
+                    tooltip = { Text(text = stringResource(R.string.delete)) }
                 )
             }
         ) },
@@ -163,55 +177,58 @@ fun ApplicantDetailBody(
 //                .padding(14.dp),
 //            contentDescription = null
 //        )
-        VitesseAsyncImage(
-            applicant = applicant,
-            imageLoader = imageLoader,
-            context = context,
-            modifier = Modifier
-                .height(195.dp)
-                .padding(14.dp)
-        )
-        Row(
-            horizontalArrangement = Arrangement.Center
-        ){
-            ApplicantDetailContact(
-                icon = Icons.Outlined.Call,
-                text = stringResource(R.string.call),
-                onClick = { context.callPhoneNumber(applicant.phone) }
+        with (applicant) {
+            VitesseAsyncImage(
+                applicant = applicant,
+                imageLoader = imageLoader,
+                context = context,
+                modifier = Modifier
+                    .height(195.dp)
+                    .padding(14.dp)
             )
-            ApplicantDetailContact(
-                icon = ImageVector.vectorResource(R.drawable.chat_24px),
-                text = stringResource(R.string.sms),
-                onClick = { context.sendSms(applicant.phone) }
-            )
-            ApplicantDetailContact(
-                icon = Icons.Outlined.Email,
-                text = stringResource(R.string.email),
-                onClick = { context.sendEmail(applicant.email) }
-            )
-        }
-        ApplicantDetailCard(header = stringResource(R.string.about)){
-            TextBodyLarge(text = applicant.birthDate?.toLocalDateString()?:"")
-            TextBodyMedium(
-                text = stringResource(R.string.birthday),
-                modifier = Modifier.padding(bottom = 11.dp)
-            )
-        }
-        ApplicantDetailCard(header = stringResource(R.string.expected_salary)){
-            TextBodyLarge(
-                text = applicant.salary.toLocalCurrencyString(),
-                modifier = Modifier.padding(bottom = 32.dp)
-            )
-            TextBodyMedium(text = (stringResource(
-                R.string.or,
-                (applicant.salary * currency.eur.gbp).toBritishPoundString())
-                    ))
-        }
-        ApplicantDetailCard(
-            header = stringResource(R.string.notes),
-            modifier = Modifier.padding(bottom = 30.dp)
-        ){
-            TextBodyMedium(text = applicant.note)
+            Row(
+                horizontalArrangement = Arrangement.Center
+            ){
+                ApplicantDetailContact(
+                    icon = Icons.Outlined.Call,
+                    text = stringResource(R.string.call),
+                    onClick = { context.callPhoneNumber(phone) }
+                )
+                ApplicantDetailContact(
+                    icon = ImageVector.vectorResource(R.drawable.chat_24px),
+                    text = stringResource(R.string.sms),
+                    onClick = { context.sendSms(phone) }
+                )
+                ApplicantDetailContact(
+                    icon = Icons.Outlined.Email,
+                    text = stringResource(R.string.email),
+                    onClick = { context.sendEmail(email) }
+                )
+            }
+            ApplicantDetailCard(header = stringResource(R.string.about)){
+                TextBodyLarge(text = birthDate?.run{
+                    stringResource(R.string.years_old, toLocalDateString(), getAge())
+                }?:"")
+                TextBodyMedium(
+                    text = stringResource(R.string.birthday),
+                    modifier = Modifier.padding(bottom = 11.dp)
+                )
+            }
+            ApplicantDetailCard(header = stringResource(R.string.expected_salary)){
+                TextBodyLarge(
+                    text = salary.toLocalCurrencyString(),
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
+                TextBodyMedium(text = (stringResource(
+                    R.string.or, (salary * currency.eur.gbp).toBritishPoundString()
+                )))
+            }
+            ApplicantDetailCard(
+                header = stringResource(R.string.notes),
+                modifier = Modifier.padding(bottom = 30.dp)
+            ){
+                TextBodyMedium(text = note)
+            }
         }
     }
 }
@@ -245,6 +262,7 @@ fun ApplicantDetailCard(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplicantDetailContact(
     icon: ImageVector,
