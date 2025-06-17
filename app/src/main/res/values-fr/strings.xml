@@ -20,7 +20,7 @@
     <string name="select_a_date">Sélectionner une date</string>
     <string name="input_a_date">Entrer une date</string>
     <string name="edit_applicant_screen">Edit Applicant Screen</string>
-    <string name="edit_a_candidate">Edit a candidate</string>
+    <string name="edit_a_candidate">Modifier un candidat</string>
     <string name="or">soit %1$s</string>
     <string name="deletion">Suppression</string>
     <string name="are_you_sure_you_want_to_delete_this_candidate_this_action_cannot_be_undone">Etes-vous sûr de vouloir supprimer ce candidat? Cette action est irréversible.</string>
@@ -29,4 +29,6 @@
     <string name="add_a_candidate">Ajouter un candidat</string>
     <string name="mandatory_field">Champ obligatoire</string>
     <string name="invalid_format">Invalid format</string>
+    <string name="edit">Modifier</string>
+    <string name="delete">Supprimer</string>
 </resources>

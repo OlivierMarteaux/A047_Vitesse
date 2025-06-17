@@ -15,6 +15,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TooltipScope
+import androidx.compose.material3.TooltipState
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
@@ -94,36 +98,58 @@ fun VitesseTopAppBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VitesseIconButton(
     icon: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    tooltip: @Composable TooltipScope.() -> Unit = {}
 ){
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier.size(dimensionResource(R.dimen.icon_size)),
-    ){
-        VitesseIcon(icon = icon, modifier = modifier)
+    VitesseTooltipBox(tooltip = tooltip) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier.size(dimensionResource(R.dimen.icon_size)),
+        ) {
+            VitesseIcon(icon = icon, modifier = modifier)
+        }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VitesseIconToggle(
     iconChecked: ImageVector,
     iconUnchecked: ImageVector,
     modifier :Modifier = Modifier,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    tooltip: @Composable TooltipScope.() -> Unit = {}
 ) {
-    IconToggleButton(
-        checked = checked,
-        onCheckedChange = onCheckedChange,
-        modifier = modifier
-    ) {
-        if (checked) VitesseIcon(iconChecked)
-        else VitesseIcon(iconUnchecked)
+    VitesseTooltipBox(tooltip = tooltip) {
+        IconToggleButton(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            modifier = modifier
+        ) {
+            if (checked) VitesseIcon(iconChecked)
+            else VitesseIcon(iconUnchecked)
+        }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun VitesseTooltipBox(
+    tooltip: @Composable TooltipScope.() -> Unit = {},
+    content: @Composable () -> Unit
+){
+  TooltipBox(
+      positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+      state = TooltipState(),
+      tooltip = tooltip,
+      content = content
+  )
 }
 
 @Composable

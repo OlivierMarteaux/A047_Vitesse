@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -79,6 +80,7 @@ object ApplicantDetailDestination : NavigationDestination {
     val routeWithArgs = "$route/{$ApplicantIdArg}"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ApplicantDetailScreen (
@@ -114,7 +116,7 @@ fun ApplicantDetailScreen (
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = { VitesseTopAppBar(
-            title = applicant.run { "$firstName $lastName" },
+            title = applicant.run { "$firstName ${lastName.uppercase()}" },
             modifier = Modifier,
             navigateBack = navigateBack,
             actions = {
@@ -124,16 +126,19 @@ fun ApplicantDetailScreen (
                     checked = viewModel.isFavorite,//applicant.isFavorite,
                     onCheckedChange = { viewModel.toggleFavorite() },//{ viewModel.updateApplicant(applicant.copy(isFavorite = !applicant.isFavorite)) },
                     modifier = modifier,
+                    tooltip = { Text(text = stringResource(R.string.favorites)) }
                 )
                 VitesseIconButton(
                     icon = Icons.Outlined.Edit,
                     onClick = { navigateToEditApplicant(applicant.id) },
-                    modifier = modifier
+                    modifier = modifier,
+                    tooltip = { Text(text = stringResource(R.string.edit)) }
                 )
                 VitesseIconButton(
                     icon = Icons.Outlined.Delete,
                     onClick = { showConfirmationDialog = true },
-                    modifier = modifier
+                    modifier = modifier,
+                    tooltip = { Text(text = stringResource(R.string.delete)) }
                 )
             }
         ) },
@@ -253,6 +258,7 @@ fun ApplicantDetailCard(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplicantDetailContact(
     icon: ImageVector,
