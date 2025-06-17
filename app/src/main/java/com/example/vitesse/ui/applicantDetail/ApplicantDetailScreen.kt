@@ -67,6 +67,7 @@ import com.example.vitesse.data.model.Currency
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.navigation.NavigationDestination
 import extensions.callPhoneNumber
+import extensions.getAge
 import extensions.sendEmail
 import extensions.sendSms
 import extensions.toBritishPoundString
@@ -176,55 +177,58 @@ fun ApplicantDetailBody(
 //                .padding(14.dp),
 //            contentDescription = null
 //        )
-        VitesseAsyncImage(
-            applicant = applicant,
-            imageLoader = imageLoader,
-            context = context,
-            modifier = Modifier
-                .height(195.dp)
-                .padding(14.dp)
-        )
-        Row(
-            horizontalArrangement = Arrangement.Center
-        ){
-            ApplicantDetailContact(
-                icon = Icons.Outlined.Call,
-                text = stringResource(R.string.call),
-                onClick = { context.callPhoneNumber(applicant.phone) }
+        with (applicant) {
+            VitesseAsyncImage(
+                applicant = applicant,
+                imageLoader = imageLoader,
+                context = context,
+                modifier = Modifier
+                    .height(195.dp)
+                    .padding(14.dp)
             )
-            ApplicantDetailContact(
-                icon = ImageVector.vectorResource(R.drawable.chat_24px),
-                text = stringResource(R.string.sms),
-                onClick = { context.sendSms(applicant.phone) }
-            )
-            ApplicantDetailContact(
-                icon = Icons.Outlined.Email,
-                text = stringResource(R.string.email),
-                onClick = { context.sendEmail(applicant.email) }
-            )
-        }
-        ApplicantDetailCard(header = stringResource(R.string.about)){
-            TextBodyLarge(text = applicant.birthDate?.toLocalDateString()?:"")
-            TextBodyMedium(
-                text = stringResource(R.string.birthday),
-                modifier = Modifier.padding(bottom = 11.dp)
-            )
-        }
-        ApplicantDetailCard(header = stringResource(R.string.expected_salary)){
-            TextBodyLarge(
-                text = applicant.salary.toLocalCurrencyString(),
-                modifier = Modifier.padding(bottom = 32.dp)
-            )
-            TextBodyMedium(text = (stringResource(
-                R.string.or,
-                (applicant.salary * currency.eur.gbp).toBritishPoundString())
-                    ))
-        }
-        ApplicantDetailCard(
-            header = stringResource(R.string.notes),
-            modifier = Modifier.padding(bottom = 30.dp)
-        ){
-            TextBodyMedium(text = applicant.note)
+            Row(
+                horizontalArrangement = Arrangement.Center
+            ){
+                ApplicantDetailContact(
+                    icon = Icons.Outlined.Call,
+                    text = stringResource(R.string.call),
+                    onClick = { context.callPhoneNumber(phone) }
+                )
+                ApplicantDetailContact(
+                    icon = ImageVector.vectorResource(R.drawable.chat_24px),
+                    text = stringResource(R.string.sms),
+                    onClick = { context.sendSms(phone) }
+                )
+                ApplicantDetailContact(
+                    icon = Icons.Outlined.Email,
+                    text = stringResource(R.string.email),
+                    onClick = { context.sendEmail(email) }
+                )
+            }
+            ApplicantDetailCard(header = stringResource(R.string.about)){
+                TextBodyLarge(text = birthDate?.run{
+                    stringResource(R.string.years_old, toLocalDateString(), getAge())
+                }?:"")
+                TextBodyMedium(
+                    text = stringResource(R.string.birthday),
+                    modifier = Modifier.padding(bottom = 11.dp)
+                )
+            }
+            ApplicantDetailCard(header = stringResource(R.string.expected_salary)){
+                TextBodyLarge(
+                    text = salary.toLocalCurrencyString(),
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
+                TextBodyMedium(text = (stringResource(
+                    R.string.or, (salary * currency.eur.gbp).toBritishPoundString()
+                )))
+            }
+            ApplicantDetailCard(
+                header = stringResource(R.string.notes),
+                modifier = Modifier.padding(bottom = 30.dp)
+            ){
+                TextBodyMedium(text = note)
+            }
         }
     }
 }
