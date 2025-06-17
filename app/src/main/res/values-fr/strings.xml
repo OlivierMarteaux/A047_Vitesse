@@ -10,7 +10,7 @@
     <string name="sms">SMS</string>
     <string name="email">Email</string>
     <string name="about">A propos</string>
-    <string name="salary_expectations">Prétentions salariales</string>
+    <string name="expected_salary">Prétentions salariales</string>
     <string name="notes">Notes</string>
     <string name="add_applicant_screen">Ecran d\'ajout d\'un candidat</string>
     <string name="first_name">Prénom</string>
@@ -26,4 +26,7 @@
     <string name="are_you_sure_you_want_to_delete_this_candidate_this_action_cannot_be_undone">Etes-vous sûr de vouloir supprimer ce candidat? Cette action est irréversible.</string>
     <string name="confirm">Confirmer</string>
     <string name="cancel">Annuler</string>
+    <string name="add_a_candidate">Ajouter un candidat</string>
+    <string name="mandatory_field">Champ obligatoire</string>
+    <string name="invalid_format">Invalid format</string>
 </resources>

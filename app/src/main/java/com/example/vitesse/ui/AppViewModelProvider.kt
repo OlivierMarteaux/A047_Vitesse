@@ -23,25 +23,32 @@ object AppViewModelProvider {
 
         // Initializer for HomeViewModel
         initializer {
-            HomeViewModel(vitesseApplication().container.applicantRepository)
+            HomeViewModel(
+                applicantRepository = vitesseApplication().container.applicantRepository
+            )
         }
 
         // Initializer for AddViewModel
         initializer {
-            AddApplicantViewModel(vitesseApplication().container.applicantRepository)
+            AddApplicantViewModel(
+                applicantRepository = vitesseApplication().container.applicantRepository
+            )
         }
 
         // Initializer for EditViewModel
         initializer {
-            EditApplicantViewModel(vitesseApplication().container.applicantRepository)
+            EditApplicantViewModel(
+                savedStateHandle = this.createSavedStateHandle(),
+                applicantRepository = vitesseApplication().container.applicantRepository
+            )
         }
 
         // Initializer for DetailViewModel
         initializer {
             ApplicantDetailViewModel(
-                this.createSavedStateHandle(),
-                vitesseApplication().container.applicantRepository,
-                vitesseApplication().container.currencyRepository
+                savedStateHandle = this.createSavedStateHandle(),
+                applicantRepository = vitesseApplication().container.applicantRepository,
+                currencyRepository = vitesseApplication().container.currencyRepository
             )
         }
     }

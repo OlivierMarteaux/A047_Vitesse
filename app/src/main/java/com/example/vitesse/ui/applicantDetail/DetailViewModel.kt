@@ -37,7 +37,7 @@ class ApplicantDetailViewModel(
     var uiState: ApplicantDetailUiState by mutableStateOf(ApplicantDetailUiState())
         private set
 
-    fun update(applicant: Applicant){
+    fun updateApplicant(applicant: Applicant){
         viewModelScope.launch {
             applicantRepository.upsertApplicant(applicant)
         }
