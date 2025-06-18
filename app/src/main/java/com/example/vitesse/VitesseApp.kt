@@ -12,6 +12,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,7 +21,6 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TooltipScope
 import androidx.compose.material3.TooltipState
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -81,13 +81,13 @@ fun VitesseTopAppBar(
             style = MaterialTheme.typography.titleLarge
         )
         },
-        colors = TopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            scrolledContainerColor = Color.Transparent,
-        ),
+//        colors = TopAppBarColors(
+//            containerColor = MaterialTheme.colorScheme.surface,
+//            titleContentColor = MaterialTheme.colorScheme.onSurface,
+//            navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+//            actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+//            scrolledContainerColor = Color.Transparent,
+//        ),
         modifier = modifier.windowInsetsPadding(WindowInsets(4,8,4,8)),
         navigationIcon = { VitesseIconButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
@@ -105,7 +105,7 @@ fun VitesseIconButton(
     icon: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    tooltip: @Composable TooltipScope.() -> Unit = {}
+    tooltip: @Composable TooltipScope.() -> Unit = {},
 ){
     VitesseTooltipBox(tooltip = tooltip) {
         IconButton(
@@ -131,7 +131,8 @@ fun VitesseIconToggle(
         IconToggleButton(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            modifier = modifier
+            modifier = modifier,
+            colors = IconButtonDefaults.iconToggleButtonColors(checkedContentColor = MaterialTheme.colorScheme.onPrimary)
         ) {
             if (checked) VitesseIcon(iconChecked)
             else VitesseIcon(iconUnchecked)
@@ -161,7 +162,7 @@ fun VitesseIcon(
     Icon(
         imageVector = icon,
         contentDescription = null,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -198,7 +199,7 @@ fun TextTitleMedium (
     Text(
         text = text,
         style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onSurface,
+//        color = MaterialTheme.colorScheme.onSurface,
         modifier = modifier
     )
 }
@@ -211,7 +212,7 @@ fun TextBodyLarge (
     Text(
         text = text,
         style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurface,
+//        color = MaterialTheme.colorScheme.onSurface,
         modifier = modifier
     )
 }
@@ -225,7 +226,7 @@ fun TextBodyMedium (
     Text(
         text = text,
         style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+//        color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = modifier,
         maxLines = maxLines,
         overflow = TextOverflow.Ellipsis
@@ -254,7 +255,7 @@ fun TextLabelLarge(
     Text(
         text = text,
         style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+//        color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = modifier
     )
 }
@@ -267,7 +268,7 @@ fun TextHeadLineLarge(
     Text(
         text = text,
         style = MaterialTheme.typography.headlineLarge,
-        color = MaterialTheme.colorScheme.onSurface,
+//        color = MaterialTheme.colorScheme.onSurface,
         modifier = modifier
     )
 }
