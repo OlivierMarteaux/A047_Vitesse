@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DisplayMode
@@ -283,14 +282,16 @@ fun AddOrEditApplicantCard(
             singleLine = true,
             shape = MaterialTheme.shapes.extraSmall,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.outline,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface,
-                focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                focusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+//                focusedBorderColor = MaterialTheme.colorScheme.outline,
+//                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedPlaceholderColor = MaterialTheme.colorScheme.outline,
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.outline,
+                errorPlaceholderColor = MaterialTheme.colorScheme.outline,
+                focusedTextColor = MaterialTheme.colorScheme.scrim,
+                unfocusedTextColor = MaterialTheme.colorScheme.scrim,
+                errorTextColor = MaterialTheme.colorScheme.scrim,
+                focusedLabelColor = MaterialTheme.colorScheme.outline,
+                unfocusedLabelColor = MaterialTheme.colorScheme.outline,
             ),
             keyboardOptions = KeyboardOptions(
                 imeAction = imeAction,
@@ -351,10 +352,11 @@ fun DockedDatePicker(
                         modifier = Modifier.padding(start = 24.dp, bottom = 16.dp),
                     )
                 },
-                colors = DatePickerDefaults.colors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                ),
-                modifier = Modifier.clip(shape = MaterialTheme.shapes.extraLarge)
+//                colors = DatePickerDefaults.colors(
+//                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+//                ),
+                modifier = Modifier.clip(shape = MaterialTheme.shapes.extraLarge),
+                colors = DatePickerDefaults.colors()
             )
 
             // a surface to make the outlinedTextField Read-Only and clickable:
@@ -386,7 +388,7 @@ fun DatePickerTextField(
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     Card(
 //        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
-        colors = CardDefaults.cardColors(containerColor = Color.Gray),
+//        colors = CardDefaults.cardColors(containerColor = Color.Gray),
         modifier = modifier.padding(start = 53.dp, top = 120.dp, end = 14.dp)
     ) {
         var text by remember { mutableStateOf(value) }
@@ -496,8 +498,8 @@ fun SaveApplicantFab(
     enabled: Boolean = false,
 ){
     FloatingActionButton(
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
+//        containerColor = MaterialTheme.colorScheme.primary,
+//        contentColor = MaterialTheme.colorScheme.onPrimary,
         onClick = if (enabled) onClick else ({}),
         shape = CircleShape,
         modifier = Modifier

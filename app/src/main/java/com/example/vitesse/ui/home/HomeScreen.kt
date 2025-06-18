@@ -84,8 +84,8 @@ fun HomeScreen(
         modifier = modifier,
         floatingActionButton = {
             FloatingActionButton(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                contentColor = MaterialTheme.colorScheme.primary,
+//                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+//                contentColor = MaterialTheme.colorScheme.primary,
                 onClick = navigateToAddApplicant,
                 modifier = Modifier.padding(bottom = 16.dp)
             ) {
@@ -161,6 +161,7 @@ fun ApplicantSearchBar(
                 leadingIcon = null,
                 trailingIcon = { Icon(Icons.Filled.Search, stringResource(R.string.search)) },
                 interactionSource = null,
+                colors = SearchBarDefaults.inputFieldColors(cursorColor = MaterialTheme.colorScheme.onPrimaryContainer),
             )
         },
         expanded = false,
@@ -199,8 +200,8 @@ fun ApplicantTabs(
                 onClick = { selectedTabIndex = index },
                 text = { Text(
                     text = title,
-                    color = if (selectedTabIndex == index) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurfaceVariant,
+//                    color = if (selectedTabIndex == index) MaterialTheme.colorScheme.primary
+//                            else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontFamily = Roboto,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,

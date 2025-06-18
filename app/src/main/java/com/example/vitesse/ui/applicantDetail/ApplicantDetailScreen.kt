@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,8 +23,8 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -240,11 +240,11 @@ fun ApplicantDetailCard(
     content: @Composable () -> Unit
 ){
     Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface
-            ),
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
+//        colors = CardDefaults.cardColors(
+//            containerColor = MaterialTheme.colorScheme.surface,
+//            contentColor = MaterialTheme.colorScheme.onSurface
+//            ),
+//        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
         shape = MaterialTheme.shapes.medium,
         modifier = modifier
             .fillMaxWidth()
@@ -284,6 +284,10 @@ fun ApplicantDetailContact(
                     color = MaterialTheme.colorScheme.primary,
                     shape = CircleShape
                 )
+                .background(
+                    color = MaterialTheme.colorScheme.secondary,
+                    shape = CircleShape
+                )
                 .padding(8.dp)
         )
         TextBodySmall(text = text)
@@ -304,12 +308,13 @@ fun DeleteConfirmationDialog(
             Text(stringResource(R.string.are_you_sure_you_want_to_delete_this_candidate_this_action_cannot_be_undone))
         },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
+            TextButton(onClick = onConfirm, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
                 Text(stringResource(R.string.confirm) /*color = Color.Red*/)
             }
         },
+        containerColor = MaterialTheme.colorScheme.primary,
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = onDismiss, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
                 Text(stringResource(R.string.cancel))
             }
         }
