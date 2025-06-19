@@ -43,7 +43,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -191,10 +190,24 @@ fun ApplicantDetailBody(
                     .padding(top = 7.dp, bottom = 22.dp),
                 contentDescription = null
             )
+//            Image(
+//                painter = rememberAsyncImagePainter(
+//                    model = ImageRequest.Builder(LocalContext.current)
+//                        .data(photoUri?:R.drawable.placeholder)
+//                        .crossfade(false)
+//                        .build()
+//                ),
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier
+//                    .height(dimensionResource(R.dimen.image_height))
+//                    .padding(top = 7.dp, bottom = 22.dp),
+//                contentDescription = null
+//            )
 //            VitesseAsyncImage(
-//                applicant = applicant,
+//                photoUri = photoUri,
 //                imageLoader = imageLoader,
 //                context = context,
+//                crossfade = false,
 //                modifier = Modifier
 //                    .height(195.dp)
 //                    .padding(14.dp)
@@ -337,17 +350,17 @@ fun DeleteConfirmationDialog(
 @Composable
 fun VitesseAsyncImage(
     modifier: Modifier = Modifier,
-    applicant: Applicant,
+    photoUri: String? = null,
     imageLoader: ImageLoader,
     context: Context,
     contentScale: ContentScale = ContentScale.Fit,
+    crossfade: Boolean = true
 ){
-    val uri = applicant.photoUri
     val request = ImageRequest.Builder(context = context)
-        .data(uri)
+        .data(photoUri?:R.drawable.placeholder)
         .size(Size.ORIGINAL)
         .scale(Scale.FILL)
-        .crossfade(true)
+        .crossfade(crossfade)
         .build()
     AsyncImage(
         model = request,
@@ -359,9 +372,9 @@ fun VitesseAsyncImage(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ApplicantDetailScreenPreview(){
-    ApplicantDetailScreen()
-}
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun ApplicantDetailScreenPreview(){
+//    ApplicantDetailScreen()
+//}

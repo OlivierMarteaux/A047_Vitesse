@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.ImageLoader
 import com.example.vitesse.R
@@ -74,9 +73,9 @@ fun EditApplicantScreen (
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun EditApplicantScreenPreview(){
-    EditApplicantScreen()
-}
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun EditApplicantScreenPreview(){
+//    EditApplicantScreen()
+//}

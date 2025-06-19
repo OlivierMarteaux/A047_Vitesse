@@ -149,7 +149,7 @@ fun AddOrEditApplicantBody(
     onApplicantEdit: (Applicant) -> Unit,
     imageLoader: ImageLoader,
     context: Context,
-    datePicker: @Composable () -> Unit
+    datePicker: @Composable () -> Unit,
 ){
 //    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -170,6 +170,12 @@ fun AddOrEditApplicantBody(
         applicant.run {
                 Image(
                     painter = rememberAsyncImagePainter(photoUri?:R.drawable.placeholder),
+//                    painter = rememberAsyncImagePainter(
+//                        model = ImageRequest.Builder(LocalContext.current)
+//                            .data(photoUri?:R.drawable.placeholder)
+//                            .crossfade(false)
+//                            .build()
+//                    ),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .clickable {
@@ -183,6 +189,22 @@ fun AddOrEditApplicantBody(
                         .padding(top = 7.dp, bottom = 22.dp),
                     contentDescription = null
                 )
+//            VitesseAsyncImage(
+//                photoUri = photoUri,
+//                imageLoader = imageLoader,
+//                context = context,
+//                crossfade = false,
+//                modifier = Modifier
+//                    .height(dimensionResource(R.dimen.image_height))
+//                    .padding(14.dp)
+//                    .clickable {
+//                        imagePickerLauncher.launch(
+//                            PickVisualMediaRequest(
+//                                PickVisualMedia.ImageOnly
+//                            )
+//                        )
+//                    }
+//            )
 //            VitesseAsyncImage(
 //                applicant = applicant,
 //                imageLoader = imageLoader,
