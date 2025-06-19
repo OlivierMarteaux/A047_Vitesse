@@ -31,7 +31,8 @@ class AddApplicantViewModel(private val applicantRepository: ApplicantRepository
                 firstName.isNotBlank() &&
                         lastName.isNotBlank() &&
                         phone.isNotBlank() &&
-                        email.run{ isNotBlank() && isValidEmail() }
+                        email.run{ isNotBlank() && isValidEmail() } &&
+                        birthDate != null
             }
         )
     }
