@@ -44,7 +44,8 @@ class EditApplicantViewModel (
                         lastName.isNotBlank() &&
                         phone.isNotBlank() &&
                         email.isNotBlank() &&
-                        email.isValidEmail()
+                        email.isValidEmail() &&
+                        birthDate != null
             }
         )
     }
