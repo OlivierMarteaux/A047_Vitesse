@@ -82,6 +82,7 @@ import extensions.isValidEmail
 import extensions.toLocalDateString
 import extensions.toLong
 import extensions.upTo
+import utils.debugLog
 import java.io.File
 import java.io.FileOutputStream
 import java.time.Instant
@@ -235,7 +236,6 @@ fun AddOrEditApplicantBody(
 //                    onValueChange = { onApplicantEdit(copy(birthDate = it)) },
 //                )
 //            }
-            Log.d("OM_TAG", "1)$birthDate")
             AddOrEditApplicantCard(
                 icon = ImageVector.vectorResource(id = R.drawable.money_24dp),
                 label = stringResource(R.string.expected_salary),
@@ -316,7 +316,7 @@ fun DockedDatePicker(
     onValueChange: (LocalDate) -> Unit,
 ) {
 
-    Log.d("OM_TAG", "initialDate: ${initialDate?.toLocalDateString()?:"null"}")
+    debugLog("AddorEditApplicantScreen: DockedDatePicker: initialDate: ${initialDate?.toLocalDateString()?:"null"}")
 
     // a date picker state that allows only past dates to be selected.
     val datePickerState = rememberDatePickerState(
@@ -525,12 +525,12 @@ fun VitesseImagePicker(
             // Callback is invoked after the user selects a media item or closes the
             // photo picker.
             pickedUri?.let { uri ->
-                Log.d("OM_TAG:PhotoPicker", "Picked URI: $uri")
+                Log.d("OM_TAG", "VitesseImagePicker: picked URI: $uri")
                 val persistentUri = copyImageToInternalStorage(context, uri)
 //                onImagePicked(it)
                 persistentUri?.let { onImagePicked(it) }
-                Log.d("OM_TAG:PhotoPicker", "Persistent URI: $persistentUri")
-            } ?: Log.d("OM_TAG:PhotoPicker", "No media selected")
+                Log.d("OM_TAG", "VitesseImagePicker: Persistent URI: $persistentUri")
+            } ?: Log.d("OM_TAG", "VitesseImagePicker: No media selected")
         }
     return pickMedia
 }

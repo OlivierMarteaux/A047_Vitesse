@@ -17,6 +17,7 @@ import com.example.vitesse.ui.editApplicant.EditApplicantDestination
 import com.example.vitesse.ui.editApplicant.EditApplicantScreen
 import com.example.vitesse.ui.home.HomeDestination
 import com.example.vitesse.ui.home.HomeScreen
+import utils.debugLog
 
 /**
  * Provides Navigation graph for the application.
@@ -34,8 +35,14 @@ fun VitesseNavHost(
     ){
         composable(route = HomeDestination.route) {
             HomeScreen(
-                navigateToApplicantDetail = { navController.navigate("${ApplicantDetailDestination.route}/${it}") },
-                navigateToAddApplicant = { navController.navigate(AddApplicantDestination.route) }
+                navigateToApplicantDetail = {
+                    navController.navigate("${ApplicantDetailDestination.route}/${it}")
+                    debugLog("NavHost: HomeScreen: Navigating to ${ApplicantDetailDestination.route}/$it")
+                                            },
+                navigateToAddApplicant = {
+                    navController.navigate(AddApplicantDestination.route)
+                    debugLog("NavHost: HomeScreen: Navigating to ${AddApplicantDestination.route}")
+                }
             )
         }
         composable(
@@ -44,8 +51,14 @@ fun VitesseNavHost(
                 type = NavType.IntType})
         ){
             ApplicantDetailScreen(
-                navigateBack = { navController.popBackStack() },
-                navigateToEditApplicant = { navController.navigate("${EditApplicantDestination.route}/$it") }
+                navigateBack = {
+                    navController.popBackStack()
+                    debugLog("NavHost: DetailScreen: Navigating back")
+                               },
+                navigateToEditApplicant = {
+                    navController.navigate("${EditApplicantDestination.route}/$it")
+                    debugLog("NavHost: DetailScreen: Navigating to ${EditApplicantDestination.route}/$it")
+                }
             )
         }
         composable(
@@ -54,15 +67,19 @@ fun VitesseNavHost(
                 type = NavType.IntType})
         ){
             EditApplicantScreen(
-                navigateBack = { navController.popBackStack() },
-//                onNavigateUp = { navController.navigateUp() }
+                navigateBack = {
+                    navController.popBackStack()
+                    debugLog("NavHost: EditScreen: Navigating back")
+                               },
             )
         }
         composable(
             route = AddApplicantDestination.route){
             AddApplicantScreen(
-                navigateBack = { navController.popBackStack() }
-//                onNavigateUp = { navController.navigateUp() }
+                navigateBack = {
+                    navController.popBackStack()
+                    debugLog("NavHost: AddScreen: Navigating back")
+                }
             )
         }
     }

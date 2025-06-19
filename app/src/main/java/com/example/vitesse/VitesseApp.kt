@@ -1,7 +1,6 @@
 package com.example.vitesse
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
@@ -58,8 +57,6 @@ fun VitesseApp(
     val contentResolver = context.contentResolver
     contentResolver.openInputStream(resourceUri)?.use { inputStream ->
         val bytes = inputStream.readBytes()  // reading the raw bytes
-        Log.d("OM_TAG: placeholder uri", "uri = $resourceUri")
-        Log.d("OM_TAG: placeholder uri", "Resource file size: ${bytes.size} bytes")
     }
 
     DismissKeyboardOnTapOutside {

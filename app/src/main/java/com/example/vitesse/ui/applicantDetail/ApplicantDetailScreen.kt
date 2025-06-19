@@ -2,7 +2,6 @@ package com.example.vitesse.ui.applicantDetail
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -92,7 +91,6 @@ fun ApplicantDetailScreen (
     val context = LocalContext.current
     val imageLoader: ImageLoader = VitesseApplication().newImageLoader(context)
     val applicant = viewModel.uiState.applicant
-    Log.d("OM_TAG", "applicant: $applicant")
     val currency = viewModel.uiState.currency
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
@@ -135,7 +133,6 @@ fun ApplicantDetailScreen (
                     onClick = {
                         viewModel.updateApplicantFavoriteState();
                         navigateToEditApplicant(applicant.id)
-                        Log.d("OM_TAG", "ApplicantDetailScreen: navigateToEditApplicant: $applicant")
                               },
                     modifier = modifier,
                     tooltip = { Text(text = stringResource(R.string.edit)) }

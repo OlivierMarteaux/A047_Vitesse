@@ -1,7 +1,6 @@
 package com.example.vitesse.ui.editApplicant
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +34,6 @@ class EditApplicantViewModel (
                 uiState = ApplicantUiState(applicant = it, isEnabled = true)
             }
         }
-        Log.d("OM_TAG", "EditApplicantViewModel: init: ${uiState.applicant}")
     }
 
     fun updateApplicant(applicant: Applicant){
