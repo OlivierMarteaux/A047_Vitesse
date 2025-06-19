@@ -44,7 +44,6 @@ fun VitesseNavHost(
                 type = NavType.IntType})
         ){
             ApplicantDetailScreen(
-//                navigateBack = { navController.navigateUp() },
                 navigateBack = { navController.popBackStack() },
                 navigateToEditApplicant = { navController.navigate("${EditApplicantDestination.route}/$it") }
             )

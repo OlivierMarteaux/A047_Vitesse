@@ -63,7 +63,10 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
      * Logs an error if an exception occurs.
      */
     suspend fun deleteApplicant(applicant: Applicant) =
-        try { applicantDao.deleteApplicant(applicant)}
+        try {
+            applicantDao.deleteApplicant(applicant)
+            Log.d("OM_TAG", "ApplicantRepository.deleteApplicant(): $applicant")
+        }
         catch (e: Exception) { Log.e("OM:ApplicantRepository.deleteApplicant", e.message.toString())}
 
     /**

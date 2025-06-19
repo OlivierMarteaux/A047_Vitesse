@@ -16,6 +16,7 @@ import com.example.vitesse.data.model.ApplicantFts
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.util.concurrent.Executors
 
 /**
  * The Room database for the Vitesse app.
@@ -75,6 +76,9 @@ abstract class VitesseDatabase: RoomDatabase() {
                         VitesseDatabase::class.java,
                         "vitesse_database.db"
                     )
+                    .setQueryCallback({ sqlQuery, bindArgs ->
+                        Log.d("SQL_QUERY", "SQL: $sqlQuery args: $bindArgs")
+                    }, Executors.newSingleThreadExecutor())
                     .addCallback(VitesseDatabaseCallback(coroutineScope))
                     .build()
                 INSTANCE = instance

@@ -31,7 +31,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -97,12 +96,14 @@ fun ApplicantDetailScreen (
     val currency = viewModel.uiState.currency
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
-    // Save when screen is disposed
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModel.updateApplicant()
-        }
-    }
+// FIXED: this function re-insert the just-deleted applicant when navigate back to home after deletion.
+//  -> shall not be used
+//    // Save when screen is disposed
+//    DisposableEffect(Unit) {
+//        onDispose {
+//            viewModel.updateApplicantFavoriteState()
+//        }
+//    }
 
     if (showConfirmationDialog) {
         DeleteConfirmationDialog(
@@ -119,7 +120,7 @@ fun ApplicantDetailScreen (
         topBar = { VitesseTopAppBar(
             title = applicant.run { "$firstName ${lastName.uppercase()}" },
             modifier = Modifier,
-            navigateBack = navigateBack,
+            navigateBack = { viewModel.updateApplicantFavoriteState(); navigateBack() },
             actions = {
                 VitesseIconToggle(
                     iconChecked = Icons.Outlined.Star,
@@ -131,7 +132,11 @@ fun ApplicantDetailScreen (
                 )
                 VitesseIconButton(
                     icon = Icons.Outlined.Edit,
-                    onClick = { navigateToEditApplicant(applicant.id) },
+                    onClick = {
+                        viewModel.updateApplicantFavoriteState();
+                        navigateToEditApplicant(applicant.id)
+                        Log.d("OM_TAG", "ApplicantDetailScreen: navigateToEditApplicant: $applicant")
+                              },
                     modifier = modifier,
                     tooltip = { Text(text = stringResource(R.string.edit)) }
                 )
