@@ -250,6 +250,7 @@ fun AddOrEditApplicantBody(
                 onValueChange = { onApplicantEdit(copy(note = it)) },
                 value = note,
                 imeAction = ImeAction.Done,
+                singleLine = false
             )
         }
     }
@@ -267,6 +268,7 @@ fun AddOrEditApplicantCard(
     keyboardType: KeyboardType = KeyboardType.Text,
     errorText: String = "null",
     isError: Boolean = false,
+    singleLine: Boolean = true
 ){
     Row(
         modifier = modifier.padding(bottom = 45.dp),
@@ -279,7 +281,7 @@ fun AddOrEditApplicantCard(
             onValueChange = onValueChange,
             label = {Text(label)},
             placeholder = { Text(label) },
-            singleLine = true,
+            singleLine = singleLine,
             shape = MaterialTheme.shapes.extraSmall,
             colors = OutlinedTextFieldDefaults.colors(
 //                focusedBorderColor = MaterialTheme.colorScheme.outline,
