@@ -3,6 +3,7 @@ package com.example.vitesse.ui.applicantDetail
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.size.Scale
@@ -180,14 +183,22 @@ fun ApplicantDetailBody(
 //            contentDescription = null
 //        )
         with (applicant) {
-            VitesseAsyncImage(
-                applicant = applicant,
-                imageLoader = imageLoader,
-                context = context,
+            Image(
+                painter = rememberAsyncImagePainter(photoUri?:R.drawable.placeholder),
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .height(195.dp)
-                    .padding(14.dp)
+                    .height(dimensionResource(R.dimen.image_height))
+                    .padding(top = 7.dp, bottom = 22.dp),
+                contentDescription = null
             )
+//            VitesseAsyncImage(
+//                applicant = applicant,
+//                imageLoader = imageLoader,
+//                context = context,
+//                modifier = Modifier
+//                    .height(195.dp)
+//                    .padding(14.dp)
+//            )
             Row(
                 horizontalArrangement = Arrangement.Center
             ){
