@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -50,6 +49,7 @@ import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.components.DockedDatePicker
 import com.example.vitesse.ui.components.VitesseIcon
 import com.example.vitesse.ui.components.VitesseTopAppBar
+import com.example.vitesse.ui.components.texts.TextLabelLarge
 import com.example.vitesse.ui.components.vitesseImagePicker
 import com.example.vitesse.ui.navigation.NavigationDestination
 import extensions.isValidEmail
@@ -70,24 +70,23 @@ fun AddApplicantScreen(
     val applicant: Applicant = viewModel.uiState.applicant
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         topBar = {
             VitesseTopAppBar(
                 title = stringResource(R.string.add_a_candidate),
-                modifier = Modifier,
                 navigateBack = navigateBack,
             )
         },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
             AddOrEditApplicantFab(
-            enabled = viewModel.uiState.isSaveable,
-            onClick = { viewModel.saveNewApplicant(); navigateBack() }
-        )
+                enabled = viewModel.uiState.isSaveable,
+                onClick = { viewModel.saveNewApplicant(); navigateBack() }
+            )
         }
-    ) { topAppBarPadding ->
+    ) { innerPadding ->
         AddOrEditApplicantBody(
-            modifier = modifier.padding(topAppBarPadding),
+            modifier = modifier.padding(innerPadding),
             applicant = viewModel.uiState.applicant,
             onApplicantEdit = viewModel::updateUiState,
         ){
@@ -260,8 +259,5 @@ fun AddOrEditApplicantFab(
             .padding(horizontal = 24.dp)
             .padding(bottom = 16.dp)
             .alpha(if (enabled) 1f else 0.5f),
-    ){ Text(
-        text = stringResource(R.string.save),
-        style = MaterialTheme.typography.labelLarge
-    )}
+    ){ TextLabelLarge(stringResource(R.string.save)) }
 }

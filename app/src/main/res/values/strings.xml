@@ -38,4 +38,6 @@
     <string name="call_autorization_needed">Call autorization needed</string>
     <string name="call_permission_needed_text">You need to grant call permission to call applicant from app. \nDo you want to go to Settings to grant this permission?</string>
     <string name="save">Save</string>
+    <string name="add_an_applicant">Add an applicant</string>
+    <string name="error">Erreur</string>
 </resources>

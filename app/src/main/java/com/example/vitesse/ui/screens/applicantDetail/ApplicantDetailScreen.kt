@@ -128,40 +128,38 @@ fun ApplicantDetailScreen (
     }
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = { VitesseTopAppBar(
-            title = applicant.run { "$firstName ${lastName.uppercase()}" },
-            modifier = Modifier,
-            navigateBack = { viewModel.updateApplicantFavoriteState(); navigateBack() },
-            actions = {
-                VitesseIconToggle(
-                    iconChecked = Icons.Outlined.Star,
-                    iconUnchecked = ImageVector.vectorResource(R.drawable.star_24dp),
-                    checked = viewModel.isFavorite,
-                    onCheckedChange = { viewModel.toggleFavorite() },
-                    modifier = modifier,
-                    tooltip = { Text(text = stringResource(R.string.favorites)) }
-                )
-                VitesseIconButton(
-                    icon = Icons.Outlined.Edit,
-                    onClick = {
-                        viewModel.updateApplicantFavoriteState()
-                        navigateToEditApplicant(applicant.id)
-                              },
-                    modifier = modifier,
-                    tooltip = { Text(text = stringResource(R.string.edit)) }
-                )
-                VitesseIconButton(
-                    icon = Icons.Outlined.Delete,
-                    onClick = { showDeleteConfirmationDialog = true },
-                    modifier = modifier,
-                    tooltip = { Text(text = stringResource(R.string.delete)) }
-                )
-            }
-        ) },
-    ){ topAppBarPadding ->
+        modifier = modifier,
+        topBar = {
+            VitesseTopAppBar(
+                title = applicant.run { "$firstName ${lastName.uppercase()}" },
+                navigateBack = { viewModel.updateApplicantFavoriteState(); navigateBack() },
+                actions = {
+                    VitesseIconToggle(
+                        iconChecked = Icons.Outlined.Star,
+                        iconUnchecked = ImageVector.vectorResource(R.drawable.star_24dp),
+                        checked = viewModel.isFavorite,
+                        onCheckedChange = { viewModel.toggleFavorite() },
+                        tooltip = { Text(stringResource(R.string.favorites)) }
+                    )
+                    VitesseIconButton(
+                        icon = Icons.Outlined.Edit,
+                        onClick = {
+                            viewModel.updateApplicantFavoriteState()
+                            navigateToEditApplicant(applicant.id)
+                                  },
+                        tooltip = { Text(stringResource(R.string.edit)) }
+                    )
+                    VitesseIconButton(
+                        icon = Icons.Outlined.Delete,
+                        onClick = { showDeleteConfirmationDialog = true },
+                        tooltip = { Text(stringResource(R.string.delete)) }
+                    )
+                }
+            )
+        }
+    ){ innerPadding ->
         ApplicantDetailBody(
-            modifier = modifier.padding(topAppBarPadding),
+            modifier = modifier.padding(innerPadding),
             applicant = applicant,
             exchangeRate = exchangeRate,
             showCallAlertDialog = viewModel::showCallAlertDialog,

@@ -84,19 +84,17 @@ fun HomeScreen(
         modifier = modifier,
         floatingActionButton = {
             FloatingActionButton(
-//                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-//                contentColor = MaterialTheme.colorScheme.primary,
                 onClick = navigateToAddApplicant,
                 modifier = Modifier.padding(bottom = 16.dp)
             ) {
-                Icon(Icons.Filled.Add, "Localized description")
+                Icon(Icons.Filled.Add, stringResource(R.string.add_an_applicant))
             }
         }
     ){ innerPadding ->
         HomeBody(
             applicantList = applicantList,
             query = query,
-            modifier = modifier
+            modifier = Modifier
                 .consumeWindowInsets(innerPadding)
                 .fillMaxSize(),
             contentPadding = innerPadding,
@@ -119,19 +117,16 @@ private fun HomeBody(
         modifier = modifier
             .padding(contentPadding)
             .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
         HomeSearchBar(
             query = query,
             onQueryChange = viewModel::updateQuery,
-            modifier = Modifier,
         )
         HomeTabs(
             homeUiState = viewModel.uiState,
             applicantList = applicantList,
             navigateToApplicantDetail = navigateToApplicantDetail,
-            modifier = modifier,
         )
     }
 }
@@ -152,22 +147,15 @@ fun HomeSearchBar(
                 onSearch = {},
                 expanded = false,
                 onExpandedChange = onActiveChange,
-                enabled = true,
                 placeholder = { Text(text = stringResource(R.string.search)) },
-                leadingIcon = null,
                 trailingIcon = { Icon(Icons.Filled.Search, stringResource(R.string.search)) },
-                interactionSource = null,
                 colors = SearchBarDefaults.inputFieldColors(cursorColor = MaterialTheme.colorScheme.onPrimaryContainer),
             )
         },
         expanded = false,
         onExpandedChange = onActiveChange,
         modifier = modifier.padding(horizontal = 24.dp),
-        shape = SearchBarDefaults.inputFieldShape,
         colors = SearchBarDefaults.colors(MaterialTheme.colorScheme.surfaceContainerHigh),
-        tonalElevation = SearchBarDefaults.TonalElevation,
-        shadowElevation = SearchBarDefaults.ShadowElevation,
-        windowInsets = SearchBarDefaults.windowInsets,
         content = {},
     )
 }
@@ -185,7 +173,7 @@ fun HomeTabs(
 
     PrimaryTabRow(
         selectedTabIndex = selectedTabIndex,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(10.dp),
         containerColor = Color.Transparent,
@@ -196,8 +184,6 @@ fun HomeTabs(
                 onClick = { selectedTabIndex = index },
                 text = { Text(
                     text = title,
-//                    color = if (selectedTabIndex == index) MaterialTheme.colorScheme.primary
-//                            else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontFamily = Roboto,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
@@ -213,14 +199,12 @@ fun HomeTabs(
             homeUiState = homeUiState,
             applicantList = applicantList,
             navigateToApplicantDetail = navigateToApplicantDetail,
-            modifier = modifier,
         )
 
         1 -> HomeCardList(
             homeUiState = homeUiState,
             applicantList = applicantList.filter{it.isFavorite},
             navigateToApplicantDetail = navigateToApplicantDetail,
-            modifier = modifier,
         )
     }
 }
@@ -234,50 +218,22 @@ fun HomeCardList(
 ){
     when (homeUiState) {
         is Success -> {
-            LazyColumn(modifier = modifier) {
+            LazyColumn(modifier) {
                 items(applicantList) { applicant ->
                     val interactionSource = remember { MutableInteractionSource() }
                     HomeCard(
                         applicant = applicant,
-                        modifier = modifier.clickable(
+                        modifier = Modifier.clickable(
                             interactionSource = interactionSource,
                             indication = ripple(color = MaterialTheme.colorScheme.primary),
-                            ){navigateToApplicantDetail(applicant.id)},
+                            ){ navigateToApplicantDetail(applicant.id) },
                         )
                 }
             }
         }
-        is Loading -> {
-            Column(
-                modifier = modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                ) { CircularProgressIndicator() }
-        }
-        is Empty -> {
-            Column(
-                modifier = modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                Text(
-                    text = stringResource(R.string.no_candidate),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        }
-        is Error -> {
-            Column(
-                modifier = modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = "error",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        }
+        is Loading -> { HomeStateColumn(modifier) { CircularProgressIndicator() } }
+        is Empty -> { HomeStateColumn(modifier) { TextBodyLarge(stringResource(R.string.no_candidate)) } }
+        is Error -> { HomeStateColumn(modifier) { TextBodyLarge(stringResource(R.string.error))} }
     }
 }
 
@@ -288,7 +244,9 @@ fun HomeCard(
 ){
     with(applicant){
         Row(
-            modifier = modifier.padding(start = 16.dp, top = 12.dp, end = 24.dp, bottom =12.dp),
+            modifier = modifier
+                .padding(start = 16.dp, top = 12.dp, end = 24.dp, bottom =12.dp)
+                .fillMaxWidth(),
         ){
             Image(
                 painter = rememberAsyncImagePainter(photoUri?:R.drawable.placeholder),
@@ -300,11 +258,20 @@ fun HomeCard(
             )
             Column(modifier = Modifier.padding(start = 16.dp)){
                 TextBodyLarge("$firstName ${lastName.uppercase()}")
-                TextBodyMedium(
-                    text = note,
-                    maxLines = 2,
-                    )
+                TextBodyMedium(text = note, maxLines = 2)
             }
         }
     }
+}
+
+@Composable
+fun HomeStateColumn(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) { content() }
 }
