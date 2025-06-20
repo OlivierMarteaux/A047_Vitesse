@@ -1,4 +1,4 @@
-package utils
+package com.example.vitesse.ui.components.startup
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box

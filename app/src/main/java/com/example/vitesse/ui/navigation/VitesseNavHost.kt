@@ -33,6 +33,8 @@ fun VitesseNavHost(
         startDestination = HomeDestination.route,
         modifier = modifier
     ){
+
+        // Home Screen
         composable(route = HomeDestination.route) {
             HomeScreen(
                 navigateToApplicantDetail = {
@@ -45,13 +47,14 @@ fun VitesseNavHost(
                 }
             )
         }
+
+        // Applicant Detail Screen
         composable(
             route = ApplicantDetailDestination.routeWithArgs,
             arguments = listOf(navArgument(ApplicantDetailDestination.ApplicantIdArg){
                 type = NavType.IntType})
-        ){ //backStackEntry ->
+        ){
             ApplicantDetailScreen(
-//                navController = navController,
                 navigateBack = {
                     navController.popBackStack()
                     debugLog("NavHost: DetailScreen: Navigating back")
@@ -63,19 +66,21 @@ fun VitesseNavHost(
             )
         }
 
+        // Edit Applicant Screen
         composable(
             route = EditApplicantDestination.routeWithArgs,
             arguments = listOf(navArgument(EditApplicantDestination.ApplicantIdArg){
                 type = NavType.IntType})
         ){
             EditApplicantScreen(
-//                navController = navController,
                 navigateBack = {
                     navController.popBackStack()
                     debugLog("NavHost: EditScreen: Navigating back")
                                },
             )
         }
+
+        // Add Applicant Screen
         composable(
             route = AddApplicantDestination.route){
             AddApplicantScreen(

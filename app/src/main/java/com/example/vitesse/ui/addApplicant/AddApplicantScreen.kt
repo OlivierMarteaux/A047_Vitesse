@@ -65,12 +65,12 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.rememberAsyncImagePainter
 import com.example.vitesse.R
-import com.example.vitesse.TextHeadLineLarge
-import com.example.vitesse.TextLabelLarge
-import com.example.vitesse.VitesseIcon
-import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.AppViewModelProvider
+import com.example.vitesse.ui.components.VitesseIcon
+import com.example.vitesse.ui.components.VitesseTopAppBar
+import com.example.vitesse.ui.components.texts.TextHeadLineLarge
+import com.example.vitesse.ui.components.texts.TextLabelLarge
 import com.example.vitesse.ui.navigation.NavigationDestination
 import extensions.isValidEmail
 import extensions.toLocalDateString

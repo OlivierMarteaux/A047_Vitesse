@@ -50,10 +50,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.rememberAsyncImagePainter
 import com.example.vitesse.R
-import com.example.vitesse.TextBodyLarge
-import com.example.vitesse.TextBodyMedium
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.AppViewModelProvider
+import com.example.vitesse.ui.components.texts.TextBodyLarge
+import com.example.vitesse.ui.components.texts.TextBodyMedium
 import com.example.vitesse.ui.home.HomeUiState.Empty
 import com.example.vitesse.ui.home.HomeUiState.Error
 import com.example.vitesse.ui.home.HomeUiState.Loading

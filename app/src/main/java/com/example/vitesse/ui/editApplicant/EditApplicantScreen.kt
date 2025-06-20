@@ -13,11 +13,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
-import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.addApplicant.AddOrEditApplicantBody
 import com.example.vitesse.ui.addApplicant.DockedDatePicker
 import com.example.vitesse.ui.addApplicant.SaveApplicantFab
+import com.example.vitesse.ui.components.VitesseTopAppBar
 import com.example.vitesse.ui.navigation.NavigationDestination
 
 object EditApplicantDestination : NavigationDestination {
