@@ -1,10 +1,10 @@
-package com.example.vitesse.ui.addApplicant
+package com.example.vitesse.ui.screens.addApplicant
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.example.vitesse.data.repository.ApplicantRepository
-import com.example.vitesse.ui.common.AddOrEditApplicantViewModel
+import com.example.vitesse.ui.screens.common.AddOrEditApplicantViewModel
 import kotlinx.coroutines.launch
 
 

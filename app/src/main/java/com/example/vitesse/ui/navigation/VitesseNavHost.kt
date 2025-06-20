@@ -9,14 +9,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.vitesse.ui.addApplicant.AddApplicantDestination
-import com.example.vitesse.ui.addApplicant.AddApplicantScreen
-import com.example.vitesse.ui.applicantDetail.ApplicantDetailDestination
-import com.example.vitesse.ui.applicantDetail.ApplicantDetailScreen
-import com.example.vitesse.ui.editApplicant.EditApplicantDestination
-import com.example.vitesse.ui.editApplicant.EditApplicantScreen
-import com.example.vitesse.ui.home.HomeDestination
-import com.example.vitesse.ui.home.HomeScreen
+import com.example.vitesse.ui.screens.addApplicant.AddApplicantDestination
+import com.example.vitesse.ui.screens.addApplicant.AddApplicantScreen
+import com.example.vitesse.ui.screens.applicantDetail.ApplicantDetailDestination
+import com.example.vitesse.ui.screens.applicantDetail.ApplicantDetailScreen
+import com.example.vitesse.ui.screens.editApplicant.EditApplicantDestination
+import com.example.vitesse.ui.screens.editApplicant.EditApplicantScreen
+import com.example.vitesse.ui.screens.home.HomeDestination
+import com.example.vitesse.ui.screens.home.HomeScreen
 import utils.debugLog
 
 /**

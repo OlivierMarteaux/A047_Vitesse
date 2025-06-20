@@ -1,4 +1,4 @@
-package com.example.vitesse.ui.common
+package com.example.vitesse.ui.screens.common
 
 import android.os.Build
 import androidx.annotation.RequiresApi

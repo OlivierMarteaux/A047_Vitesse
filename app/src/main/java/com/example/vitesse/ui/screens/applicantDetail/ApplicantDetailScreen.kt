@@ -1,4 +1,4 @@
-package com.example.vitesse.ui.applicantDetail
+package com.example.vitesse.ui.screens.applicantDetail
 
 import android.content.Context
 import android.os.Build
@@ -22,14 +22,11 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +48,7 @@ import com.example.vitesse.R
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.model.ExchangeRate
 import com.example.vitesse.ui.AppViewModelProvider
+import com.example.vitesse.ui.components.VitesseAlertDialog
 import com.example.vitesse.ui.components.VitesseIconButton
 import com.example.vitesse.ui.components.VitesseIconToggle
 import com.example.vitesse.ui.components.VitesseTopAppBar
@@ -307,55 +305,3 @@ fun ApplicantDetailContact(
     }
 }
 
-@Composable
-fun VitesseAlertDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-    modifier: Modifier = Modifier,
-    title: String,
-    text: String,
-    dismissText: String,
-    confirmText: String,
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = title) },
-        text = { Text(text) },
-        confirmButton = {
-            TextButton(onClick = onConfirm, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
-                Text(confirmText)
-            }
-        },
-        containerColor = MaterialTheme.colorScheme.primary,
-        dismissButton = {
-            TextButton(onClick = onDismiss, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
-                Text(dismissText)
-            }
-        },
-        modifier = modifier
-    )
-}
-
-//@Composable
-//fun VitesseAsyncImage(
-//    modifier: Modifier = Modifier,
-//    photoUri: String? = null,
-//    imageLoader: ImageLoader,
-//    context: Context,
-//    contentScale: ContentScale = ContentScale.Fit,
-//    crossfade: Boolean = true
-//){
-//    val request = ImageRequest.Builder(context = context)
-//        .data(photoUri?:R.drawable.placeholder)
-//        .size(Size.ORIGINAL)
-//        .scale(Scale.FILL)
-//        .crossfade(crossfade)
-//        .build()
-//    AsyncImage(
-//        model = request,
-//        imageLoader = imageLoader,
-//        contentDescription = null,
-//        contentScale = contentScale,
-//        modifier = modifier
-//    )
-//}

@@ -1,4 +1,4 @@
-package com.example.vitesse.ui.applicantDetail
+package com.example.vitesse.ui.screens.applicantDetail
 
 import android.os.Build
 import android.util.Log

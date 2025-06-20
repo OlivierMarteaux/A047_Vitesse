@@ -1,4 +1,4 @@
-package com.example.vitesse.ui.home
+package com.example.vitesse.ui.screens.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -54,11 +54,11 @@ import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.components.texts.TextBodyLarge
 import com.example.vitesse.ui.components.texts.TextBodyMedium
-import com.example.vitesse.ui.home.HomeUiState.Empty
-import com.example.vitesse.ui.home.HomeUiState.Error
-import com.example.vitesse.ui.home.HomeUiState.Loading
-import com.example.vitesse.ui.home.HomeUiState.Success
 import com.example.vitesse.ui.navigation.NavigationDestination
+import com.example.vitesse.ui.screens.home.HomeUiState.Empty
+import com.example.vitesse.ui.screens.home.HomeUiState.Error
+import com.example.vitesse.ui.screens.home.HomeUiState.Loading
+import com.example.vitesse.ui.screens.home.HomeUiState.Success
 import com.example.vitesse.ui.theme.Roboto
 
 object HomeDestination : NavigationDestination {
@@ -122,12 +122,12 @@ private fun HomeBody(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        ApplicantSearchBar(
+        HomeSearchBar(
             query = query,
             onQueryChange = viewModel::updateQuery,
             modifier = Modifier,
         )
-        ApplicantTabs(
+        HomeTabs(
             homeUiState = viewModel.uiState,
             applicantList = applicantList,
             navigateToApplicantDetail = navigateToApplicantDetail,
@@ -138,7 +138,7 @@ private fun HomeBody(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ApplicantSearchBar(
+fun HomeSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -174,7 +174,7 @@ fun ApplicantSearchBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ApplicantTabs(
+fun HomeTabs(
     homeUiState: HomeUiState,
     applicantList: List<Applicant>,
     navigateToApplicantDetail: (Int) -> Unit,
@@ -209,14 +209,14 @@ fun ApplicantTabs(
     }
     // Tab content
     when (selectedTabIndex) {
-        0 -> ApplicantCardList(
+        0 -> HomeCardList(
             homeUiState = homeUiState,
             applicantList = applicantList,
             navigateToApplicantDetail = navigateToApplicantDetail,
             modifier = modifier,
         )
 
-        1 -> ApplicantCardList(
+        1 -> HomeCardList(
             homeUiState = homeUiState,
             applicantList = applicantList.filter{it.isFavorite},
             navigateToApplicantDetail = navigateToApplicantDetail,
@@ -226,7 +226,7 @@ fun ApplicantTabs(
 }
 
 @Composable
-fun ApplicantCardList(
+fun HomeCardList(
     homeUiState: HomeUiState,
     applicantList: List<Applicant>,
     navigateToApplicantDetail: (Int) -> Unit,
@@ -237,7 +237,7 @@ fun ApplicantCardList(
             LazyColumn(modifier = modifier) {
                 items(applicantList) { applicant ->
                     val interactionSource = remember { MutableInteractionSource() }
-                    ApplicantCard(
+                    HomeCard(
                         applicant = applicant,
                         modifier = modifier.clickable(
                             interactionSource = interactionSource,
@@ -282,7 +282,7 @@ fun ApplicantCardList(
 }
 
 @Composable
-fun ApplicantCard(
+fun HomeCard(
     applicant: Applicant,
     modifier: Modifier = Modifier,
 ){

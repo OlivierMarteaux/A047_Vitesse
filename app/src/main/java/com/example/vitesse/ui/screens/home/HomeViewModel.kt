@@ -1,4 +1,4 @@
-package com.example.vitesse.ui.home
+package com.example.vitesse.ui.screens.home
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
