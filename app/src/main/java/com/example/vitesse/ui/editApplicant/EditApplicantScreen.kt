@@ -9,13 +9,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.ImageLoader
 import com.example.vitesse.R
-import com.example.vitesse.VitesseApplication
 import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.addApplicant.AddOrEditApplicantBody
@@ -37,8 +34,6 @@ fun EditApplicantScreen (
     navigateBack: () -> Unit = {},
     viewModel: EditApplicantViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
-    val context = LocalContext.current
-    val imageLoader: ImageLoader = VitesseApplication().newImageLoader(context)
     val applicant = viewModel.uiState.applicant
 
     Scaffold(
@@ -51,16 +46,14 @@ fun EditApplicantScreen (
         ) },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {SaveApplicantFab(
-            enabled = viewModel.uiState.isEnabled,
-            onClick = { viewModel.saveApplicant(); navigateBack() }
+            enabled = viewModel.uiState.isSaveable,
+            onClick = { viewModel.saveEditedApplicant(); navigateBack() }
         )}
     ){ topAppBarPadding ->
         AddOrEditApplicantBody(
             modifier = modifier.padding(topAppBarPadding),
             applicant = viewModel.uiState.applicant,
-            onApplicantEdit = viewModel::updateUiState,
-            imageLoader = imageLoader,
-            context = context,
+            onApplicantEdit = viewModel::updateUiState
         ){
             applicant.birthDate?.let{
                 DockedDatePicker(

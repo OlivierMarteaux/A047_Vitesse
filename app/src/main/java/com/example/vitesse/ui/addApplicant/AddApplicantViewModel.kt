@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.O)
 data class ApplicantUiState(
     val applicant: Applicant = Applicant(),
-    val isEnabled: Boolean = false
+    val isSaveable: Boolean = false
 )
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -27,7 +27,7 @@ class AddApplicantViewModel(private val applicantRepository: ApplicantRepository
     fun updateUiState(applicant: Applicant){
         uiState = uiState.copy(
             applicant = applicant,
-            isEnabled = with(applicant) {
+            isSaveable = with(applicant) {
                 firstName.isNotBlank() &&
                         lastName.isNotBlank() &&
                         phone.isNotBlank() &&
@@ -37,7 +37,7 @@ class AddApplicantViewModel(private val applicantRepository: ApplicantRepository
         )
     }
 
-    fun saveApplicant() {
+    fun saveNewApplicant() {
         viewModelScope.launch {
             applicantRepository.insertApplicant(uiState.applicant)
         }

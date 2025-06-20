@@ -96,7 +96,6 @@ fun HomeScreen(
         HomeBody(
             applicantList = applicantList,
             query = query,
-            onItemClick = { /*TODO*/ },
             modifier = modifier
                 .consumeWindowInsets(innerPadding)
                 .fillMaxSize(),
@@ -109,10 +108,8 @@ fun HomeScreen(
 
 @Composable
 private fun HomeBody(
-//    homeUiState: HomeUiState,
     applicantList: List<Applicant>,
     query: String,
-    onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     viewModel: HomeViewModel,
@@ -146,8 +143,7 @@ fun ApplicantSearchBar(
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ){
-    val onActiveChange = { active: Boolean ->}
-    val colors1 = SearchBarDefaults.colors()
+    val onActiveChange = { _: Boolean ->}
     SearchBar(
         inputField = {
             SearchBarDefaults.InputField(
@@ -166,7 +162,7 @@ fun ApplicantSearchBar(
         },
         expanded = false,
         onExpandedChange = onActiveChange,
-        modifier = modifier.padding(horizontal = 24.dp, ),
+        modifier = modifier.padding(horizontal = 24.dp),
         shape = SearchBarDefaults.inputFieldShape,
         colors = SearchBarDefaults.colors(MaterialTheme.colorScheme.surfaceContainerHigh),
         tonalElevation = SearchBarDefaults.TonalElevation,

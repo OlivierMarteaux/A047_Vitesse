@@ -37,4 +37,5 @@
     <string name="calls_denied">Calls denied</string>
     <string name="call_autorization_needed">Call autorization needed</string>
     <string name="call_permission_needed_text">You need to grant call permission to call applicant from app. \nDo you want to go to Settings to grant this permission?</string>
+    <string name="save">Save</string>
 </resources>

@@ -22,24 +22,16 @@ class EditApplicantViewModel (
     private val applicantRepository: ApplicantRepository,
 ): ViewModel() {
 
-    var uiState by mutableStateOf(ApplicantUiState(isEnabled = true))
+    var uiState by mutableStateOf(ApplicantUiState(isSaveable = true))
         private set
 
     private val applicantId: Int = checkNotNull(savedStateHandle[EditApplicantDestination.ApplicantIdArg])
     private val getApplicantById: Flow<Applicant> = applicantRepository.getApplicantById(this.applicantId).filterNotNull()
 
-    init {
-        viewModelScope.launch {
-            getApplicantById.collect {
-                uiState = ApplicantUiState(applicant = it, isEnabled = true)
-            }
-        }
-    }
-
     fun updateUiState(applicant: Applicant){
         uiState = uiState.copy(
             applicant = applicant,
-            isEnabled = with(applicant) {
+            isSaveable = with(applicant) {
                 firstName.isNotBlank() &&
                         lastName.isNotBlank() &&
                         phone.isNotBlank() &&
@@ -50,9 +42,17 @@ class EditApplicantViewModel (
         )
     }
 
-    fun saveApplicant(){
+    fun saveEditedApplicant(){
         viewModelScope.launch {
             applicantRepository.updateApplicant(uiState.applicant)
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            getApplicantById.collect {
+                uiState = ApplicantUiState(applicant = it, isSaveable = true)
+            }
         }
     }
 }

@@ -37,4 +37,5 @@
     <string name="calls_denied">Autorisation d\'appeler refusée</string>
     <string name="call_autorization_needed">Autorisation d\'appeler nécessaire</string>
     <string name="call_permission_needed_text">L\'autorisation d\'appeler est nécessaire pour appeler les candidats depuis l\'application. \nSouhaitez-vous aller dans les Réglages pour donner cette permission? </string>
+    <string name="save">Save</string>
 </resources>

@@ -43,19 +43,14 @@ class ApplicantDetailViewModel(
     var callAlertDialog by mutableStateOf(false)
         private set
 
-    fun showCallAlertDialog(state: Boolean){
-        callAlertDialog = state
-    }
+    fun showCallAlertDialog(state: Boolean){ callAlertDialog = state }
+    fun toggleFavorite() { isFavorite = !isFavorite }
 
     fun updateApplicantFavoriteState(){
         viewModelScope.launch {
-        val applicant = uiState.applicant.copy(isFavorite = isFavorite)
+            val applicant = uiState.applicant.copy(isFavorite = isFavorite)
             applicantRepository.updateApplicant(applicant)
         }
-    }
-
-    fun toggleFavorite() {
-        isFavorite = !isFavorite
     }
 
     fun deleteApplicant(applicant: Applicant){

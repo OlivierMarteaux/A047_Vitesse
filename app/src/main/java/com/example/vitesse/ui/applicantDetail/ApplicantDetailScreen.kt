@@ -46,19 +46,12 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
-import coil3.request.ImageRequest
-import coil3.request.crossfade
-import coil3.size.Scale
-import coil3.size.Size
 import com.example.vitesse.R
 import com.example.vitesse.TextBodyLarge
 import com.example.vitesse.TextBodyMedium
 import com.example.vitesse.TextBodySmall
 import com.example.vitesse.TextTitleMedium
-import com.example.vitesse.VitesseApplication
 import com.example.vitesse.VitesseIconButton
 import com.example.vitesse.VitesseIconToggle
 import com.example.vitesse.VitesseTopAppBar
@@ -95,12 +88,10 @@ fun ApplicantDetailScreen (
     viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     val context = LocalContext.current
-    val imageLoader: ImageLoader = VitesseApplication().newImageLoader(context)
     val applicant = viewModel.uiState.applicant
     val exchangeRate = viewModel.uiState.exchangeRate
     var showDeleteConfirmationDialog by remember { mutableStateOf(false)}
     val showCallAlertDialog = viewModel.callAlertDialog
-
 
 // FIXED: this function re-insert the just-deleted applicant when navigate back to home after deletion.
 //  -> shall not be used
@@ -148,15 +139,15 @@ fun ApplicantDetailScreen (
                 VitesseIconToggle(
                     iconChecked = Icons.Outlined.Star,
                     iconUnchecked = ImageVector.vectorResource(R.drawable.star_24dp),
-                    checked = viewModel.isFavorite,//applicant.isFavorite,
-                    onCheckedChange = { viewModel.toggleFavorite() },//{ viewModel.updateApplicant(applicant.copy(isFavorite = !applicant.isFavorite)) },
+                    checked = viewModel.isFavorite,
+                    onCheckedChange = { viewModel.toggleFavorite() },
                     modifier = modifier,
                     tooltip = { Text(text = stringResource(R.string.favorites)) }
                 )
                 VitesseIconButton(
                     icon = Icons.Outlined.Edit,
                     onClick = {
-                        viewModel.updateApplicantFavoriteState();
+                        viewModel.updateApplicantFavoriteState()
                         navigateToEditApplicant(applicant.id)
                               },
                     modifier = modifier,
@@ -175,8 +166,8 @@ fun ApplicantDetailScreen (
             modifier = modifier.padding(topAppBarPadding),
             applicant = applicant,
             exchangeRate = exchangeRate,
-            imageLoader = imageLoader,
             showCallAlertDialog = viewModel::showCallAlertDialog,
+            context = context
         )
     }
 }
@@ -187,10 +178,9 @@ fun ApplicantDetailBody(
     modifier: Modifier = Modifier,
     applicant: Applicant,
     exchangeRate: ExchangeRate,
-    imageLoader: ImageLoader,
     showCallAlertDialog: (Boolean) -> Unit,
+    context: Context
 ){
-    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -198,14 +188,6 @@ fun ApplicantDetailBody(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-//        Image(
-//            painter = rememberAsyncImagePainter(applicant.photoUri),
-//            contentScale = ContentScale.Crop,
-//            modifier = Modifier
-//                .height(195.dp)
-//                .padding(14.dp),
-//            contentDescription = null
-//        )
         with (applicant) {
             Image(
                 painter = rememberAsyncImagePainter(photoUri?:R.drawable.placeholder),
@@ -215,28 +197,6 @@ fun ApplicantDetailBody(
                     .padding(top = 7.dp, bottom = 22.dp),
                 contentDescription = null
             )
-//            Image(
-//                painter = rememberAsyncImagePainter(
-//                    model = ImageRequest.Builder(LocalContext.current)
-//                        .data(photoUri?:R.drawable.placeholder)
-//                        .crossfade(false)
-//                        .build()
-//                ),
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier
-//                    .height(dimensionResource(R.dimen.image_height))
-//                    .padding(top = 7.dp, bottom = 22.dp),
-//                contentDescription = null
-//            )
-//            VitesseAsyncImage(
-//                photoUri = photoUri,
-//                imageLoader = imageLoader,
-//                context = context,
-//                crossfade = false,
-//                modifier = Modifier
-//                    .height(195.dp)
-//                    .padding(14.dp)
-//            )
             Row(
                 horizontalArrangement = Arrangement.Center
             ){
@@ -298,11 +258,6 @@ fun ApplicantDetailCard(
     content: @Composable () -> Unit
 ){
     Card(
-//        colors = CardDefaults.cardColors(
-//            containerColor = MaterialTheme.colorScheme.surface,
-//            contentColor = MaterialTheme.colorScheme.onSurface
-//            ),
-//        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
         shape = MaterialTheme.shapes.medium,
         modifier = modifier
             .fillMaxWidth()
@@ -376,38 +331,31 @@ fun VitesseAlertDialog(
             TextButton(onClick = onDismiss, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
                 Text(dismissText)
             }
-        }
-    )
-}
-
-@Composable
-fun VitesseAsyncImage(
-    modifier: Modifier = Modifier,
-    photoUri: String? = null,
-    imageLoader: ImageLoader,
-    context: Context,
-    contentScale: ContentScale = ContentScale.Fit,
-    crossfade: Boolean = true
-){
-    val request = ImageRequest.Builder(context = context)
-        .data(photoUri?:R.drawable.placeholder)
-        .size(Size.ORIGINAL)
-        .scale(Scale.FILL)
-        .crossfade(crossfade)
-        .build()
-    AsyncImage(
-        model = request,
-        imageLoader = imageLoader,
-        contentDescription = null,
-        contentScale = contentScale,
+        },
         modifier = modifier
     )
 }
 
-
-//@RequiresApi(Build.VERSION_CODES.O)
-//@Preview(showBackground = true, showSystemUi = true)
 //@Composable
-//fun ApplicantDetailScreenPreview(){
-//    ApplicantDetailScreen()
+//fun VitesseAsyncImage(
+//    modifier: Modifier = Modifier,
+//    photoUri: String? = null,
+//    imageLoader: ImageLoader,
+//    context: Context,
+//    contentScale: ContentScale = ContentScale.Fit,
+//    crossfade: Boolean = true
+//){
+//    val request = ImageRequest.Builder(context = context)
+//        .data(photoUri?:R.drawable.placeholder)
+//        .size(Size.ORIGINAL)
+//        .scale(Scale.FILL)
+//        .crossfade(crossfade)
+//        .build()
+//    AsyncImage(
+//        model = request,
+//        imageLoader = imageLoader,
+//        contentDescription = null,
+//        contentScale = contentScale,
+//        modifier = modifier
+//    )
 //}
