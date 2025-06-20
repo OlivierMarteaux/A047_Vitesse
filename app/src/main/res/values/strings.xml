@@ -32,4 +32,9 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="years_old">%1$s (%2$s years old)</string>
+    <string name="call_feature_message">As you denied authorization to call from application you won\'t be able to call applicant from app.\nGo to settings if you want to enable this feature.</string>
+    <string name="ok">OK</string>
+    <string name="calls_denied">Calls denied</string>
+    <string name="call_autorization_needed">Call autorization needed</string>
+    <string name="call_permission_needed_text">You need to grant call permission to call applicant from app. \nDo you want to go to Settings to grant this permission?</string>
 </resources>

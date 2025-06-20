@@ -40,6 +40,12 @@ class ApplicantDetailViewModel(
         private set
     var isFavorite by mutableStateOf(false)
         private set
+    var callAlertDialog by mutableStateOf(false)
+        private set
+
+    fun showCallAlertDialog(state: Boolean){
+        callAlertDialog = state
+    }
 
     fun updateApplicantFavoriteState(){
         viewModelScope.launch {

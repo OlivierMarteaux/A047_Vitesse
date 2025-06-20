@@ -24,15 +24,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.vitesse.ui.navigation.VitesseNavHost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import utils.DismissKeyboardOnTapOutside
+import utils.RequestPermissionsOnFirstLaunch
 
 /**
  * Top level composable that represents screens for the application.
@@ -42,6 +41,8 @@ import utils.DismissKeyboardOnTapOutside
 fun VitesseApp(
     navController: NavHostController = rememberNavController()
 ) {
+    RequestPermissionsOnFirstLaunch()
+
     // Set status bar color to white and use dark icons
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
@@ -49,15 +50,15 @@ fun VitesseApp(
         darkIcons = true
     )
 
-    // Constructing a Resource URI for "placeholder" in the drawable folder
-    val context = LocalContext.current
-    val packageName = context.packageName   // e.g., "com.example.myapp"
-    val resourceUri = "android.resource://$packageName/drawable/placeholder".toUri()
-    // Opeening Uri via contentResolver
-    val contentResolver = context.contentResolver
-    contentResolver.openInputStream(resourceUri)?.use { inputStream ->
-        val bytes = inputStream.readBytes()  // reading the raw bytes
-    }
+//    // Constructing a Resource URI for "placeholder" in the drawable folder
+//    val context = LocalContext.current
+//    val packageName = context.packageName   // e.g., "com.example.myapp"
+//    val resourceUri = "android.resource://$packageName/drawable/placeholder".toUri()
+//    // Opeening Uri via contentResolver
+//    val contentResolver = context.contentResolver
+//    contentResolver.openInputStream(resourceUri)?.use { inputStream ->
+//        val bytes = inputStream.readBytes()  // reading the raw bytes
+//    }
 
     DismissKeyboardOnTapOutside {
         VitesseNavHost(navController = navController)

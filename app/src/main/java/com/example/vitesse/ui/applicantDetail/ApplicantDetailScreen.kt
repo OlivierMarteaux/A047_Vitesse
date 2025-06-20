@@ -75,6 +75,7 @@ import extensions.toGbpString
 import extensions.toLocalCurrencyString
 import extensions.toLocalDateString
 import utils.debugLog
+import utils.openAppSettings
 import java.util.Locale
 
 object ApplicantDetailDestination : NavigationDestination {
@@ -97,7 +98,9 @@ fun ApplicantDetailScreen (
     val imageLoader: ImageLoader = VitesseApplication().newImageLoader(context)
     val applicant = viewModel.uiState.applicant
     val exchangeRate = viewModel.uiState.exchangeRate
-    var showConfirmationDialog by remember { mutableStateOf(false) }
+    var showDeleteConfirmationDialog by remember { mutableStateOf(false)}
+    val showCallAlertDialog = viewModel.callAlertDialog
+
 
 // FIXED: this function re-insert the just-deleted applicant when navigate back to home after deletion.
 //  -> shall not be used
@@ -108,13 +111,30 @@ fun ApplicantDetailScreen (
 //        }
 //    }
 
-    if (showConfirmationDialog) {
-        DeleteConfirmationDialog(
+    if (showDeleteConfirmationDialog) {
+        VitesseAlertDialog(
             onConfirm = {
                 viewModel.deleteApplicant(applicant)
                 navigateBack()
             },
-            onDismiss = { showConfirmationDialog = false }
+            onDismiss = { showDeleteConfirmationDialog = false },
+            modifier = modifier,
+            title = stringResource(R.string.deletion),
+            text = stringResource(R.string.are_you_sure_you_want_to_delete_this_candidate_this_action_cannot_be_undone),
+            dismissText = stringResource(R.string.cancel),
+            confirmText = stringResource(R.string.confirm)
+        )
+    }
+
+    if (showCallAlertDialog) {
+        VitesseAlertDialog(
+            onConfirm = { viewModel.showCallAlertDialog(false); openAppSettings(context) },
+            onDismiss = { viewModel.showCallAlertDialog(false) },
+            modifier = modifier,
+            title = stringResource(R.string.call_autorization_needed),
+            text = stringResource(R.string.call_permission_needed_text),
+            dismissText = stringResource(R.string.cancel),
+            confirmText = stringResource(R.string.ok)
         )
     }
 
@@ -144,7 +164,7 @@ fun ApplicantDetailScreen (
                 )
                 VitesseIconButton(
                     icon = Icons.Outlined.Delete,
-                    onClick = { showConfirmationDialog = true },
+                    onClick = { showDeleteConfirmationDialog = true },
                     modifier = modifier,
                     tooltip = { Text(text = stringResource(R.string.delete)) }
                 )
@@ -155,7 +175,8 @@ fun ApplicantDetailScreen (
             modifier = modifier.padding(topAppBarPadding),
             applicant = applicant,
             exchangeRate = exchangeRate,
-            imageLoader = imageLoader
+            imageLoader = imageLoader,
+            showCallAlertDialog = viewModel::showCallAlertDialog,
         )
     }
 }
@@ -166,7 +187,8 @@ fun ApplicantDetailBody(
     modifier: Modifier = Modifier,
     applicant: Applicant,
     exchangeRate: ExchangeRate,
-    imageLoader: ImageLoader
+    imageLoader: ImageLoader,
+    showCallAlertDialog: (Boolean) -> Unit,
 ){
     val context = LocalContext.current
     Column(
@@ -221,7 +243,10 @@ fun ApplicantDetailBody(
                 ApplicantDetailContact(
                     icon = Icons.Outlined.Call,
                     text = stringResource(R.string.call),
-                    onClick = { context.callPhoneNumber(phone) }
+                    onClick = {
+                        try { context.callPhoneNumber(phone) }
+                        catch (e: Exception) { showCallAlertDialog(true) }
+                    }
                 )
                 ApplicantDetailContact(
                     icon = ImageVector.vectorResource(R.drawable.chat_24px),
@@ -300,7 +325,7 @@ fun ApplicantDetailCard(
 fun ApplicantDetailContact(
     icon: ImageVector,
     text: String,
-    onClick: () -> Unit,
+    onClick:  () -> Unit,
     modifier: Modifier = Modifier
 ){
     Column(
@@ -328,27 +353,28 @@ fun ApplicantDetailContact(
 }
 
 @Composable
-fun DeleteConfirmationDialog(
+fun VitesseAlertDialog(
     onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    title: String,
+    text: String,
+    dismissText: String,
+    confirmText: String,
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = {
-            Text(text = stringResource(R.string.deletion))
-        },
-        text = {
-            Text(stringResource(R.string.are_you_sure_you_want_to_delete_this_candidate_this_action_cannot_be_undone))
-        },
+        title = { Text(text = title) },
+        text = { Text(text) },
         confirmButton = {
             TextButton(onClick = onConfirm, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
-                Text(stringResource(R.string.confirm) /*color = Color.Red*/)
+                Text(confirmText)
             }
         },
         containerColor = MaterialTheme.colorScheme.primary,
         dismissButton = {
             TextButton(onClick = onDismiss, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
-                Text(stringResource(R.string.cancel))
+                Text(dismissText)
             }
         }
     )
