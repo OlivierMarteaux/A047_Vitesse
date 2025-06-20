@@ -40,21 +40,20 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
         try {
             applicantDao.getAllApplicants()
         } catch (e: Exception) { Log.e("OM:ApplicantRepository.getAllApplicants", e.message.toString()); emptyFlow()}
-//    fun getAllApplicants(): DatabaseState<Flow<List<Applicant>>> =
-//        try {
-//            DatabaseState.Loading
-//            DatabaseState.Success(applicantDao.getAllApplicants())
-//        } catch (e: Exception) { DatabaseState.Error(e) }
 
-    /**
-     * Inserts a new [Applicant] or updates it if it already exists.
-     *
-     * @param applicant The applicant to add.
-     * Logs an error if an exception occurs.
-     */
+    /* fixed: Avoid using upsert method to avoid hard-to-detect bugs
     suspend fun upsertApplicant(applicant: Applicant) =
         try {applicantDao.upsertApplicant(applicant)}
         catch (e: Exception) { Log.e("OM:ApplicantRepository.addApplicant", e.message.toString())}
+     */
+
+    suspend fun insertApplicant(applicant: Applicant) =
+        try {applicantDao.insertApplicant(applicant)}
+        catch (e: Exception) { Log.e("OM:ApplicantRepository.addApplicant", e.message.toString())}
+
+    suspend fun updateApplicant(applicant: Applicant) =
+        try {applicantDao.updateApplicant(applicant)}
+        catch (e: Exception) { Log.e("OM:ApplicantRepository.updateApplicant", e.message.toString())}
 
     /**
      * Deletes the specified [Applicant] from the database.
@@ -87,13 +86,4 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
             .filter { it.isNotBlank() }        // Remove empty strings
             .joinToString(" ") { "$it*" }      // Append '*' to each term
     }
-
-//    private suspend fun <T> databaseProcessing(function: () -> T): DatabaseState<T> =
-//        try {
-//            DatabaseState.Loading
-//            delay(1000)
-//            DatabaseState.Success(function())
-//        } catch (e: Exception) {
-//            DatabaseState.Error(e)
-//        }
 }

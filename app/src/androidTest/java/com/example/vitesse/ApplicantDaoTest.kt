@@ -99,7 +99,7 @@ class ApplicantDaoTest {
     @Test
     fun applicantDao_InsertApplicant_ReturnsCorrectApplicant() = runTest {
         // When adding an applicant to the database:
-        database.applicantDao().upsertApplicant(applicantList[0])
+        database.applicantDao().insertApplicant(applicantList[0])
         Log.d("OM:ApplicantDaoTest", "Applicant inserted")
         database.applicantDao().getApplicantById(1).test{
             // When the applicant is retrieved:

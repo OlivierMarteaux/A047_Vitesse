@@ -44,7 +44,7 @@ class ApplicantDetailViewModel(
     fun updateApplicantFavoriteState(){
         viewModelScope.launch {
         val applicant = uiState.applicant.copy(isFavorite = isFavorite)
-            applicantRepository.upsertApplicant(applicant)
+            applicantRepository.updateApplicant(applicant)
         }
     }
 
@@ -52,7 +52,7 @@ class ApplicantDetailViewModel(
         isFavorite = !isFavorite
     }
 
-    fun delete(applicant: Applicant){
+    fun deleteApplicant(applicant: Applicant){
         viewModelScope.launch {
             Log.d("OM_TAG", "DetailViewModel.delete(): $applicant")
             applicantRepository.deleteApplicant(applicant)

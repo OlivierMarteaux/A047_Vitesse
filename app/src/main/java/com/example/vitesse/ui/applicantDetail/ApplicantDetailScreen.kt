@@ -111,7 +111,7 @@ fun ApplicantDetailScreen (
     if (showConfirmationDialog) {
         DeleteConfirmationDialog(
             onConfirm = {
-                viewModel.delete(applicant)
+                viewModel.deleteApplicant(applicant)
                 navigateBack()
             },
             onDismiss = { showConfirmationDialog = false }

@@ -58,7 +58,7 @@ fun EditApplicantScreen (
         AddOrEditApplicantBody(
             modifier = modifier.padding(topAppBarPadding),
             applicant = viewModel.uiState.applicant,
-            onApplicantEdit = viewModel::updateApplicant,
+            onApplicantEdit = viewModel::updateUiState,
             imageLoader = imageLoader,
             context = context,
         ){
@@ -66,7 +66,7 @@ fun EditApplicantScreen (
                 DockedDatePicker(
                     initialDate = applicant.birthDate,
                     icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
-                    onValueChange = { viewModel.updateApplicant(applicant.copy(birthDate = it)) },
+                    onValueChange = { viewModel.updateUiState(applicant.copy(birthDate = it)) },
                     isError = false,
                     errorText = ""
                 )

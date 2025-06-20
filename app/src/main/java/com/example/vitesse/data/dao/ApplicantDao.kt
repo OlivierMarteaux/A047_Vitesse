@@ -2,7 +2,9 @@ package com.example.vitesse.data.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import com.example.vitesse.data.model.Applicant
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +22,12 @@ interface ApplicantDao {
 
     @Upsert
     suspend fun upsertApplicant(applicant: Applicant)
+
+    @Insert
+    suspend fun insertApplicant(applicant: Applicant)
+
+    @Update
+    suspend fun updateApplicant(applicant: Applicant)
 
     @Delete
     suspend fun deleteApplicant(applicant: Applicant)

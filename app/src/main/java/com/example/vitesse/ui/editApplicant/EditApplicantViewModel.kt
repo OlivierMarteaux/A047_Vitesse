@@ -36,7 +36,7 @@ class EditApplicantViewModel (
         }
     }
 
-    fun updateApplicant(applicant: Applicant){
+    fun updateUiState(applicant: Applicant){
         uiState = uiState.copy(
             applicant = applicant,
             isEnabled = with(applicant) {
@@ -52,7 +52,7 @@ class EditApplicantViewModel (
 
     fun saveApplicant(){
         viewModelScope.launch {
-            applicantRepository.upsertApplicant(uiState.applicant)
+            applicantRepository.updateApplicant(uiState.applicant)
         }
     }
 }

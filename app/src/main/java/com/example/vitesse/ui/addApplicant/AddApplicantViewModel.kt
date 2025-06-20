@@ -24,7 +24,7 @@ class AddApplicantViewModel(private val applicantRepository: ApplicantRepository
     var uiState by mutableStateOf(ApplicantUiState())
         private set
 
-    fun updateApplicant(applicant: Applicant){
+    fun updateUiState(applicant: Applicant){
         uiState = uiState.copy(
             applicant = applicant,
             isEnabled = with(applicant) {
@@ -39,7 +39,7 @@ class AddApplicantViewModel(private val applicantRepository: ApplicantRepository
 
     fun saveApplicant() {
         viewModelScope.launch {
-            applicantRepository.upsertApplicant(uiState.applicant)
+            applicantRepository.insertApplicant(uiState.applicant)
         }
     }
 }
