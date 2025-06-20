@@ -2,40 +2,16 @@ package com.example.vitesse.ui.addApplicant
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.repository.ApplicantRepository
-import extensions.isValidEmail
+import com.example.vitesse.ui.common.AddOrEditApplicantViewModel
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.O)
-data class ApplicantUiState(
-    val applicant: Applicant = Applicant(),
-    val isSaveable: Boolean = false
-)
 
 @RequiresApi(Build.VERSION_CODES.O)
-class AddApplicantViewModel(private val applicantRepository: ApplicantRepository): ViewModel() {
-
-    var uiState by mutableStateOf(ApplicantUiState())
-        private set
-
-    fun updateUiState(applicant: Applicant){
-        uiState = uiState.copy(
-            applicant = applicant,
-            isSaveable = with(applicant) {
-                firstName.isNotBlank() &&
-                        lastName.isNotBlank() &&
-                        phone.isNotBlank() &&
-                        email.run{ isNotBlank() && isValidEmail() } &&
-                        birthDate != null
-            }
-        )
-    }
+class AddApplicantViewModel(
+    private val applicantRepository: ApplicantRepository
+): AddOrEditApplicantViewModel() {
 
     fun saveNewApplicant() {
         viewModelScope.launch {
