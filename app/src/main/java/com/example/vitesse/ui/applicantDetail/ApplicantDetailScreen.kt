@@ -63,16 +63,19 @@ import com.example.vitesse.VitesseIconButton
 import com.example.vitesse.VitesseIconToggle
 import com.example.vitesse.VitesseTopAppBar
 import com.example.vitesse.data.model.Applicant
-import com.example.vitesse.data.model.Currency
+import com.example.vitesse.data.model.ExchangeRate
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.navigation.NavigationDestination
 import extensions.callPhoneNumber
 import extensions.getAge
 import extensions.sendEmail
 import extensions.sendSms
-import extensions.toBritishPoundString
+import extensions.toEurString
+import extensions.toGbpString
 import extensions.toLocalCurrencyString
 import extensions.toLocalDateString
+import utils.debugLog
+import java.util.Locale
 
 object ApplicantDetailDestination : NavigationDestination {
     override val route = "applicant_detail"
@@ -93,7 +96,7 @@ fun ApplicantDetailScreen (
     val context = LocalContext.current
     val imageLoader: ImageLoader = VitesseApplication().newImageLoader(context)
     val applicant = viewModel.uiState.applicant
-    val currency = viewModel.uiState.currency
+    val exchangeRate = viewModel.uiState.exchangeRate
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
 // FIXED: this function re-insert the just-deleted applicant when navigate back to home after deletion.
@@ -151,7 +154,7 @@ fun ApplicantDetailScreen (
         ApplicantDetailBody(
             modifier = modifier.padding(topAppBarPadding),
             applicant = applicant,
-            currency = currency,
+            exchangeRate = exchangeRate,
             imageLoader = imageLoader
         )
     }
@@ -162,7 +165,7 @@ fun ApplicantDetailScreen (
 fun ApplicantDetailBody(
     modifier: Modifier = Modifier,
     applicant: Applicant,
-    currency: Currency,
+    exchangeRate: ExchangeRate,
     imageLoader: ImageLoader
 ){
     val context = LocalContext.current
@@ -245,9 +248,13 @@ fun ApplicantDetailBody(
                     text = salary.toLocalCurrencyString(),
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
-                TextBodyMedium(text = (stringResource(
-                    R.string.or, (salary * currency.eur.gbp).toBritishPoundString()
-                )))
+                debugLog("LocalLanguage = ${Locale.getDefault().language}")
+                val foreignCurrencySalary : String = when (Locale.getDefault().language) {
+                    Locale.FRENCH.language -> (salary * exchangeRate.eur.gbp).toGbpString()
+                    Locale.ENGLISH.language -> (salary * exchangeRate.gbp.eur).toEurString()
+                    else -> (salary * exchangeRate.eur.gbp).toGbpString() // fallback to GBP
+                }
+                TextBodyMedium(text = (stringResource(R.string.or, foreignCurrencySalary)))
             }
             ApplicantDetailCard(
                 header = stringResource(R.string.notes),
