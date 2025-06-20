@@ -67,6 +67,8 @@ fun EditApplicantScreen (
                     initialDate = applicant.birthDate,
                     icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
                     onValueChange = { viewModel.updateApplicant(applicant.copy(birthDate = it)) },
+                    isError = false,
+                    errorText = ""
                 )
             }
         }

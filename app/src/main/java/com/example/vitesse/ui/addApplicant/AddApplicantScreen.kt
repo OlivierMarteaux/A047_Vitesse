@@ -134,6 +134,8 @@ fun AddApplicantScreen(
                 DockedDatePicker(
                     icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
                     onValueChange = { viewModel.updateApplicant(applicant.copy(birthDate = it)) },
+                    isError = applicant.birthDate == null,
+                    errorText = stringResource(R.string.mandatory_field)
                 )
 //            }
         }
@@ -337,7 +339,9 @@ fun DockedDatePicker(
     modifier: Modifier = Modifier,
     initialDate: LocalDate? = null,
     icon: ImageVector,
-    onValueChange: (LocalDate) -> Unit,
+    onValueChange: (LocalDate?) -> Unit,
+    isError: Boolean,
+    errorText: String
 ) {
 
     debugLog("AddorEditApplicantScreen: DockedDatePicker: initialDate: ${initialDate?.toLocalDateString()?:"null"}")
@@ -351,8 +355,9 @@ fun DockedDatePicker(
 
     // 🔄 Propagate changes to parent
     val selectedDateMillis = datePickerState.selectedDateMillis
+    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
     selectedDateMillis?.let {
-        val selectedDate = Instant.ofEpochMilli(it)
+        selectedDate = Instant.ofEpochMilli(it)
             .atZone(ZoneId.systemDefault())
             .toLocalDate()
         onValueChange(selectedDate)
@@ -376,15 +381,31 @@ fun DockedDatePicker(
                         modifier = Modifier.padding(start = 24.dp, bottom = 16.dp),
                     )
                 },
-//                colors = DatePickerDefaults.colors(
-//                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-//                ),
                 modifier = Modifier.clip(shape = MaterialTheme.shapes.extraLarge),
                 colors = DatePickerDefaults.colors()
             )
 
             // a surface to make the outlinedTextField Read-Only and clickable:
             if (datePickerState.displayMode == DisplayMode.Input){
+                Surface(
+//                    color = Color.Transparent,
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    modifier = modifier
+                        .padding(start = 14.dp, top = 130.dp, end = 14.dp)
+                        .height(70.dp)
+                        .fillMaxWidth()
+//                        .border(width = 1.dp, color = Color.Black)
+                ){}
+                OutlinedTextField(
+                    value = selectedDate?.toLocalDateString()?:"",
+                    onValueChange = {},
+                    label = { Text("Date") },
+                    isError = isError,
+                    supportingText = { if (isError) Text(errorText) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 130.dp, end = 24.dp),
+                )
                 Surface(
                     color = Color.Transparent,
                     modifier = modifier
@@ -393,7 +414,8 @@ fun DockedDatePicker(
                         .fillMaxWidth()
                         .clickable { datePickerState.displayMode = DisplayMode.Picker }
 //                        .border(width = 1.dp, color = Color.Black)
-                ){}}
+                ){}
+            }
         }
     }
 }
