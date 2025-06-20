@@ -34,7 +34,6 @@ import com.example.vitesse.ui.components.texts.TextLabelLarge
 import extensions.toLocalDateString
 import extensions.toLong
 import extensions.upTo
-import utils.debugLog
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -42,7 +41,7 @@ import java.time.ZoneId
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DockedDatePicker(
+fun VitesseDatePicker(
     modifier: Modifier = Modifier,
     initialDate: LocalDate? = null,
     icon: ImageVector,
@@ -50,8 +49,6 @@ fun DockedDatePicker(
     isError: Boolean,
     errorText: String
 ) {
-    debugLog("AddorEditApplicantScreen: DockedDatePicker: initialDate: ${initialDate?.toLocalDateString()?:"null"}")
-
     // a date picker state that allows only past dates to be selected.
     val datePickerState = rememberDatePickerState(
         initialDisplayMode = DisplayMode.Input,

@@ -4,8 +4,6 @@ import android.os.Build
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,20 +32,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.rememberAsyncImagePainter
 import com.example.vitesse.R
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.AppViewModelProvider
-import com.example.vitesse.ui.components.DockedDatePicker
+import com.example.vitesse.ui.components.VitesseDatePicker
 import com.example.vitesse.ui.components.VitesseIcon
+import com.example.vitesse.ui.components.VitesseImage
 import com.example.vitesse.ui.components.VitesseTopAppBar
 import com.example.vitesse.ui.components.texts.TextLabelLarge
 import com.example.vitesse.ui.components.vitesseImagePicker
@@ -90,7 +86,7 @@ fun AddApplicantScreen(
             applicant = viewModel.uiState.applicant,
             onApplicantEdit = viewModel::updateUiState,
         ){
-            DockedDatePicker(
+            VitesseDatePicker(
                 icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
                 onValueChange = { viewModel.updateUiState(applicant.copy(birthDate = it)) },
                 isError = applicant.birthDate == null,
@@ -121,21 +117,9 @@ fun AddOrEditApplicantBody(
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
         applicant.run {
-                Image(
-                    painter = rememberAsyncImagePainter(photoUri?:R.drawable.placeholder),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clickable {
-                            imagePickerLauncher.launch(
-                                PickVisualMediaRequest(
-                                    PickVisualMedia.ImageOnly
-                                )
-                            )
-                        }
-                        .height(dimensionResource(R.dimen.image_height))
-                        .padding(top = 7.dp, bottom = 22.dp),
-                    contentDescription = null
-                )
+            VitesseImage(photoUri = photoUri){
+                imagePickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly))
+            }
             AddOrEditApplicantTextField(
                 icon = Icons.Default.Person,
                 label = stringResource(R.string.first_name),

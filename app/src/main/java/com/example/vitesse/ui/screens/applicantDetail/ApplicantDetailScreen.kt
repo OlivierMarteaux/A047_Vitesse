@@ -3,7 +3,6 @@ package com.example.vitesse.ui.screens.applicantDetail
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -35,15 +33,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.rememberAsyncImagePainter
 import com.example.vitesse.R
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.model.ExchangeRate
@@ -51,6 +46,7 @@ import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.components.VitesseAlertDialog
 import com.example.vitesse.ui.components.VitesseIconButton
 import com.example.vitesse.ui.components.VitesseIconToggle
+import com.example.vitesse.ui.components.VitesseImage
 import com.example.vitesse.ui.components.VitesseTopAppBar
 import com.example.vitesse.ui.components.texts.TextBodyLarge
 import com.example.vitesse.ui.components.texts.TextBodyMedium
@@ -185,14 +181,7 @@ fun ApplicantDetailBody(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         with (applicant) {
-            Image(
-                painter = rememberAsyncImagePainter(photoUri?:R.drawable.placeholder),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.image_height))
-                    .padding(top = 7.dp, bottom = 22.dp),
-                contentDescription = null
-            )
+            VitesseImage(photoUri = photoUri)
             Row(
                 horizontalArrangement = Arrangement.Center
             ){

@@ -23,15 +23,19 @@ fun VitesseAlertDialog(
         title = { Text(text = title) },
         text = { Text(text) },
         confirmButton = {
-            TextButton(onClick = onConfirm, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
-                Text(confirmText)
-            }
+            TextButton(
+                onClick = onConfirm,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )) { Text(confirmText)}
         },
         containerColor = MaterialTheme.colorScheme.primary,
         dismissButton = {
-            TextButton(onClick = onDismiss, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
-                Text(dismissText)
-            }
+            TextButton(
+                onClick = onDismiss,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )) { Text(dismissText) }
         },
         modifier = modifier
     )

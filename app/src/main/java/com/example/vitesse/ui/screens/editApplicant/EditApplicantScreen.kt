@@ -2,7 +2,6 @@ package com.example.vitesse.ui.screens.editApplicant
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
@@ -14,7 +13,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
 import com.example.vitesse.ui.AppViewModelProvider
-import com.example.vitesse.ui.components.DockedDatePicker
+import com.example.vitesse.ui.components.VitesseDatePicker
 import com.example.vitesse.ui.components.VitesseTopAppBar
 import com.example.vitesse.ui.navigation.NavigationDestination
 import com.example.vitesse.ui.screens.addApplicant.AddOrEditApplicantBody
@@ -37,19 +36,19 @@ fun EditApplicantScreen (
     val applicant = viewModel.uiState.applicant
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = { VitesseTopAppBar(
-            title = stringResource(R.string.edit_a_candidate),
-            modifier = Modifier,
-            navigateBack = navigateBack,
-            actions = {}
-        ) },
+        modifier = modifier,
+        topBar = {
+            VitesseTopAppBar(
+                title = stringResource(R.string.edit_a_candidate),
+                navigateBack = navigateBack,
+            )
+        },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
             AddOrEditApplicantFab(
-            enabled = viewModel.uiState.isSaveable,
-            onClick = { viewModel.saveEditedApplicant(); navigateBack() }
-        )
+                enabled = viewModel.uiState.isSaveable,
+                onClick = { viewModel.saveEditedApplicant(); navigateBack() }
+            )
         }
     ){ topAppBarPadding ->
         AddOrEditApplicantBody(
@@ -58,7 +57,7 @@ fun EditApplicantScreen (
             onApplicantEdit = viewModel::updateUiState
         ){
             applicant.birthDate?.let{
-                DockedDatePicker(
+                VitesseDatePicker(
                     initialDate = applicant.birthDate,
                     icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
                     onValueChange = { viewModel.updateUiState(applicant.copy(birthDate = it)) },
