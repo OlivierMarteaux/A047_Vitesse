@@ -14,6 +14,7 @@ import com.example.vitesse.data.model.ExchangeRate
 import com.example.vitesse.data.repository.ApplicantRepository
 import com.example.vitesse.data.repository.CurrencyRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import utils.debugLog
@@ -79,25 +80,26 @@ class ApplicantDetailViewModel(
     init {
         viewModelScope.launch {
             try {
-                getApplicantById.collect {
-//                    uiState = ApplicantDetailUiState(it)
-//                    delay(2000)
+                getApplicantById.distinctUntilChanged().collect() {
                     uiState = ApplicantDetailUiState(applicant = GetDataState.Success(it))
                     when (Locale.getDefault().language){
-//                        "fr" -> uiState = uiState.copy(exchangeRate = getEurExchangeRate())
-//                        "en" -> uiState = uiState.copy(exchangeRate = getGbpExchangeRate())
-                        "fr" -> uiState = uiState.copy(exchangeRate = try{
+                        "fr" -> uiState = uiState.copy( exchangeRate = try {
                             GetDataState.Success(getEurExchangeRate())
-                        } catch (e: Exception){
+                        } catch (e: Exception) {
                             debugLog("Api Error: ${e.message}")
                             GetDataState.Error(e.message ?: "Unknown error")
                         })
-                        "en" -> uiState = uiState.copy(exchangeRate = try{GetDataState.Success(getGbpExchangeRate())} catch (e: Exception){GetDataState.Error(e.message ?: "Unknown error")})
+                        "en" -> uiState = uiState.copy( exchangeRate = try {
+                            GetDataState.Success(getGbpExchangeRate())
+                        } catch (e: Exception){
+                            GetDataState.Error(e.message ?: "Unknown error")
+                        })
                     }
                     isFavorite = it.isFavorite
                 }
             } catch (e: Exception) {
-                uiState = ApplicantDetailUiState(applicant = GetDataState.Error(e.message ?: "Unknown error"))
+                uiState = ApplicantDetailUiState(
+                    applicant = GetDataState.Error(e.message ?: "Unknown error"))
             }
         }
     }

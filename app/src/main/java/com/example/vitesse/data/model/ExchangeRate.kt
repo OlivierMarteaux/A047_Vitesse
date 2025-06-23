@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ExchangeRate (
-    val eur : LocalCurrency = LocalCurrency(),
-    val gbp : LocalCurrency = LocalCurrency(),
+    val eur : LocalCurrency = LocalCurrency(eur = 1.0, gbp = 0.85690067),
+    val gbp : LocalCurrency = LocalCurrency(gbp = 1.0, eur = 1.16779129),
 )
 
 @Serializable

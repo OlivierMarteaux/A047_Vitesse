@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
+import utils.CURRENCY_API_FALLBACK_URL
 import utils.CURRENCY_API_URL
 
 interface AppContainer {
@@ -30,16 +31,31 @@ class AppDatabaseContainer(
     // currency repository to get data from currency API
     private val json = Json { ignoreUnknownKeys = true }
 
-    private val retrofit = Retrofit.Builder()
-        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-        .baseUrl(CURRENCY_API_URL)
-        .build()
+//    private val retrofit = Retrofit.Builder()
+//        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+//        .baseUrl(CURRENCY_API_URL)
+//        .build()
+//
+//    private val retrofitService: CurrencyApi by lazy {
+//        retrofit.create(CurrencyApi::class.java)
+//    }
 
-    private val retrofitService: CurrencyApi by lazy {
-        retrofit.create(CurrencyApi::class.java)
+    private fun createRetrofit(baseUrl: String): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
     }
 
+    private val primaryRetrofit = createRetrofit(CURRENCY_API_URL)
+    private val secondaryRetrofit = createRetrofit(CURRENCY_API_FALLBACK_URL)
+
+    private val primaryService: CurrencyApi by lazy { primaryRetrofit.create(CurrencyApi::class.java) }
+    private val fallbackService: CurrencyApi by lazy { secondaryRetrofit.create(CurrencyApi::class.java) }
+
     override val currencyRepository: CurrencyRepository by lazy {
-        WebCurrencyRepository(retrofitService)
+        WebCurrencyRepository(
+            primaryService = primaryService,
+            fallbackService = fallbackService)
     }
 }

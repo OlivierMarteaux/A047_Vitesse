@@ -67,7 +67,6 @@ import extensions.toEurString
 import extensions.toGbpString
 import extensions.toLocalCurrencyString
 import extensions.toLocalDateString
-import utils.debugLog
 import utils.openAppSettings
 import java.util.Locale
 
@@ -264,12 +263,10 @@ fun ApplicantDetailBody(
                 when (exchangeRate) {
                     is GetDataState.Loading -> {}
                     is GetDataState.Success -> {
-                        val exchangeRate = exchangeRate.data
-                        debugLog("LocalLanguage = ${Locale.getDefault().language}")
                         val foreignCurrencySalary : String = when (Locale.getDefault().language) {
-                            Locale.FRENCH.language -> (salary * exchangeRate.eur.gbp).toGbpString()
-                            Locale.ENGLISH.language -> (salary * exchangeRate.gbp.eur).toEurString()
-                            else -> (salary * exchangeRate.eur.gbp).toGbpString() // fallback to GBP
+                            Locale.FRENCH.language -> (salary * exchangeRate.data.eur.gbp).toGbpString()
+                            Locale.ENGLISH.language -> (salary * exchangeRate.data.gbp.eur).toEurString()
+                            else -> (salary * exchangeRate.data.eur.gbp).toGbpString() // fallback to GBP
                         }
                         TextBodyMedium(text = (stringResource(R.string.or, foreignCurrencySalary)))
                     }
