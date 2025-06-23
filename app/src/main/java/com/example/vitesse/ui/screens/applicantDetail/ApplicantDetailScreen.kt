@@ -3,6 +3,7 @@ package com.example.vitesse.ui.screens.applicantDetail
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +21,9 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,8 +37,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -53,6 +58,7 @@ import com.example.vitesse.ui.components.texts.TextBodyMedium
 import com.example.vitesse.ui.components.texts.TextBodySmall
 import com.example.vitesse.ui.components.texts.TextTitleMedium
 import com.example.vitesse.ui.navigation.NavigationDestination
+import com.example.vitesse.ui.screens.home.HomeStateColumn
 import extensions.callPhoneNumber
 import extensions.getAge
 import extensions.sendEmail
@@ -72,7 +78,6 @@ object ApplicantDetailDestination : NavigationDestination {
     val routeWithArgs = "$route/{$ApplicantIdArg}"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ApplicantDetailScreen (
@@ -80,10 +85,36 @@ fun ApplicantDetailScreen (
     navigateBack: () -> Unit = {},
     navigateToEditApplicant: (Int) -> Unit = {},
     viewModel: ApplicantDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val uiState = viewModel.uiState
+    when (uiState.applicant) {
+        is GetDataState.Loading -> { LoadingScreen()}
+        is GetDataState.Success -> {
+            SuccessScreen(
+                viewModel = viewModel,
+                uiState = uiState,
+                navigateBack = navigateBack,
+                navigateToEditApplicant = navigateToEditApplicant,
+                modifier = modifier,
+            )
+        }
+        is GetDataState.Error -> {ErrorScreen(retryAction = {})}
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+@RequiresApi(Build.VERSION_CODES.O)
+fun SuccessScreen(
+    viewModel: ApplicantDetailViewModel,
+    uiState: ApplicantDetailUiState,
+    navigateBack: () -> Unit,
+    navigateToEditApplicant: (Int) -> Unit,
+    modifier: Modifier = Modifier,
 ){
     val context = LocalContext.current
-    val applicant = viewModel.uiState.applicant
-    val exchangeRate = viewModel.uiState.exchangeRate
+    val applicant: Applicant  = uiState.applicant.run { (this as GetDataState.Success<Applicant>).data }
+    val exchangeRate = uiState.exchangeRate
     var showDeleteConfirmationDialog by remember { mutableStateOf(false)}
     val showCallAlertDialog = viewModel.callAlertDialog
 
@@ -122,6 +153,18 @@ fun ApplicantDetailScreen (
             confirmText = stringResource(R.string.ok)
         )
     }
+
+//    if (uiState.exchangeRate is GetDataState.Error && !exchangeRateApiErrorDialogShown) {
+//        VitesseAlertDialog(
+//            onConfirm = { viewModel.showExchangeRateApiErrorDialog(false)},
+//            onDismiss = { viewModel.showExchangeRateApiErrorDialog(false)},
+//            modifier = modifier,
+//            title = "Warning",
+//            text = "Exchange rate Api is unreachable. Salary will not be shown in foreign currency.",
+//            dismissText = stringResource(R.string.cancel),
+//            confirmText = stringResource(R.string.ok)
+//        )
+//    }
 
     Scaffold(
         modifier = modifier,
@@ -169,7 +212,7 @@ fun ApplicantDetailScreen (
 fun ApplicantDetailBody(
     modifier: Modifier = Modifier,
     applicant: Applicant,
-    exchangeRate: ExchangeRate,
+    exchangeRate: GetDataState<ExchangeRate>,
     showCallAlertDialog: (Boolean) -> Unit,
     context: Context
 ){
@@ -218,13 +261,21 @@ fun ApplicantDetailBody(
                     text = salary.toLocalCurrencyString(),
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
-                debugLog("LocalLanguage = ${Locale.getDefault().language}")
-                val foreignCurrencySalary : String = when (Locale.getDefault().language) {
-                    Locale.FRENCH.language -> (salary * exchangeRate.eur.gbp).toGbpString()
-                    Locale.ENGLISH.language -> (salary * exchangeRate.gbp.eur).toEurString()
-                    else -> (salary * exchangeRate.eur.gbp).toGbpString() // fallback to GBP
+                when (exchangeRate) {
+                    is GetDataState.Loading -> {}
+                    is GetDataState.Success -> {
+                        val exchangeRate = exchangeRate.data
+                        debugLog("LocalLanguage = ${Locale.getDefault().language}")
+                        val foreignCurrencySalary : String = when (Locale.getDefault().language) {
+                            Locale.FRENCH.language -> (salary * exchangeRate.eur.gbp).toGbpString()
+                            Locale.ENGLISH.language -> (salary * exchangeRate.gbp.eur).toEurString()
+                            else -> (salary * exchangeRate.eur.gbp).toGbpString() // fallback to GBP
+                        }
+                        TextBodyMedium(text = (stringResource(R.string.or, foreignCurrencySalary)))
+                    }
+                    is GetDataState.Error -> {}
                 }
-                TextBodyMedium(text = (stringResource(R.string.or, foreignCurrencySalary)))
+
             }
             ApplicantDetailCard(
                 header = stringResource(R.string.notes),
@@ -289,6 +340,29 @@ fun ApplicantDetailContact(
                 .padding(8.dp)
         )
         TextBodySmall(text = text)
+    }
+}
+
+@Composable
+fun LoadingScreen (modifier: Modifier = Modifier) {
+    HomeStateColumn (modifier) { CircularProgressIndicator() }
+}
+
+@Composable
+fun ErrorScreen(retryAction:()-> Unit, modifier : Modifier = Modifier) {
+    HomeStateColumn (modifier) {
+        Image(
+            painter = painterResource(R.drawable.ic_connection_error),
+            contentDescription = ""
+        )
+        Text(
+            text = stringResource(R.string.loading_failed),
+            modifier = Modifier.padding(16.dp),
+            textAlign = TextAlign.Center
+        )
+        Button(onClick = retryAction) {
+            Text(stringResource(R.string.retry))
+        }
     }
 }
 

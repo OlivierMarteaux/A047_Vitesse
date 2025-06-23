@@ -15,7 +15,7 @@ interface ApplicantDao {
     fun getAllApplicants(): Flow<List<Applicant>>
 
     @Query("SELECT * FROM applicant WHERE id = :id")
-    fun getApplicantById(id: Int): Flow<Applicant?>
+    fun getApplicantById(id: Int): Flow<Applicant>
 
     @Query("SELECT * FROM applicant WHERE isFavorite = 1")
     fun getFavoriteApplicants(): Flow<List<Applicant>>

@@ -40,4 +40,7 @@
     <string name="save">Save</string>
     <string name="add_an_applicant">Add an applicant</string>
     <string name="error">Erreur</string>
+    <string name="loading_failed">Failed to load</string>
+    <string name="retry">Retry</string>
+    <string name="loading">Loading</string>
 </resources>

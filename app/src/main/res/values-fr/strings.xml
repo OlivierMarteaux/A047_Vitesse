@@ -40,4 +40,7 @@
     <string name="save">Save</string>
     <string name="add_an_applicant">Ajouter un candidat</string>
     <string name="error">Erreur</string>
+    <string name="loading_failed">Erreur de chargement</string>
+    <string name="retry">Réessayer</string>
+    <string name="loading">Chargement</string>
 </resources>
