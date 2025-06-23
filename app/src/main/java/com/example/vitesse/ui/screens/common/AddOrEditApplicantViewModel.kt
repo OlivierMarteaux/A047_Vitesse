@@ -23,18 +23,16 @@ abstract class AddOrEditApplicantViewModel : ViewModel() {
         protected set
 
     fun updateUiState(applicant: Applicant) {
-        if (uiState.applicant is GetDataState.Success) {
-            uiState = uiState.copy(
-                applicant = uiState.applicant as GetDataState.Success<Applicant>,
-                isSaveable = with(applicant) {
-                    firstName.isNotBlank() &&
-                            lastName.isNotBlank() &&
-                            phone.isNotBlank() &&
-                            email.isNotBlank() &&
-                            email.isValidEmail() &&
-                            birthDate != null
-                }
-            )
-        }
+        uiState = uiState.copy(
+            applicant = GetDataState.Success(applicant),
+            isSaveable = with(applicant) {
+                firstName.isNotBlank() &&
+                        lastName.isNotBlank() &&
+                        phone.isNotBlank() &&
+                        email.isNotBlank() &&
+                        email.isValidEmail() &&
+                        birthDate != null
+            }
+        )
     }
 }
