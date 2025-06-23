@@ -3,7 +3,9 @@ package com.example.vitesse.ui.screens.addApplicant
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
+import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.repository.ApplicantRepository
+import com.example.vitesse.ui.screens.applicantDetail.GetDataState
 import com.example.vitesse.ui.screens.common.AddOrEditApplicantViewModel
 import kotlinx.coroutines.launch
 
@@ -15,7 +17,8 @@ class AddApplicantViewModel(
 
     fun saveNewApplicant() {
         viewModelScope.launch {
-            applicantRepository.insertApplicant(uiState.applicant)
+            val applicant = (uiState.applicant as GetDataState.Success<Applicant>).data
+            applicantRepository.insertApplicant(applicant)
         }
     }
 }

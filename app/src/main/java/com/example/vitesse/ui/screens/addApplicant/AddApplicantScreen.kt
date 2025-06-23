@@ -48,6 +48,10 @@ import com.example.vitesse.ui.components.VitesseTopAppBar
 import com.example.vitesse.ui.components.texts.TextLabelLarge
 import com.example.vitesse.ui.components.vitesseImagePicker
 import com.example.vitesse.ui.navigation.NavigationDestination
+import com.example.vitesse.ui.screens.applicantDetail.ErrorScreen
+import com.example.vitesse.ui.screens.applicantDetail.GetDataState
+import com.example.vitesse.ui.screens.applicantDetail.LoadingScreen
+import com.example.vitesse.ui.screens.common.AddOrEditApplicantUiState
 import extensions.isValidEmail
 import kotlin.math.round
 
@@ -63,7 +67,33 @@ fun AddApplicantScreen(
     viewModel: AddApplicantViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateBack: () -> Unit
 ) {
-    val applicant: Applicant = viewModel.uiState.applicant
+    val uiState = viewModel.uiState
+    when (uiState.applicant) {
+        is GetDataState.Loading -> { LoadingScreen()
+        }
+        is GetDataState.Success -> {
+            SuccessAddScreen(
+                viewModel = viewModel,
+                uiState = uiState,
+                navigateBack = navigateBack,
+                modifier = modifier,
+            )
+        }
+        is GetDataState.Error -> {
+            ErrorScreen(retryAction = {})
+        }
+    }
+}
+
+@Composable
+@RequiresApi(Build.VERSION_CODES.O)
+fun SuccessAddScreen(
+    modifier: Modifier = Modifier,
+    viewModel: AddApplicantViewModel,
+    uiState: AddOrEditApplicantUiState,
+    navigateBack: () -> Unit
+){
+    val applicant: Applicant = uiState.applicant.run { (this as GetDataState.Success<Applicant>).data }
 
     Scaffold(
         modifier = modifier,
@@ -83,7 +113,7 @@ fun AddApplicantScreen(
     ) { innerPadding ->
         AddOrEditApplicantBody(
             modifier = modifier.padding(innerPadding),
-            applicant = viewModel.uiState.applicant,
+            applicant = applicant,
             onApplicantEdit = viewModel::updateUiState,
         ){
             VitesseDatePicker(

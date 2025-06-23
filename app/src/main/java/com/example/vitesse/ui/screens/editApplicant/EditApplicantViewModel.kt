@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.repository.ApplicantRepository
+import com.example.vitesse.ui.screens.applicantDetail.GetDataState
 import com.example.vitesse.ui.screens.common.AddOrEditApplicantUiState
 import com.example.vitesse.ui.screens.common.AddOrEditApplicantViewModel
 import kotlinx.coroutines.flow.Flow
@@ -23,14 +24,23 @@ class EditApplicantViewModel (
 
     fun saveEditedApplicant(){
         viewModelScope.launch {
-            applicantRepository.updateApplicant(uiState.applicant)
+            applicantRepository.updateApplicant((uiState.applicant as GetDataState.Success<Applicant>).data )
         }
     }
 
     init {
         viewModelScope.launch {
-            getApplicantById.collect {
-                uiState = AddOrEditApplicantUiState(applicant = it, isSaveable = true)
+            try {
+                getApplicantById.collect {
+                    uiState = AddOrEditApplicantUiState(
+                        applicant = GetDataState.Success(it),
+                        isSaveable = true
+                    )
+                }
+            } catch (e: Exception) {
+                uiState = AddOrEditApplicantUiState(
+                    applicant = GetDataState.Error(e.message ?: "Unknown error")
+                )
             }
         }
     }

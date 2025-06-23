@@ -90,7 +90,7 @@ fun ApplicantDetailScreen (
     when (uiState.applicant) {
         is GetDataState.Loading -> { LoadingScreen()}
         is GetDataState.Success -> {
-            SuccessScreen(
+            SuccessDetailScreen(
                 viewModel = viewModel,
                 uiState = uiState,
                 navigateBack = navigateBack,
@@ -105,7 +105,7 @@ fun ApplicantDetailScreen (
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @RequiresApi(Build.VERSION_CODES.O)
-fun SuccessScreen(
+fun SuccessDetailScreen(
     viewModel: ApplicantDetailViewModel,
     uiState: ApplicantDetailUiState,
     navigateBack: () -> Unit,

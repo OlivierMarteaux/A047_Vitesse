@@ -7,11 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.vitesse.data.model.Applicant
+import com.example.vitesse.ui.screens.applicantDetail.GetDataState
 import extensions.isValidEmail
 
 @RequiresApi(Build.VERSION_CODES.O)
 data class AddOrEditApplicantUiState(
-    val applicant: Applicant = Applicant(),
+    val applicant: GetDataState<Applicant> = GetDataState.Loading,
     val isSaveable: Boolean = false
 )
 
@@ -22,16 +23,18 @@ abstract class AddOrEditApplicantViewModel : ViewModel() {
         protected set
 
     fun updateUiState(applicant: Applicant) {
-        uiState = uiState.copy(
-            applicant = applicant,
-            isSaveable = with(applicant) {
-                firstName.isNotBlank() &&
-                        lastName.isNotBlank() &&
-                        phone.isNotBlank() &&
-                        email.isNotBlank() &&
-                        email.isValidEmail() &&
-                        birthDate != null
-            }
-        )
+        if (uiState.applicant is GetDataState.Success) {
+            uiState = uiState.copy(
+                applicant = uiState.applicant as GetDataState.Success<Applicant>,
+                isSaveable = with(applicant) {
+                    firstName.isNotBlank() &&
+                            lastName.isNotBlank() &&
+                            phone.isNotBlank() &&
+                            email.isNotBlank() &&
+                            email.isValidEmail() &&
+                            birthDate != null
+                }
+            )
+        }
     }
 }

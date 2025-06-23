@@ -12,12 +12,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
+import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.AppViewModelProvider
 import com.example.vitesse.ui.components.VitesseDatePicker
 import com.example.vitesse.ui.components.VitesseTopAppBar
 import com.example.vitesse.ui.navigation.NavigationDestination
 import com.example.vitesse.ui.screens.addApplicant.AddOrEditApplicantBody
 import com.example.vitesse.ui.screens.addApplicant.AddOrEditApplicantFab
+import com.example.vitesse.ui.screens.applicantDetail.ErrorScreen
+import com.example.vitesse.ui.screens.applicantDetail.GetDataState
+import com.example.vitesse.ui.screens.applicantDetail.LoadingScreen
+import com.example.vitesse.ui.screens.common.AddOrEditApplicantUiState
 
 object EditApplicantDestination : NavigationDestination {
     override val route = "edit_applicant"
@@ -33,18 +38,44 @@ fun EditApplicantScreen (
     navigateBack: () -> Unit = {},
     viewModel: EditApplicantViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
-    val applicant = viewModel.uiState.applicant
+    val uiState = viewModel.uiState
+    when (uiState.applicant) {
+        is GetDataState.Loading -> { LoadingScreen()
+        }
+        is GetDataState.Success -> {
+            SuccessEditScreen(
+                viewModel = viewModel,
+                uiState = uiState,
+                navigateBack = navigateBack,
+                modifier = modifier,
+            )
+        }
+        is GetDataState.Error -> {
+            ErrorScreen(retryAction = {})
+        }
+    }
+}
+
+@Composable
+@RequiresApi(Build.VERSION_CODES.O)
+fun SuccessEditScreen(
+    modifier: Modifier = Modifier,
+    viewModel: EditApplicantViewModel,
+    uiState: AddOrEditApplicantUiState,
+    navigateBack: () -> Unit
+){
+    val applicant = uiState.applicant
 
     Scaffold(
         modifier = modifier,
-        topBar = {
+    topBar = {
             VitesseTopAppBar(
                 title = stringResource(R.string.edit_a_candidate),
                 navigateBack = navigateBack,
             )
         },
-        floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = {
+    floatingActionButtonPosition = FabPosition.Center,
+    floatingActionButton = {
             AddOrEditApplicantFab(
                 enabled = viewModel.uiState.isSaveable,
                 onClick = { viewModel.saveEditedApplicant(); navigateBack() }
@@ -53,14 +84,14 @@ fun EditApplicantScreen (
     ){ topAppBarPadding ->
         AddOrEditApplicantBody(
             modifier = modifier.padding(topAppBarPadding),
-            applicant = viewModel.uiState.applicant,
+            applicant = (applicant as GetDataState.Success<Applicant>).data,
             onApplicantEdit = viewModel::updateUiState
         ){
-            applicant.birthDate?.let{
+            applicant.data.birthDate?.let{
                 VitesseDatePicker(
-                    initialDate = applicant.birthDate,
+                    initialDate = applicant.data.birthDate,
                     icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
-                    onValueChange = { viewModel.updateUiState(applicant.copy(birthDate = it)) },
+                    onValueChange = { viewModel.updateUiState(applicant.data.copy(birthDate = it)) },
                     isError = false,
                     errorText = ""
                 )

@@ -49,7 +49,7 @@ class ApplicantDetailViewModel(
     private suspend fun getEurExchangeRate() = currencyRepository.getEurExchangeRate()
     private suspend fun getGbpExchangeRate() = currencyRepository.getGbpExchangeRate()
 
-    var uiState: ApplicantDetailUiState by mutableStateOf(ApplicantDetailUiState())
+    var uiState: ApplicantDetailUiState by mutableStateOf(ApplicantDetailUiState(applicant = GetDataState.Loading))
         private set
     var isFavorite by mutableStateOf(false)
         private set
