@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import androidx.room.Upsert
 import com.example.vitesse.data.model.Applicant
 import kotlinx.coroutines.flow.Flow
 
@@ -20,8 +19,9 @@ interface ApplicantDao {
     @Query("SELECT * FROM applicant WHERE isFavorite = 1")
     fun getFavoriteApplicants(): Flow<List<Applicant>>
 
-    @Upsert
-    suspend fun upsertApplicant(applicant: Applicant)
+// fixed: Avoid using upsert method to avoid hard-to-detect bugs
+//    @Upsert
+//    suspend fun upsertApplicant(applicant: Applicant)
 
     @Insert
     suspend fun insertApplicant(applicant: Applicant)

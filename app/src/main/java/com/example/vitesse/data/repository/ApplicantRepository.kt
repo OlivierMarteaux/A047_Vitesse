@@ -3,6 +3,7 @@ package com.example.vitesse.data.repository
 import android.util.Log
 import com.example.vitesse.data.dao.ApplicantDao
 import com.example.vitesse.data.model.Applicant
+import extensions.stripAccents
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -48,11 +49,17 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
      */
 
     suspend fun insertApplicant(applicant: Applicant) =
-        try {applicantDao.insertApplicant(applicant)}
+        try {applicantDao.insertApplicant(applicant.copy(
+            normalizedFirstName = applicant.firstName.stripAccents(),
+            normalizedLastName = applicant.lastName.stripAccents()
+        ))}
         catch (e: Exception) { Log.e("OM:ApplicantRepository.addApplicant", e.message.toString())}
 
     suspend fun updateApplicant(applicant: Applicant) =
-        try {applicantDao.updateApplicant(applicant)}
+        try {applicantDao.updateApplicant(applicant.copy(
+            normalizedFirstName = applicant.firstName.stripAccents(),
+            normalizedLastName = applicant.lastName.stripAccents()
+        ))}
         catch (e: Exception) { Log.e("OM:ApplicantRepository.updateApplicant", e.message.toString())}
 
     /**
@@ -80,6 +87,7 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
 
     private fun formatSqlQuery(rawQuery: String): String{
         return rawQuery
+            .stripAccents()
             .trim()
             .lowercase()
             .split("\\s+".toRegex())           // Split by any whitespace

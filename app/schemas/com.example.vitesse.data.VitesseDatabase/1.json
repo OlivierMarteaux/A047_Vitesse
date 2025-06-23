@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e07ab6a66590a45950b5b1e638703362",
+    "identityHash": "285abf0981f3c060df5510a299428a03",
     "entities": [
       {
         "tableName": "applicant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, `phone` TEXT NOT NULL, `email` TEXT NOT NULL, `date_of_birth` INTEGER, `salary` REAL NOT NULL, `note` TEXT NOT NULL, `photo_uri` TEXT, `isFavorite` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, `phone` TEXT NOT NULL, `email` TEXT NOT NULL, `date_of_birth` INTEGER, `salary` REAL NOT NULL, `note` TEXT NOT NULL, `photo_uri` TEXT, `isFavorite` INTEGER NOT NULL, `normalized_first_name` TEXT NOT NULL, `normalized_last_name` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -65,6 +65,18 @@
             "columnName": "isFavorite",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "normalizedFirstName",
+            "columnName": "normalized_first_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "normalizedLastName",
+            "columnName": "normalized_last_name",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -76,24 +88,26 @@
       },
       {
         "tableName": "applicant_fts",
-        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, content=`applicant`)",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`normalized_first_name` TEXT NOT NULL, `normalized_last_name` TEXT NOT NULL, content=`applicant`)",
         "fields": [
           {
-            "fieldPath": "firstName",
-            "columnName": "first_name",
+            "fieldPath": "normalizedFirstName",
+            "columnName": "normalized_first_name",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "lastName",
-            "columnName": "last_name",
+            "fieldPath": "normalizedLastName",
+            "columnName": "normalized_last_name",
             "affinity": "TEXT",
             "notNull": true
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": []
+          "autoGenerate": true,
+          "columnNames": [
+            "rowid"
+          ]
         },
         "ftsVersion": "FTS4",
         "ftsOptions": {
@@ -109,14 +123,14 @@
         "contentSyncTriggers": [
           "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_applicant_fts_BEFORE_UPDATE BEFORE UPDATE ON `applicant` BEGIN DELETE FROM `applicant_fts` WHERE `docid`=OLD.`rowid`; END",
           "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_applicant_fts_BEFORE_DELETE BEFORE DELETE ON `applicant` BEGIN DELETE FROM `applicant_fts` WHERE `docid`=OLD.`rowid`; END",
-          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_applicant_fts_AFTER_UPDATE AFTER UPDATE ON `applicant` BEGIN INSERT INTO `applicant_fts`(`docid`, `first_name`, `last_name`) VALUES (NEW.`rowid`, NEW.`first_name`, NEW.`last_name`); END",
-          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_applicant_fts_AFTER_INSERT AFTER INSERT ON `applicant` BEGIN INSERT INTO `applicant_fts`(`docid`, `first_name`, `last_name`) VALUES (NEW.`rowid`, NEW.`first_name`, NEW.`last_name`); END"
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_applicant_fts_AFTER_UPDATE AFTER UPDATE ON `applicant` BEGIN INSERT INTO `applicant_fts`(`docid`, `normalized_first_name`, `normalized_last_name`) VALUES (NEW.`rowid`, NEW.`normalized_first_name`, NEW.`normalized_last_name`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_applicant_fts_AFTER_INSERT AFTER INSERT ON `applicant` BEGIN INSERT INTO `applicant_fts`(`docid`, `normalized_first_name`, `normalized_last_name`) VALUES (NEW.`rowid`, NEW.`normalized_first_name`, NEW.`normalized_last_name`); END"
         ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e07ab6a66590a45950b5b1e638703362')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '285abf0981f3c060df5510a299428a03')"
     ]
   }
 }

@@ -13,6 +13,7 @@ import com.example.vitesse.data.converter.DateConverter
 import com.example.vitesse.data.dao.ApplicantDao
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.model.ApplicantFts
+import extensions.stripAccents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -256,7 +257,10 @@ abstract class VitesseDatabase: RoomDatabase() {
                 )
             )
             prepopulatedApplicants.forEach { applicant ->
-                applicantDao.upsertApplicant(applicant)
+                applicantDao.insertApplicant(applicant.copy(
+                    normalizedFirstName = applicant.firstName.stripAccents(),
+                    normalizedLastName = applicant.lastName.stripAccents()
+                ))
             }
         }
     }
