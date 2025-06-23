@@ -10,6 +10,7 @@
 
     <dimen name="icon_size">48dp</dimen>
     <dimen name="image_height">195dp</dimen>
+    <dimen name="image_width">140dp</dimen>
 
     <dimen name="thickness_divider">1dp</dimen>
 </resources>
