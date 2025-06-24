@@ -51,9 +51,6 @@ import com.example.vitesse.ui.components.VitesseTopAppBar
 import com.example.vitesse.ui.components.texts.TextLabelLarge
 import com.example.vitesse.ui.components.vitesseImagePicker
 import com.example.vitesse.ui.navigation.NavigationDestination
-import com.example.vitesse.ui.screens.applicantDetail.ErrorScreen
-import com.example.vitesse.ui.screens.applicantDetail.LoadingScreen
-import com.example.vitesse.ui.screens.common.AddOrEditApplicantUiState
 import com.example.vitesse.ui.screens.common.GetDataState
 import extensions.isValidEmail
 import kotlin.math.round
@@ -71,32 +68,7 @@ fun AddApplicantScreen(
     navigateBack: () -> Unit
 ) {
     val uiState = viewModel.uiState
-    when (uiState.applicant) {
-        is GetDataState.Loading -> { LoadingScreen()
-        }
-        is GetDataState.Success -> {
-            SuccessAddScreen(
-                viewModel = viewModel,
-                uiState = uiState,
-                navigateBack = navigateBack,
-                modifier = modifier,
-            )
-        }
-        is GetDataState.Error -> {
-            ErrorScreen()
-        }
-    }
-}
-
-@Composable
-@RequiresApi(Build.VERSION_CODES.O)
-fun SuccessAddScreen(
-    modifier: Modifier = Modifier,
-    viewModel: AddApplicantViewModel,
-    uiState: AddOrEditApplicantUiState,
-    navigateBack: () -> Unit
-){
-    val applicant: Applicant = uiState.applicant.run { (this as GetDataState.Success<Applicant>).data }
+    val applicant: Applicant = (uiState.applicant as GetDataState.Success<Applicant>).data
 
     Scaffold(
         modifier = modifier,
@@ -109,7 +81,7 @@ fun SuccessAddScreen(
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
             AddOrEditApplicantFab(
-                enabled = viewModel.uiState.isSaveable,
+                enabled = uiState.isSaveable,
                 onClick = { viewModel.saveNewApplicant(); navigateBack() }
             )
         }
