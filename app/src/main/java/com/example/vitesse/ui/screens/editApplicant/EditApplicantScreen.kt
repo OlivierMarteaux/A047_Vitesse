@@ -21,8 +21,8 @@ import com.example.vitesse.ui.screens.addApplicant.AddOrEditApplicantBody
 import com.example.vitesse.ui.screens.addApplicant.AddOrEditApplicantFab
 import com.example.vitesse.ui.screens.applicantDetail.ErrorScreen
 import com.example.vitesse.ui.screens.applicantDetail.LoadingScreen
-import com.example.vitesse.ui.screens.common.AddOrEditApplicantUiState
 import com.example.vitesse.ui.screens.common.GetDataState
+import java.time.LocalDate
 
 object EditApplicantDestination : NavigationDestination {
     override val route = "edit_applicant"
@@ -38,20 +38,19 @@ fun EditApplicantScreen (
     navigateBack: () -> Unit = {},
     viewModel: EditApplicantViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
-    val uiState = viewModel.uiState
-    when (uiState.applicant) {
-        is GetDataState.Loading -> { LoadingScreen()
-        }
-        is GetDataState.Success -> {
-            SuccessEditScreen(
-                viewModel = viewModel,
-                uiState = uiState,
+    with (viewModel.uiState) {
+        when (applicant) {
+            is GetDataState.Loading -> LoadingScreen()
+            is GetDataState.Error -> ErrorScreen()
+            is GetDataState.Success -> SuccessEditScreen(
                 navigateBack = navigateBack,
                 modifier = modifier,
+                applicant = applicant.data,
+                isSaveable = isSaveable,
+                onFabClick = { viewModel.saveEditedApplicant(); navigateBack() },
+                onApplicantEdit = viewModel::updateUiState,
+                onBirthdateChange = { viewModel.updateUiState( applicant.data.copy(birthDate = it)) }
             )
-        }
-        is GetDataState.Error -> {
-            ErrorScreen()
         }
     }
 }
@@ -60,38 +59,39 @@ fun EditApplicantScreen (
 @RequiresApi(Build.VERSION_CODES.O)
 fun SuccessEditScreen(
     modifier: Modifier = Modifier,
-    viewModel: EditApplicantViewModel,
-    uiState: AddOrEditApplicantUiState,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    applicant: Applicant,
+    isSaveable: Boolean,
+    onFabClick: () -> Unit,
+    onApplicantEdit: (Applicant) -> Unit,
+    onBirthdateChange: (LocalDate?) -> Unit
 ){
-    val applicant = uiState.applicant
-
     Scaffold(
         modifier = modifier,
-    topBar = {
+        topBar = {
             VitesseTopAppBar(
                 title = stringResource(R.string.edit_a_candidate),
                 navigateBack = navigateBack,
             )
         },
-    floatingActionButtonPosition = FabPosition.Center,
-    floatingActionButton = {
+        floatingActionButtonPosition = FabPosition.Center,
+        floatingActionButton = {
             AddOrEditApplicantFab(
-                enabled = viewModel.uiState.isSaveable,
-                onClick = { viewModel.saveEditedApplicant(); navigateBack() }
+                enabled = isSaveable,
+                onClick = onFabClick
             )
         }
     ){ topAppBarPadding ->
         AddOrEditApplicantBody(
             modifier = modifier.padding(topAppBarPadding),
-            applicant = (applicant as GetDataState.Success<Applicant>).data,
-            onApplicantEdit = viewModel::updateUiState
+            applicant = applicant,
+            onApplicantEdit = onApplicantEdit,
         ){
-            applicant.data.birthDate?.let{
+            applicant.birthDate?.let{
                 VitesseDatePicker(
-                    initialDate = applicant.data.birthDate,
+                    initialDate = applicant.birthDate,
                     icon = ImageVector.vectorResource(id = R.drawable.cake_24dp),
-                    onValueChange = { viewModel.updateUiState(applicant.data.copy(birthDate = it)) },
+                    onValueChange = onBirthdateChange,
                     isError = false,
                     errorText = ""
                 )
