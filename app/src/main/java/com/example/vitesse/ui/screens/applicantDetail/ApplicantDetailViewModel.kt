@@ -47,10 +47,13 @@ class ApplicantDetailViewModel(
         private set
     var isFavorite by mutableStateOf(false)
         private set
-    var callAlertDialog by mutableStateOf(false)
+    var callPermissionAlertDialog by mutableStateOf(false)
+        private set
+    var deleteConfirmationDialog by mutableStateOf(false)
         private set
 
-    fun showCallAlertDialog(state: Boolean){ callAlertDialog = state }
+    fun showCallAlertDialog(state: Boolean){ callPermissionAlertDialog = state }
+    fun showDeleteConfirmationDialog(state: Boolean){ deleteConfirmationDialog = state }
     fun toggleFavorite() { isFavorite = !isFavorite }
 
     fun updateApplicantFavoriteState(){

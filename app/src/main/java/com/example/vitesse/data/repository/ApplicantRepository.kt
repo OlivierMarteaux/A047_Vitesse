@@ -25,13 +25,6 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
         catch (e: Exception) { Log.e("OM:ApplicantRepository.getApplicantById", e.message.toString()); emptyFlow()}
 
     /**
-     * Retrieves a flow of all favorite [Applicant] entities.
-     */
-    fun getFavoriteApplicants(): Flow<List<Applicant>> =
-        try {applicantDao.getFavoriteApplicants()}
-        catch (e: Exception) { Log.e("OM:ApplicantRepository.getFavoriteApplicants", e.message.toString()); emptyFlow()}
-
-    /**
      * Retrieves a flow of all [Applicant] entities.
      *
      * @return A [Flow] emitting the list of applicants.

@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,16 +36,13 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -121,11 +120,9 @@ fun SuccessDetailScreen(
     val context = LocalContext.current
     val applicant: Applicant  = uiState.applicant.run { (this as GetDataState.Success<Applicant>).data }
     val exchangeRate = uiState.exchangeRate
-    var showDeleteConfirmationDialog by remember { mutableStateOf(false)}
-    val showCallAlertDialog = viewModel.callAlertDialog
-
+    val showDeleteConfirmationDialog = viewModel.deleteConfirmationDialog
+    val showCallPermissionAlertDialog = viewModel.callPermissionAlertDialog
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
 // FIXED: this function re-insert the just-deleted applicant when navigate back to home after deletion.
 //  -> shall not be used
@@ -142,7 +139,7 @@ fun SuccessDetailScreen(
                 viewModel.deleteApplicant(applicant)
                 navigateBack()
             },
-            onDismiss = { showDeleteConfirmationDialog = false },
+            onDismiss = { viewModel.showDeleteConfirmationDialog(false) },
             modifier = modifier,
             title = stringResource(R.string.deletion),
             text = stringResource(R.string.are_you_sure_you_want_to_delete_this_candidate_this_action_cannot_be_undone),
@@ -151,7 +148,7 @@ fun SuccessDetailScreen(
         )
     }
 
-    if (showCallAlertDialog) {
+    if (showCallPermissionAlertDialog) {
         VitesseAlertDialog(
             onConfirm = { viewModel.showCallAlertDialog(false); openAppSettings(context) },
             onDismiss = { viewModel.showCallAlertDialog(false) },
@@ -211,7 +208,7 @@ fun SuccessDetailScreen(
                     )
                     VitesseIconButton(
                         icon = Icons.Outlined.Delete,
-                        onClick = { showDeleteConfirmationDialog = true },
+                        onClick = { viewModel.showDeleteConfirmationDialog(true) },
                         tooltip = { Text(stringResource(R.string.delete)) }
                     )
                 }
@@ -252,7 +249,13 @@ fun ApplicantDetailBody(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         with (applicant) {
-            VitesseImage(photoUri = photoUri)
+            VitesseImage(
+                photoUri = photoUri,
+                modifier = Modifier
+                    .width(dimensionResource(R.dimen.image_width))
+                    .height(dimensionResource(R.dimen.image_height))
+                    .padding(top = 7.dp, bottom = 22.dp),
+            )
             Row(
                 horizontalArrangement = Arrangement.Center
             ){

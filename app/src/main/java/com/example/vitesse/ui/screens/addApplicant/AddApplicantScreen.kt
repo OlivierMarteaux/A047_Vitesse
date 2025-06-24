@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -32,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
@@ -147,9 +150,16 @@ fun AddOrEditApplicantBody(
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
         applicant.run {
-            VitesseImage(photoUri = photoUri){
-                imagePickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly))
-            }
+            VitesseImage(
+                photoUri = photoUri,
+                modifier = Modifier
+                    .width(dimensionResource(R.dimen.image_width))
+                    .height(dimensionResource(R.dimen.image_height))
+                    .padding(top = 7.dp, bottom = 22.dp)
+                    .clickable {
+                        imagePickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly))
+                    }
+            )
             AddOrEditApplicantTextField(
                 icon = Icons.Default.Person,
                 label = stringResource(R.string.first_name),

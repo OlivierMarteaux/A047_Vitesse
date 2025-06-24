@@ -16,9 +16,6 @@ interface ApplicantDao {
     @Query("SELECT * FROM applicant WHERE id = :id")
     fun getApplicantById(id: Int): Flow<Applicant>
 
-    @Query("SELECT * FROM applicant WHERE isFavorite = 1")
-    fun getFavoriteApplicants(): Flow<List<Applicant>>
-
 // fixed: Avoid using upsert method to avoid hard-to-detect bugs
 //    @Upsert
 //    suspend fun upsertApplicant(applicant: Applicant)
