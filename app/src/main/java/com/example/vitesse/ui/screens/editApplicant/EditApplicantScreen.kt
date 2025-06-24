@@ -20,9 +20,9 @@ import com.example.vitesse.ui.navigation.NavigationDestination
 import com.example.vitesse.ui.screens.addApplicant.AddOrEditApplicantBody
 import com.example.vitesse.ui.screens.addApplicant.AddOrEditApplicantFab
 import com.example.vitesse.ui.screens.applicantDetail.ErrorScreen
-import com.example.vitesse.ui.screens.applicantDetail.GetDataState
 import com.example.vitesse.ui.screens.applicantDetail.LoadingScreen
 import com.example.vitesse.ui.screens.common.AddOrEditApplicantUiState
+import com.example.vitesse.ui.screens.common.GetDataState
 
 object EditApplicantDestination : NavigationDestination {
     override val route = "edit_applicant"
@@ -51,7 +51,7 @@ fun EditApplicantScreen (
             )
         }
         is GetDataState.Error -> {
-            ErrorScreen(retryAction = {})
+            ErrorScreen()
         }
     }
 }

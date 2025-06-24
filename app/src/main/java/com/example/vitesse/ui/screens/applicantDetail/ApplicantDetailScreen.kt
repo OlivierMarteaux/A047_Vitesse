@@ -1,6 +1,5 @@
 package com.example.vitesse.ui.screens.applicantDetail
 
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -24,7 +23,6 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -64,6 +62,7 @@ import com.example.vitesse.ui.components.texts.TextBodyMedium
 import com.example.vitesse.ui.components.texts.TextBodySmall
 import com.example.vitesse.ui.components.texts.TextTitleMedium
 import com.example.vitesse.ui.navigation.NavigationDestination
+import com.example.vitesse.ui.screens.common.GetDataState
 import com.example.vitesse.ui.screens.home.HomeStateColumn
 import extensions.callPhoneNumber
 import extensions.getAge
@@ -73,6 +72,7 @@ import extensions.toEurString
 import extensions.toGbpString
 import extensions.toLocalCurrencyString
 import extensions.toLocalDateString
+import utils.debugLog
 import utils.openAppSettings
 import java.util.Locale
 
@@ -103,7 +103,7 @@ fun ApplicantDetailScreen (
                 modifier = modifier,
             )
         }
-        is GetDataState.Error -> {ErrorScreen(retryAction = {})}
+        is GetDataState.Error -> {ErrorScreen()}
     }
 }
 
@@ -118,7 +118,7 @@ fun SuccessDetailScreen(
     modifier: Modifier = Modifier,
 ){
     val context = LocalContext.current
-    val applicant: Applicant  = uiState.applicant.run { (this as GetDataState.Success<Applicant>).data }
+    val applicant: Applicant  = ( uiState.applicant as GetDataState.Success<Applicant>).data
     val exchangeRate = uiState.exchangeRate
     val showDeleteConfirmationDialog = viewModel.deleteConfirmationDialog
     val showCallPermissionAlertDialog = viewModel.callPermissionAlertDialog
@@ -159,18 +159,6 @@ fun SuccessDetailScreen(
             confirmText = stringResource(R.string.ok)
         )
     }
-
-//    if (uiState.exchangeRate is GetDataState.Error && !exchangeRateApiErrorDialogShown) {
-//        VitesseAlertDialog(
-//            onConfirm = { viewModel.showExchangeRateApiErrorDialog(false)},
-//            onDismiss = { viewModel.showExchangeRateApiErrorDialog(false)},
-//            modifier = modifier,
-//            title = "Warning",
-//            text = "Exchange rate Api is unreachable. Salary will not be shown in foreign currency.",
-//            dismissText = stringResource(R.string.cancel),
-//            confirmText = stringResource(R.string.ok)
-//        )
-//    }
 
     Scaffold(
         modifier = modifier,
@@ -227,7 +215,9 @@ fun SuccessDetailScreen(
             applicant = applicant,
             exchangeRate = exchangeRate,
             showCallAlertDialog = viewModel::showCallAlertDialog,
-            context = context
+            sendSms = context::sendSms,
+            sendEmail = context::sendEmail,
+            callPhoneNumber = context::callPhoneNumber
         )
     }
 }
@@ -239,7 +229,9 @@ fun ApplicantDetailBody(
     applicant: Applicant,
     exchangeRate: GetDataState<ExchangeRate>,
     showCallAlertDialog: (Boolean) -> Unit,
-    context: Context
+    sendSms: (String) -> Unit,
+    sendEmail: (String) -> Unit,
+    callPhoneNumber: (String) -> Unit
 ){
     Column(
         modifier = modifier
@@ -259,24 +251,24 @@ fun ApplicantDetailBody(
             Row(
                 horizontalArrangement = Arrangement.Center
             ){
-                ApplicantDetailContact(
-                    icon = Icons.Outlined.Call,
-                    text = stringResource(R.string.call),
-                    onClick = {
-                        try { context.callPhoneNumber(phone) }
-                        catch (e: Exception) { showCallAlertDialog(true) }
-                    }
-                )
-                ApplicantDetailContact(
-                    icon = ImageVector.vectorResource(R.drawable.chat_24px),
-                    text = stringResource(R.string.sms),
-                    onClick = { context.sendSms(phone) }
-                )
-                ApplicantDetailContact(
-                    icon = Icons.Outlined.Email,
-                    text = stringResource(R.string.email),
-                    onClick = { context.sendEmail(email) }
-                )
+                    ApplicantDetailContact(
+                        icon = Icons.Outlined.Call,
+                        text = stringResource(R.string.call),
+                        onClick = {
+                            try { callPhoneNumber(phone) }
+                            catch (e: Exception) { showCallAlertDialog(true) }
+                        }
+                    )
+                    ApplicantDetailContact(
+                        icon = ImageVector.vectorResource(R.drawable.chat_24px),
+                        text = stringResource(R.string.sms),
+                        onClick = { sendSms(phone) }
+                    )
+                    ApplicantDetailContact(
+                        icon = Icons.Outlined.Email,
+                        text = stringResource(R.string.email),
+                        onClick = { sendEmail(email) }
+                    )
             }
             ApplicantDetailCard(header = stringResource(R.string.about)){
                 TextBodyLarge(text = birthDate?.run{
@@ -302,16 +294,13 @@ fun ApplicantDetailBody(
                         }
                         TextBodyMedium(text = (stringResource(R.string.or, foreignCurrencySalary)))
                     }
-                    is GetDataState.Error -> {}
+                    is GetDataState.Error -> {debugLog("ApplicantDetailScreen: ExchangeRate Api Error: ${exchangeRate.errorMessage}")}
                 }
-
             }
             ApplicantDetailCard(
                 header = stringResource(R.string.notes),
-                modifier = Modifier.padding(bottom = 30.dp)
-            ){
-                TextBodyMedium(text = note)
-            }
+                modifier = Modifier.padding(bottom = 30.dp),
+            ) { TextBodyMedium(text = note) }
         }
     }
 }
@@ -373,12 +362,11 @@ fun ApplicantDetailContact(
 }
 
 @Composable
-fun LoadingScreen (modifier: Modifier = Modifier) {
+fun LoadingScreen (modifier: Modifier = Modifier) =
     HomeStateColumn (modifier) { CircularProgressIndicator() }
-}
 
 @Composable
-fun ErrorScreen(retryAction:()-> Unit, modifier : Modifier = Modifier) {
+fun ErrorScreen(modifier : Modifier = Modifier ) {
     HomeStateColumn (modifier) {
         Image(
             painter = painterResource(R.drawable.ic_connection_error),
@@ -389,9 +377,6 @@ fun ErrorScreen(retryAction:()-> Unit, modifier : Modifier = Modifier) {
             modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Center
         )
-        Button(onClick = retryAction) {
-            Text(stringResource(R.string.retry))
-        }
     }
 }
 

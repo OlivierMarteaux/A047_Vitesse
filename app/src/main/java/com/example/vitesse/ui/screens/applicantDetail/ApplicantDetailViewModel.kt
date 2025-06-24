@@ -13,18 +13,13 @@ import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.model.ExchangeRate
 import com.example.vitesse.data.repository.ApplicantRepository
 import com.example.vitesse.data.repository.CurrencyRepository
+import com.example.vitesse.ui.screens.common.GetDataState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import utils.debugLog
 import java.util.Locale
-
-sealed interface GetDataState<out T> {
-    data object Loading : GetDataState<Nothing>
-    data class Success<T>(val data: T) : GetDataState<T>
-    data class Error(val errorMessage: String) : GetDataState<Nothing>
-}
 
 data class ApplicantDetailUiState(
     val applicant: GetDataState<Applicant> = GetDataState.Loading,
@@ -96,6 +91,7 @@ class ApplicantDetailViewModel(
 
     private suspend fun loadApplicant() {
         try {
+//            delay(1000) // delay for dev purpose
             getApplicantById.distinctUntilChanged().collect() {
                 uiState = uiState.copy(applicant = GetDataState.Success(it))
                 isFavorite = it.isFavorite

@@ -6,9 +6,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.repository.ApplicantRepository
-import com.example.vitesse.ui.screens.applicantDetail.GetDataState
 import com.example.vitesse.ui.screens.common.AddOrEditApplicantUiState
 import com.example.vitesse.ui.screens.common.AddOrEditApplicantViewModel
+import com.example.vitesse.ui.screens.common.GetDataState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch

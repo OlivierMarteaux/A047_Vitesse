@@ -52,9 +52,9 @@ import com.example.vitesse.ui.components.texts.TextLabelLarge
 import com.example.vitesse.ui.components.vitesseImagePicker
 import com.example.vitesse.ui.navigation.NavigationDestination
 import com.example.vitesse.ui.screens.applicantDetail.ErrorScreen
-import com.example.vitesse.ui.screens.applicantDetail.GetDataState
 import com.example.vitesse.ui.screens.applicantDetail.LoadingScreen
 import com.example.vitesse.ui.screens.common.AddOrEditApplicantUiState
+import com.example.vitesse.ui.screens.common.GetDataState
 import extensions.isValidEmail
 import kotlin.math.round
 
@@ -83,7 +83,7 @@ fun AddApplicantScreen(
             )
         }
         is GetDataState.Error -> {
-            ErrorScreen(retryAction = {})
+            ErrorScreen()
         }
     }
 }

@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.vitesse.data.model.Applicant
-import com.example.vitesse.ui.screens.applicantDetail.GetDataState
 import extensions.isValidEmail
 
 @RequiresApi(Build.VERSION_CODES.O)
