@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Call
@@ -27,14 +28,20 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -117,6 +124,9 @@ fun SuccessDetailScreen(
     var showDeleteConfirmationDialog by remember { mutableStateOf(false)}
     val showCallAlertDialog = viewModel.callAlertDialog
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
 // FIXED: this function re-insert the just-deleted applicant when navigate back to home after deletion.
 //  -> shall not be used
 //    // Save when screen is disposed
@@ -167,6 +177,18 @@ fun SuccessDetailScreen(
 
     Scaffold(
         modifier = modifier,
+        snackbarHost = { SnackbarHost(snackbarHostState) {data ->
+            Snackbar(
+                snackbarData = data,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp)),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                actionColor = MaterialTheme.colorScheme.onPrimary
+            )
+        } },
         topBar = {
             VitesseTopAppBar(
                 title = applicant.run { "$firstName ${lastName.uppercase()}" },
@@ -196,6 +218,13 @@ fun SuccessDetailScreen(
             )
         }
     ){ innerPadding ->
+        LaunchedEffect(exchangeRate) {
+            if (exchangeRate is GetDataState.Success && exchangeRate.data.staticFallback) {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(R.string.exchange_rate_snackbar),
+                )
+            }
+        }
         ApplicantDetailBody(
             modifier = modifier.padding(innerPadding),
             applicant = applicant,
@@ -264,9 +293,9 @@ fun ApplicantDetailBody(
                     is GetDataState.Loading -> {}
                     is GetDataState.Success -> {
                         val foreignCurrencySalary : String = when (Locale.getDefault().language) {
-                            Locale.FRENCH.language -> (salary * exchangeRate.data.eur.gbp).toGbpString()
-                            Locale.ENGLISH.language -> (salary * exchangeRate.data.gbp.eur).toEurString()
-                            else -> (salary * exchangeRate.data.eur.gbp).toGbpString() // fallback to GBP
+                            Locale.FRENCH.language -> (salary * exchangeRate.data.fromEur.toGbp).toGbpString()
+                            Locale.ENGLISH.language -> (salary * exchangeRate.data.fromGbp.toEur).toEurString()
+                            else -> (salary * exchangeRate.data.fromEur.toGbp).toGbpString() // fallback to GBP
                         }
                         TextBodyMedium(text = (stringResource(R.string.or, foreignCurrencySalary)))
                     }

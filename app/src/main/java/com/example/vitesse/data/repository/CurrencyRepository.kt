@@ -30,8 +30,9 @@ class WebCurrencyRepository(
                 debugLog("Fallback failed. Reason: ${e2.message}")
                 debugLog("Fallback to static default exchange rate value from 06/24/2025. Rates might be outdated.")
                 ExchangeRate(
-                    eur = LocalCurrency(eur = 1.0, gbp = 0.85690067),
-                    gbp = LocalCurrency(gbp = 1.0, eur = 1.16779129)
+                    fromEur = LocalCurrency(toEur = 1.0, toGbp = 0.85690067),
+                    fromGbp = LocalCurrency(toGbp = 1.0, toEur = 1.16779129),
+                    staticFallback = true
                 )
             }
         }
