@@ -2,11 +2,11 @@ package com.example.vitesse.data.repository
 
 import com.example.vitesse.data.api.CurrencyApi
 import com.example.vitesse.data.model.ExchangeRate
+import com.example.vitesse.data.model.LocalCurrency
 import utils.debugLog
 
 interface CurrencyRepository {
-    suspend fun getEurExchangeRate(): ExchangeRate
-    suspend fun getGbpExchangeRate(): ExchangeRate
+    suspend fun getExchangeRate(currency: String): ExchangeRate
 }
 
 class WebCurrencyRepository(
@@ -14,40 +14,25 @@ class WebCurrencyRepository(
     private val fallbackService: CurrencyApi
 ) : CurrencyRepository {
 
-    override suspend fun getEurExchangeRate(): ExchangeRate {
+    override suspend fun getExchangeRate(currency: String): ExchangeRate {
         return try {
-            val result = primaryService.getEurExchangeRate()
+            val result = primaryService.getExchangeRate(currency)
             debugLog("Primary exchange rate Api call successful")
             result
         } catch (e: Exception) {
             debugLog("Primary failed, falling back. Reason: ${e.message}")
-            try {
-                val result = fallbackService.getEurExchangeRate()
-                debugLog("Fallback exchange rate Api call successful")
-                result
-            } catch (e2: Exception) {
-                debugLog("Fallback failed. Reason: ${e2.message}")
-                debugLog("Fallback to default exchange rates")
-                ExchangeRate()
-            }
-        }
-    }
 
-    override suspend fun getGbpExchangeRate(): ExchangeRate {
-        return try {
-            val result = primaryService.getGbpExchangeRate()
-            debugLog("Primary exchange rate Api call successful")
-            result
-        } catch (e: Exception) {
-            debugLog("Primary failed, falling back. Reason: ${e.message}")
             try {
-                val result = fallbackService.getGbpExchangeRate()
+                val result = fallbackService.getExchangeRate(currency)
                 debugLog("Fallback exchange rate Api call successful")
                 result
             } catch (e2: Exception) {
                 debugLog("Fallback failed. Reason: ${e2.message}")
-                debugLog("Fallback to default exchange rates")
-                ExchangeRate()
+                debugLog("Fallback to static default exchange rate value from 06/24/2025. Rates might be outdated.")
+                ExchangeRate(
+                    eur = LocalCurrency(eur = 1.0, gbp = 0.85690067),
+                    gbp = LocalCurrency(gbp = 1.0, eur = 1.16779129)
+                )
             }
         }
     }

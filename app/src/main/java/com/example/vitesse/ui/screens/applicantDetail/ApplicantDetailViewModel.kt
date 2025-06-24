@@ -21,7 +21,7 @@ import utils.debugLog
 import java.util.Locale
 
 sealed interface GetDataState<out T> {
-    object Loading : GetDataState<Nothing>
+    data object Loading : GetDataState<Nothing>
     data class Success<T>(val data: T) : GetDataState<T>
     data class Error(val errorMessage: String) : GetDataState<Nothing>
 }
@@ -30,12 +30,6 @@ data class ApplicantDetailUiState(
     val applicant: GetDataState<Applicant> = GetDataState.Loading,
     val exchangeRate: GetDataState<ExchangeRate> = GetDataState.Loading
 )
-
-//@RequiresApi(Build.VERSION_CODES.O)
-//data class ApplicantDetailUiState(
-//    val applicant: Applicant = Applicant(),
-//    val exchangeRate: ExchangeRate = ExchangeRate()
-//)
 
 @RequiresApi(Build.VERSION_CODES.O)
 class ApplicantDetailViewModel(
@@ -47,8 +41,7 @@ class ApplicantDetailViewModel(
     private val applicantId: Int = checkNotNull(savedStateHandle[ApplicantDetailDestination.ApplicantIdArg])
 //    private val applicantId = 99
     private val getApplicantById: Flow<Applicant> = applicantRepository.getApplicantById(this.applicantId).filterNotNull()
-    private suspend fun getEurExchangeRate() = currencyRepository.getEurExchangeRate()
-    private suspend fun getGbpExchangeRate() = currencyRepository.getGbpExchangeRate()
+    private suspend fun getExchangeRate(currency: String) = currencyRepository.getExchangeRate(currency)
 
     var uiState: ApplicantDetailUiState by mutableStateOf(ApplicantDetailUiState())
         private set
@@ -79,28 +72,33 @@ class ApplicantDetailViewModel(
 
     init {
         viewModelScope.launch {
-            try {
-                getApplicantById.distinctUntilChanged().collect() {
-                    uiState = ApplicantDetailUiState(applicant = GetDataState.Success(it))
-                    when (Locale.getDefault().language){
-                        "fr" -> uiState = uiState.copy( exchangeRate = try {
-                            GetDataState.Success(getEurExchangeRate())
-                        } catch (e: Exception) {
-                            debugLog("Api Error: ${e.message}")
-                            GetDataState.Error(e.message ?: "Unknown error")
-                        })
-                        "en" -> uiState = uiState.copy( exchangeRate = try {
-                            GetDataState.Success(getGbpExchangeRate())
-                        } catch (e: Exception){
-                            GetDataState.Error(e.message ?: "Unknown error")
-                        })
-                    }
-                    isFavorite = it.isFavorite
-                }
-            } catch (e: Exception) {
-                uiState = ApplicantDetailUiState(
-                    applicant = GetDataState.Error(e.message ?: "Unknown error"))
+            loadExchangeRate()
+            loadApplicant()
+        }
+    }
+
+    private suspend fun loadExchangeRate() {
+        val state =  try {
+            when (Locale.getDefault().language){
+                "fr" -> GetDataState.Success(getExchangeRate("eur"))
+                "en" -> GetDataState.Success(getExchangeRate("gbp"))
+                else -> GetDataState.Error("Unsupported language")
             }
+        } catch (e: Exception) {
+            debugLog("Api Error: ${e.message}")
+            GetDataState.Error(e.message ?: "Unknown error")
+        }
+        uiState = uiState.copy(exchangeRate = state)
+    }
+
+    private suspend fun loadApplicant() {
+        try {
+            getApplicantById.distinctUntilChanged().collect() {
+                uiState = uiState.copy(applicant = GetDataState.Success(it))
+                isFavorite = it.isFavorite
+            }
+        } catch (e: Exception) {
+            uiState = uiState.copy(applicant = GetDataState.Error(e.message ?: "Unknown error"))
         }
     }
 }
