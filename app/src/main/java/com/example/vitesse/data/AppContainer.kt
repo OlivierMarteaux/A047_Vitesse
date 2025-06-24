@@ -51,6 +51,8 @@ class AppDatabaseContainer(
     override val currencyRepository: CurrencyRepository by lazy {
         WebCurrencyRepository(
             primaryService = primaryService,
-            fallbackService = fallbackService)
+            fallbackService = fallbackService,
+            logger = AndroidLogger
+        )
     }
 }

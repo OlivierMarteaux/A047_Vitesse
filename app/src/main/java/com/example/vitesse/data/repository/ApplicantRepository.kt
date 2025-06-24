@@ -68,7 +68,7 @@ class ApplicantRepository (
     suspend fun deleteApplicant(applicant: Applicant) =
         try {
             applicantDao.deleteApplicant(applicant)
-            logger.d("OM_TAG", "ApplicantRepository.deleteApplicant(): $applicant")
+            logger.d("ApplicantRepository.deleteApplicant(): $applicant")
         }
         catch (e: Exception) { Log.e("OM:ApplicantRepository.deleteApplicant", e.message.toString())}
 
