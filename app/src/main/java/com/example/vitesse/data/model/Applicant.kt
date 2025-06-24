@@ -20,12 +20,16 @@ data class Applicant(
     val salary: Double = 0.0,
     val note: String = "",
     @ColumnInfo(name = "photo_uri") val photoUri: String? = null,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    @ColumnInfo(name = "normalized_first_name") val normalizedFirstName: String = "",
+    @ColumnInfo(name = "normalized_last_name") val normalizedLastName: String = ""
 )
 
 @Fts4(contentEntity = Applicant::class)
 @Entity(tableName = "applicant_fts")
 data class ApplicantFts(
-    @ColumnInfo(name = "first_name") val firstName: String,
-    @ColumnInfo(name = "last_name") val lastName: String,
+    @PrimaryKey
+    @ColumnInfo(name = "rowid") val id: Int,
+    @ColumnInfo(name = "normalized_first_name") val normalizedFirstName: String,
+    @ColumnInfo(name = "normalized_last_name") val normalizedLastName: String,
 )

@@ -1,9 +1,7 @@
-package com.example.vitesse.ui.home
+package com.example.vitesse.ui.screens.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -41,25 +39,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.rememberAsyncImagePainter
 import com.example.vitesse.R
-import com.example.vitesse.TextBodyLarge
-import com.example.vitesse.TextBodyMedium
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.ui.AppViewModelProvider
-import com.example.vitesse.ui.home.HomeUiState.Empty
-import com.example.vitesse.ui.home.HomeUiState.Error
-import com.example.vitesse.ui.home.HomeUiState.Loading
-import com.example.vitesse.ui.home.HomeUiState.Success
+import com.example.vitesse.ui.components.VitesseImage
+import com.example.vitesse.ui.components.texts.TextBodyLarge
+import com.example.vitesse.ui.components.texts.TextBodyMedium
+import com.example.vitesse.ui.components.texts.TextTitleSmall
 import com.example.vitesse.ui.navigation.NavigationDestination
-import com.example.vitesse.ui.theme.Roboto
+import com.example.vitesse.ui.screens.home.HomeUiState.Empty
+import com.example.vitesse.ui.screens.home.HomeUiState.Error
+import com.example.vitesse.ui.screens.home.HomeUiState.Loading
+import com.example.vitesse.ui.screens.home.HomeUiState.Success
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -84,70 +78,61 @@ fun HomeScreen(
         modifier = modifier,
         floatingActionButton = {
             FloatingActionButton(
-//                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-//                contentColor = MaterialTheme.colorScheme.primary,
                 onClick = navigateToAddApplicant,
                 modifier = Modifier.padding(bottom = 16.dp)
-            ) {
-                Icon(Icons.Filled.Add, "Localized description")
-            }
+            ) { Icon(Icons.Filled.Add, stringResource(R.string.add_an_applicant)) }
         }
     ){ innerPadding ->
         HomeBody(
             applicantList = applicantList,
             query = query,
-            onItemClick = { /*TODO*/ },
-            modifier = modifier
+            modifier = Modifier
                 .consumeWindowInsets(innerPadding)
                 .fillMaxSize(),
             contentPadding = innerPadding,
-            viewModel = viewModel,
             navigateToApplicantDetail = navigateToApplicantDetail,
+            onQueryChange = viewModel::updateQuery,
+            uiState = viewModel.uiState,
         )
     }
 }
 
 @Composable
 private fun HomeBody(
-//    homeUiState: HomeUiState,
     applicantList: List<Applicant>,
     query: String,
-    onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    viewModel: HomeViewModel,
     navigateToApplicantDetail: (Int) -> Unit,
+    onQueryChange: (String) -> Unit,
+    uiState: HomeUiState
     ){
     Column(
         modifier = modifier
             .padding(contentPadding)
             .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        ApplicantSearchBar(
+        HomeSearchBar(
             query = query,
-            onQueryChange = viewModel::updateQuery,
-            modifier = Modifier,
+            onQueryChange = onQueryChange,
         )
-        ApplicantTabs(
-            homeUiState = viewModel.uiState,
+        HomeTabs(
+            homeUiState = uiState,
             applicantList = applicantList,
             navigateToApplicantDetail = navigateToApplicantDetail,
-            modifier = modifier,
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ApplicantSearchBar(
+fun HomeSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ){
-    val onActiveChange = { active: Boolean ->}
-    val colors1 = SearchBarDefaults.colors()
+    val onActiveChange = { _: Boolean ->}
     SearchBar(
         inputField = {
             SearchBarDefaults.InputField(
@@ -156,29 +141,22 @@ fun ApplicantSearchBar(
                 onSearch = {},
                 expanded = false,
                 onExpandedChange = onActiveChange,
-                enabled = true,
-                placeholder = { Text(text = stringResource(R.string.search)) },
-                leadingIcon = null,
+                placeholder = { Text(stringResource(R.string.search)) },
                 trailingIcon = { Icon(Icons.Filled.Search, stringResource(R.string.search)) },
-                interactionSource = null,
                 colors = SearchBarDefaults.inputFieldColors(cursorColor = MaterialTheme.colorScheme.onPrimaryContainer),
             )
         },
         expanded = false,
         onExpandedChange = onActiveChange,
-        modifier = modifier.padding(horizontal = 24.dp, ),
-        shape = SearchBarDefaults.inputFieldShape,
+        modifier = modifier.padding(horizontal = 24.dp),
         colors = SearchBarDefaults.colors(MaterialTheme.colorScheme.surfaceContainerHigh),
-        tonalElevation = SearchBarDefaults.TonalElevation,
-        shadowElevation = SearchBarDefaults.ShadowElevation,
-        windowInsets = SearchBarDefaults.windowInsets,
         content = {},
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ApplicantTabs(
+fun HomeTabs(
     homeUiState: HomeUiState,
     applicantList: List<Applicant>,
     navigateToApplicantDetail: (Int) -> Unit,
@@ -189,7 +167,7 @@ fun ApplicantTabs(
 
     PrimaryTabRow(
         selectedTabIndex = selectedTabIndex,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(10.dp),
         containerColor = Color.Transparent,
@@ -198,39 +176,28 @@ fun ApplicantTabs(
             Tab(
                 selected = selectedTabIndex == index,
                 onClick = { selectedTabIndex = index },
-                text = { Text(
-                    text = title,
-//                    color = if (selectedTabIndex == index) MaterialTheme.colorScheme.primary
-//                            else MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontFamily = Roboto,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    lineHeight = 20.sp,
-                    letterSpacing = 0.1.sp
-                ) }
+                text = { TextTitleSmall(title) }
             )
         }
     }
     // Tab content
     when (selectedTabIndex) {
-        0 -> ApplicantCardList(
+        0 -> HomeCardList(
             homeUiState = homeUiState,
             applicantList = applicantList,
             navigateToApplicantDetail = navigateToApplicantDetail,
-            modifier = modifier,
         )
 
-        1 -> ApplicantCardList(
+        1 -> HomeCardList(
             homeUiState = homeUiState,
             applicantList = applicantList.filter{it.isFavorite},
             navigateToApplicantDetail = navigateToApplicantDetail,
-            modifier = modifier,
         )
     }
 }
 
 @Composable
-fun ApplicantCardList(
+fun HomeCardList(
     homeUiState: HomeUiState,
     applicantList: List<Applicant>,
     navigateToApplicantDetail: (Int) -> Unit,
@@ -238,77 +205,56 @@ fun ApplicantCardList(
 ){
     when (homeUiState) {
         is Success -> {
-            LazyColumn(modifier = modifier) {
+            LazyColumn(modifier) {
                 items(applicantList) { applicant ->
                     val interactionSource = remember { MutableInteractionSource() }
-                    ApplicantCard(
+                    HomeCard(
                         applicant = applicant,
-                        modifier = modifier.clickable(
+                        modifier = Modifier.clickable(
                             interactionSource = interactionSource,
                             indication = ripple(color = MaterialTheme.colorScheme.primary),
-                            ){navigateToApplicantDetail(applicant.id)},
+                            ){ navigateToApplicantDetail(applicant.id) },
                         )
                 }
             }
         }
-        is Loading -> {
-            Column(
-                modifier = modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                ) { CircularProgressIndicator() }
-        }
-        is Empty -> {
-            Column(
-                modifier = modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                Text(
-                    text = stringResource(R.string.no_candidate),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        }
-        is Error -> {
-            Column(
-                modifier = modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = "error",
-                    style = MaterialTheme.typography.bodyLarge
-                )
+        is Loading -> { HomeStateColumn(modifier) { CircularProgressIndicator() } }
+        is Empty -> { HomeStateColumn(modifier) { TextBodyLarge(stringResource(R.string.no_candidate)) } }
+        is Error -> { HomeStateColumn(modifier) { TextBodyLarge(stringResource(R.string.error))} }
+    }
+}
+
+@Composable
+fun HomeCard(
+    applicant: Applicant,
+    modifier: Modifier = Modifier,
+){
+    with(applicant){
+        Row(
+            modifier = modifier
+                .padding(start = 16.dp, top = 12.dp, end = 24.dp, bottom =12.dp)
+                .fillMaxWidth(),
+        ){
+            VitesseImage(
+                photoUri = photoUri,
+                modifier = Modifier.size(56.dp)
+            )
+            Column(modifier = Modifier.padding(start = 16.dp)){
+                TextBodyLarge("$firstName ${lastName.uppercase()}")
+                TextBodyMedium(text = note, maxLines = 2)
             }
         }
     }
 }
 
 @Composable
-fun ApplicantCard(
-    applicant: Applicant,
+fun HomeStateColumn(
     modifier: Modifier = Modifier,
-){
-    with(applicant){
-        Row(
-            modifier = modifier.padding(start = 16.dp, top = 12.dp, end = 24.dp, bottom =12.dp),
-        ){
-            Image(
-                painter = rememberAsyncImagePainter(photoUri?:R.drawable.placeholder),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(56.dp)
-                    .border(Dp.Hairline, MaterialTheme.colorScheme.outlineVariant)
-            )
-            Column(modifier = Modifier.padding(start = 16.dp)){
-                TextBodyLarge("$firstName ${lastName.uppercase()}")
-                TextBodyMedium(
-                    text = note,
-                    maxLines = 2,
-                    )
-            }
-        }
-    }
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) { content() }
 }

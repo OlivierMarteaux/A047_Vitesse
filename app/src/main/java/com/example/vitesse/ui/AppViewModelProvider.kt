@@ -9,10 +9,10 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.vitesse.VitesseApplication
-import com.example.vitesse.ui.addApplicant.AddApplicantViewModel
-import com.example.vitesse.ui.applicantDetail.ApplicantDetailViewModel
-import com.example.vitesse.ui.editApplicant.EditApplicantViewModel
-import com.example.vitesse.ui.home.HomeViewModel
+import com.example.vitesse.ui.screens.addApplicant.AddApplicantViewModel
+import com.example.vitesse.ui.screens.applicantDetail.ApplicantDetailViewModel
+import com.example.vitesse.ui.screens.editApplicant.EditApplicantViewModel
+import com.example.vitesse.ui.screens.home.HomeViewModel
 
 /**
  * Provides Factory to create instance of ViewModel for the entire Vitesse app

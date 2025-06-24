@@ -2,8 +2,9 @@ package com.example.vitesse.data.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Upsert
+import androidx.room.Update
 import com.example.vitesse.data.model.Applicant
 import kotlinx.coroutines.flow.Flow
 
@@ -13,13 +14,17 @@ interface ApplicantDao {
     fun getAllApplicants(): Flow<List<Applicant>>
 
     @Query("SELECT * FROM applicant WHERE id = :id")
-    fun getApplicantById(id: Int): Flow<Applicant?>
+    fun getApplicantById(id: Int): Flow<Applicant>
 
-    @Query("SELECT * FROM applicant WHERE isFavorite = 1")
-    fun getFavoriteApplicants(): Flow<List<Applicant>>
+// fixed: Avoid using upsert method to avoid hard-to-detect bugs
+//    @Upsert
+//    suspend fun upsertApplicant(applicant: Applicant)
 
-    @Upsert
-    suspend fun upsertApplicant(applicant: Applicant)
+    @Insert
+    suspend fun insertApplicant(applicant: Applicant)
+
+    @Update
+    suspend fun updateApplicant(applicant: Applicant)
 
     @Delete
     suspend fun deleteApplicant(applicant: Applicant)

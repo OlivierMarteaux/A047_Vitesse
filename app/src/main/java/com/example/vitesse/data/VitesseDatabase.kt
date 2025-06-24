@@ -13,9 +13,11 @@ import com.example.vitesse.data.converter.DateConverter
 import com.example.vitesse.data.dao.ApplicantDao
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.model.ApplicantFts
+import extensions.stripAccents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.util.concurrent.Executors
 
 /**
  * The Room database for the Vitesse app.
@@ -75,6 +77,9 @@ abstract class VitesseDatabase: RoomDatabase() {
                         VitesseDatabase::class.java,
                         "vitesse_database.db"
                     )
+                    .setQueryCallback({ sqlQuery, bindArgs ->
+                        Log.d("SQL_QUERY", "SQL: $sqlQuery args: $bindArgs")
+                    }, Executors.newSingleThreadExecutor())
                     .addCallback(VitesseDatabaseCallback(coroutineScope))
                     .build()
                 INSTANCE = instance
@@ -252,7 +257,10 @@ abstract class VitesseDatabase: RoomDatabase() {
                 )
             )
             prepopulatedApplicants.forEach { applicant ->
-                applicantDao.upsertApplicant(applicant)
+                applicantDao.insertApplicant(applicant.copy(
+                    normalizedFirstName = applicant.firstName.stripAccents(),
+                    normalizedLastName = applicant.lastName.stripAccents()
+                ))
             }
         }
     }

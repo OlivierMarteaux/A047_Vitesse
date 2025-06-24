@@ -1,4 +1,4 @@
-package com.example.vitesse.ui.home
+package com.example.vitesse.ui.screens.home
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,12 +11,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-//data class HomeUiState(
-//    val isLoading: Boolean = true,
-//    val isEmpty: Boolean? = null,
-//    val isError: String? = null,
-//)
-
 sealed interface HomeUiState {
     data class Success(val applicants: List<Applicant>) : HomeUiState
     data object Error : HomeUiState
@@ -24,11 +18,7 @@ sealed interface HomeUiState {
     data object Empty : HomeUiState
 }
 
-
 class HomeViewModel(private val applicantRepository: ApplicantRepository): ViewModel() {
-
-//    private val _uiState = MutableStateFlow(HomeUiState())
-//    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     var uiState: HomeUiState by mutableStateOf(HomeUiState.Loading)
         private set
@@ -36,42 +26,16 @@ class HomeViewModel(private val applicantRepository: ApplicantRepository): ViewM
     var query: String by mutableStateOf("")
         private set
 
-    fun updateQuery(query: String) {
-        this.query = query
-    }
+    fun updateQuery(query: String) { this.query = query }
 
     fun getApplicants(query: String = ""): Flow<List<Applicant>> = with(applicantRepository) {
         if (query.isEmpty()) getAllApplicants() else getApplicants(query)
-//        getApplicants(query)
     }
-//fun getApplicants(query: String = ""): Flow<List<Applicant>> =
-////    with(applicantRepository) {
-////    if (query.isEmpty()) getAllApplicants() else getApplicants(query)
-////        getApplicants(query)
-////}
-//    when (val result = applicantRepository.getAllApplicants()) {
-//        is DatabaseState.Success -> result.data
-//        is DatabaseState.Error ->{ _uiState.update { it.copy(isError = result.exception.message ?: "Unknown error") };emptyFlow() }
-//        is DatabaseState.Loading -> { _uiState.update { it.copy(isLoading = true) };emptyFlow() }
-//    }
 
-//    init {
-//        viewModelScope.launch {
-//            getApplicants().collect { applicants ->
-//                _uiState.update {
-//                    it.copy(
-//                        isLoading = false,
-//                        isEmpty = applicants.isEmpty(),
-//                    )
-//                }
-//            }
-//        }
-//    }
     init {
         viewModelScope.launch {
             getApplicants().collect { applicants ->
                 uiState = try {
-                    HomeUiState.Loading
                     delay(1000) // delay for dev purpose
                     if (applicants.isEmpty()) HomeUiState.Empty else HomeUiState.Success(applicants)
                 } catch (e: Exception) {

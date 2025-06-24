@@ -3,6 +3,7 @@ package com.example.vitesse.data.repository
 import android.util.Log
 import com.example.vitesse.data.dao.ApplicantDao
 import com.example.vitesse.data.model.Applicant
+import extensions.stripAccents
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -24,13 +25,6 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
         catch (e: Exception) { Log.e("OM:ApplicantRepository.getApplicantById", e.message.toString()); emptyFlow()}
 
     /**
-     * Retrieves a flow of all favorite [Applicant] entities.
-     */
-    fun getFavoriteApplicants(): Flow<List<Applicant>> =
-        try {applicantDao.getFavoriteApplicants()}
-        catch (e: Exception) { Log.e("OM:ApplicantRepository.getFavoriteApplicants", e.message.toString()); emptyFlow()}
-
-    /**
      * Retrieves a flow of all [Applicant] entities.
      *
      * @return A [Flow] emitting the list of applicants.
@@ -40,21 +34,26 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
         try {
             applicantDao.getAllApplicants()
         } catch (e: Exception) { Log.e("OM:ApplicantRepository.getAllApplicants", e.message.toString()); emptyFlow()}
-//    fun getAllApplicants(): DatabaseState<Flow<List<Applicant>>> =
-//        try {
-//            DatabaseState.Loading
-//            DatabaseState.Success(applicantDao.getAllApplicants())
-//        } catch (e: Exception) { DatabaseState.Error(e) }
 
-    /**
-     * Inserts a new [Applicant] or updates it if it already exists.
-     *
-     * @param applicant The applicant to add.
-     * Logs an error if an exception occurs.
-     */
+    /* fixed: Avoid using upsert method to avoid hard-to-detect bugs
     suspend fun upsertApplicant(applicant: Applicant) =
         try {applicantDao.upsertApplicant(applicant)}
         catch (e: Exception) { Log.e("OM:ApplicantRepository.addApplicant", e.message.toString())}
+     */
+
+    suspend fun insertApplicant(applicant: Applicant) =
+        try {applicantDao.insertApplicant(applicant.copy(
+            normalizedFirstName = applicant.firstName.stripAccents(),
+            normalizedLastName = applicant.lastName.stripAccents()
+        ))}
+        catch (e: Exception) { Log.e("OM:ApplicantRepository.addApplicant", e.message.toString())}
+
+    suspend fun updateApplicant(applicant: Applicant) =
+        try {applicantDao.updateApplicant(applicant.copy(
+            normalizedFirstName = applicant.firstName.stripAccents(),
+            normalizedLastName = applicant.lastName.stripAccents()
+        ))}
+        catch (e: Exception) { Log.e("OM:ApplicantRepository.updateApplicant", e.message.toString())}
 
     /**
      * Deletes the specified [Applicant] from the database.
@@ -63,7 +62,10 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
      * Logs an error if an exception occurs.
      */
     suspend fun deleteApplicant(applicant: Applicant) =
-        try { applicantDao.deleteApplicant(applicant)}
+        try {
+            applicantDao.deleteApplicant(applicant)
+            Log.d("OM_TAG", "ApplicantRepository.deleteApplicant(): $applicant")
+        }
         catch (e: Exception) { Log.e("OM:ApplicantRepository.deleteApplicant", e.message.toString())}
 
     /**
@@ -78,19 +80,11 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
 
     private fun formatSqlQuery(rawQuery: String): String{
         return rawQuery
+            .stripAccents()
             .trim()
             .lowercase()
             .split("\\s+".toRegex())           // Split by any whitespace
             .filter { it.isNotBlank() }        // Remove empty strings
             .joinToString(" ") { "$it*" }      // Append '*' to each term
     }
-
-//    private suspend fun <T> databaseProcessing(function: () -> T): DatabaseState<T> =
-//        try {
-//            DatabaseState.Loading
-//            delay(1000)
-//            DatabaseState.Success(function())
-//        } catch (e: Exception) {
-//            DatabaseState.Error(e)
-//        }
 }

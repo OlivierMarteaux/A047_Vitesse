@@ -1,9 +1,10 @@
 package com.example.vitesse.data.api
 
-import com.example.vitesse.data.model.Currency
+import com.example.vitesse.data.model.ExchangeRate
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface CurrencyApi {
-    @GET("currencies/eur.json")
-    suspend fun getCurrency(): Currency
+    @GET("{currency}.json")
+    suspend fun getExchangeRate(@Path("currency") currency: String): ExchangeRate
 }

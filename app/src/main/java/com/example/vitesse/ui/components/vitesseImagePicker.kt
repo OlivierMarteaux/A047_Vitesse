@@ -1,0 +1,34 @@
+package com.example.vitesse.ui.components
+
+import android.net.Uri
+import android.os.Build
+import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import utils.copyImageToInternalStorage
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun vitesseImagePicker(
+    onImagePicked: (Uri) -> Unit
+): ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?> {
+
+    // Registers a photo picker activity launcher in single-select mode.
+    val context = LocalContext.current
+    val pickMedia =
+        rememberLauncherForActivityResult(PickVisualMedia()) { pickedUri ->
+            // Callback is invoked after the user selects a media item or closes the photo picker.
+            pickedUri?.let { uri ->
+                Log.d("OM_TAG", "VitesseImagePicker: picked URI: $uri")
+                val persistentUri = copyImageToInternalStorage(context, uri)
+                persistentUri?.let { onImagePicked(it) }
+                Log.d("OM_TAG", "VitesseImagePicker: Persistent URI: $persistentUri")
+            } ?: Log.d("OM_TAG", "VitesseImagePicker: No media selected")
+        }
+    return pickMedia
+}

@@ -10,7 +10,7 @@ fun Double.toLocalCurrencyString(locale: Locale = Locale.getDefault()): String {
     return currencyFormatter.format(this)
 }
 
-fun Double.toBritishPoundString(): String {
+fun Double.toGbpString(): String {
     val formatter = NumberFormat.getInstance() as DecimalFormat
     formatter.maximumFractionDigits = 2
     formatter.maximumFractionDigits = 2
@@ -18,6 +18,16 @@ fun Double.toBritishPoundString(): String {
 
     val formattedNumber = formatter.format(this)
     return "£ $formattedNumber" // add space between £ and number
+}
+
+fun Double.toEurString(): String {
+    val formatter = NumberFormat.getInstance() as DecimalFormat
+    formatter.maximumFractionDigits = 2
+    formatter.maximumFractionDigits = 2
+    formatter.isGroupingUsed = false // removes comma and space
+
+    val formattedNumber = formatter.format(this)
+    return "€ $formattedNumber" // add space between € and number
 }
 
 
