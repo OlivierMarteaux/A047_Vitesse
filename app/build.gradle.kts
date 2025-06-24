@@ -113,6 +113,8 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     // Flow test
     androidTestImplementation(libs.turbine)
+    // MockWebServer for API testing
+    testImplementation(libs.okhttp3.mockwebserver)
     // Mockito
     testImplementation(libs.mockito.kotlin)
 }
