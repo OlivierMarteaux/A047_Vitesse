@@ -31,7 +31,9 @@ class ApplicantDaoTest {
             salary = 60000.0,
             note = "Strong Java and Kotlin background.",
             photoUri = "https://randomuser.me/api/portraits/women/12.jpg",
-            isFavorite = true
+            isFavorite = true,
+            normalizedFirstName = "Alice",
+            normalizedLastName = "Johnson"
         ),
         Applicant(
             id = 2,
@@ -43,7 +45,9 @@ class ApplicantDaoTest {
             salary = 72000.0,
             note = "Experienced in full-stack web development.",
             photoUri = "https://randomuser.me/api/portraits/men/34.jpg",
-            isFavorite = false
+            isFavorite = false,
+            normalizedFirstName = "Bob",
+            normalizedLastName = "Martinez"
         ),
         Applicant(
             id = 3,
@@ -55,7 +59,9 @@ class ApplicantDaoTest {
             salary = 58000.0,
             note = "UI/UX designer with a background in front-end.",
             photoUri = "https://randomuser.me/api/portraits/women/45.jpg",
-            isFavorite = true
+            isFavorite = true,
+            normalizedFirstName = "Claire",
+            normalizedLastName = "Nguyen"
         ),
         Applicant(
             id = 4,
@@ -67,7 +73,9 @@ class ApplicantDaoTest {
             salary = 90000.0,
             note = "Senior architect, looking for leadership roles.",
             photoUri = "https://randomuser.me/api/portraits/men/9.jpg",
-            isFavorite = false
+            isFavorite = false,
+            normalizedFirstName = "David",
+            normalizedLastName = "Smith"
         ),
         Applicant(
             id = 5,
@@ -79,7 +87,9 @@ class ApplicantDaoTest {
             salary = 64000.0,
             note = "Mobile app developer with Kotlin/Jetpack Compose.",
             photoUri = "https://randomuser.me/api/portraits/women/27.jpg",
-            isFavorite = true
+            isFavorite = true,
+            normalizedFirstName = "Emma",
+            normalizedLastName = "Lopez",
         )
     )
 
@@ -95,6 +105,8 @@ class ApplicantDaoTest {
             .build()
         Log.d("OM:ApplicantDaoTest", "Database created")
     }
+
+
 
     @Test
     fun applicantDao_InsertApplicant_ReturnsCorrectApplicant() = runTest {
@@ -114,7 +126,7 @@ class ApplicantDaoTest {
     @Test
     fun applicantDao_DeleteApplicant_ReturnsNoApplicants() = runTest {
         // Given an applicant is added to the database:
-        database.applicantDao().upsertApplicant(applicantList[0])
+        database.applicantDao().insertApplicant(applicantList[0])
         // When the applicant is deleted:
         database.applicantDao().deleteApplicant(applicantList[0])
         // Then the database should return no applicants
@@ -129,7 +141,7 @@ class ApplicantDaoTest {
     @Test
     fun applicantDao_GetAllApplicants_ReturnsAllApplicants() = runTest {
         // Given applicants are added to the database:
-        applicantList.forEach { database.applicantDao().upsertApplicant(it) }
+        applicantList.forEach { database.applicantDao().insertApplicant(it) }
         // When all applicants are retrieved:
         database.applicantDao().getAllApplicants().test {
             // Then the retrieved list should contain all the applicants
@@ -139,23 +151,23 @@ class ApplicantDaoTest {
     }
 
     @Test
-    fun applicantDao_GetIsFavoriteApplicants_ReturnsIsFavoriteApplicants() = runTest {
+    fun applicantDao_getApplicantByFirstName_ReturnsCorrectApplicant() = runTest {
         // Given applicants are added to the database:
-        applicantList.forEach { database.applicantDao().upsertApplicant(it) }
-        // When isFavorite applicants are retrieved:
-        database.applicantDao().getFavoriteApplicants().test {
-            // Then the retrieved list should contain only the isFavorite applicants
-            assertEquals(applicantList.filter { it.isFavorite }, awaitItem())
+        applicantList.forEach { database.applicantDao().insertApplicant(it) }
+        // When an applicant is retrieved by its first name:
+        database.applicantDao().getApplicants("Alice").test {
+            // Then the retrieved list should contain only the applicants with the given name
+            assertEquals(listOf(applicantList[0]), awaitItem())
             cancel()
         }
     }
 
     @Test
-    fun applicantDao_getApplicantByPartialFirstName_ReturnsCorrectApplicant() = runTest {
+    fun applicantDao_getApplicantByLastName_ReturnsCorrectApplicant() = runTest {
         // Given applicants are added to the database:
-        applicantList.forEach { database.applicantDao().upsertApplicant(it) }
+        applicantList.forEach { database.applicantDao().insertApplicant(it) }
         // When an applicant is retrieved by its first name:
-        database.applicantDao().getApplicants("Alic*").test {
+        database.applicantDao().getApplicants("Johnson").test {
             // Then the retrieved list should contain only the applicants with the given name
             assertEquals(listOf(applicantList[0]), awaitItem())
             cancel()

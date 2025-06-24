@@ -6,6 +6,7 @@ import com.example.vitesse.data.model.Applicant
 import extensions.stripAccents
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import utils.Logger
 
 /**
  * Repository for managing applicant-related operations.
@@ -14,7 +15,10 @@ import kotlinx.coroutines.flow.emptyFlow
  *
  * @property applicantDao The DAO used to access applicant data from the local database.
  */
-class ApplicantRepository (private val applicantDao: ApplicantDao) {
+class ApplicantRepository (
+    private val applicantDao: ApplicantDao,
+    private val logger: Logger
+) {
 
     /**
      * Retrieves a flow of the [Applicant] with the specified ID.
@@ -64,7 +68,7 @@ class ApplicantRepository (private val applicantDao: ApplicantDao) {
     suspend fun deleteApplicant(applicant: Applicant) =
         try {
             applicantDao.deleteApplicant(applicant)
-            Log.d("OM_TAG", "ApplicantRepository.deleteApplicant(): $applicant")
+            logger.d("OM_TAG", "ApplicantRepository.deleteApplicant(): $applicant")
         }
         catch (e: Exception) { Log.e("OM:ApplicantRepository.deleteApplicant", e.message.toString())}
 

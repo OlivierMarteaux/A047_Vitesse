@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
+import utils.AndroidLogger
 import utils.CURRENCY_API_FALLBACK_URL
 import utils.CURRENCY_API_URL
 
@@ -25,20 +26,14 @@ class AppDatabaseContainer(
 
     // applicant repository to get data from ROOM database
     override val applicantRepository: ApplicantRepository by lazy {
-        ApplicantRepository(VitesseDatabase.getInstance(context, applicationScope).applicantDao())
+        ApplicantRepository(
+            applicantDao = VitesseDatabase.getInstance(context, applicationScope).applicantDao(),
+            logger = AndroidLogger
+        )
     }
 
     // currency repository to get data from currency API
     private val json = Json { ignoreUnknownKeys = true }
-
-//    private val retrofit = Retrofit.Builder()
-//        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-//        .baseUrl(CURRENCY_API_URL)
-//        .build()
-//
-//    private val retrofitService: CurrencyApi by lazy {
-//        retrofit.create(CurrencyApi::class.java)
-//    }
 
     private fun createRetrofit(baseUrl: String): Retrofit {
         return Retrofit.Builder()

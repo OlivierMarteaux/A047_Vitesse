@@ -3,6 +3,7 @@ package com.example.vitesse
 import com.example.vitesse.data.dao.ApplicantDao
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.repository.ApplicantRepository
+import extensions.stripAccents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -12,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
+import utils.NoOpLogger
 import java.time.LocalDate
 
 class ApplicantRepositoryTest {
@@ -36,7 +38,10 @@ class ApplicantRepositoryTest {
     @Before
     fun setup(){
         Dispatchers.setMain(testDispatcher)
-        repository = ApplicantRepository(mockApplicantDao)
+        repository = ApplicantRepository(
+            applicantDao = mockApplicantDao,
+            logger = NoOpLogger
+        )
     }
 
     @Test
@@ -46,15 +51,6 @@ class ApplicantRepositoryTest {
         testDispatcher.scheduler.advanceUntilIdle()
         // Then
         verify(mockApplicantDao).getAllApplicants()
-    }
-
-    @Test
-    fun applicantRepository_GetIsFavoriteApplicants_CallsDaoGetIsFavoriteApplicants() = runTest {
-        // When
-        repository.getFavoriteApplicants()
-        testDispatcher.scheduler.advanceUntilIdle()
-        // Then
-        verify(mockApplicantDao).getFavoriteApplicants()
     }
 
     @Test
@@ -72,7 +68,10 @@ class ApplicantRepositoryTest {
         repository.insertApplicant(applicant)
         testDispatcher.scheduler.advanceUntilIdle()
         // Then
-        verify(mockApplicantDao).upsertApplicant(applicant)
+        verify(mockApplicantDao).insertApplicant(applicant.copy(
+            normalizedFirstName = applicant.firstName.stripAccents(),
+            normalizedLastName = applicant.lastName.stripAccents()
+        ))
     }
 
     @Test
