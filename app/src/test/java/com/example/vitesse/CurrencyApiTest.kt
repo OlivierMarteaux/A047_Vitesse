@@ -41,7 +41,7 @@ class CurrencyApiTest {
     }
 
     @Test
-    fun currencyApi_getExchangeRate_returnsCorrectRates() = runTest {
+    fun currencyApi_getEurExchangeRate_returnsCorrectRates() = runTest {
         val mockJson = """
             {
                 "date": "2025-06-23",
@@ -60,5 +60,27 @@ class CurrencyApiTest {
         assertEquals(LocalCurrency(toGbp=0.85690067, toEur=1.0), result.fromEur)
         assertEquals(1.0, result.fromEur.toEur, 0.0)
         assertEquals(0.85690067, result.fromEur.toGbp, 0.0)
+    }
+
+    @Test
+    fun currencyApi_getGbpExchangeRate_returnsCorrectRates() = runTest {
+        val mockJson = """
+            {
+                "date": "2025-06-23",
+                "gbp": 
+                    {
+                        "gbp": 1.0,
+                        "eur": 1.16779129
+                    }
+            }
+        """.trimIndent()
+
+        mockWebServer.enqueue(MockResponse().setBody(mockJson).setResponseCode(200))
+
+        val result = api.getExchangeRate("gbp")
+
+        assertEquals(LocalCurrency(toGbp = 1.0, toEur = 1.16779129), result.fromGbp)
+        assertEquals(1.0, result.fromGbp.toGbp, 0.0)
+        assertEquals(1.16779129, result.fromGbp.toEur, 0.0)
     }
 }

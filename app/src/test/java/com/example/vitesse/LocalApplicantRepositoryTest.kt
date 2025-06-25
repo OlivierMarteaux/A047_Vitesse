@@ -2,7 +2,7 @@ package com.example.vitesse
 
 import com.example.vitesse.data.dao.ApplicantDao
 import com.example.vitesse.data.model.Applicant
-import com.example.vitesse.data.repository.ApplicantRepository
+import com.example.vitesse.data.repository.LocalApplicantRepository
 import extensions.stripAccents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,9 +16,9 @@ import org.mockito.kotlin.verify
 import utils.NoOpLogger
 import java.time.LocalDate
 
-class ApplicantRepositoryTest {
+class LocalApplicantRepositoryTest {
     private val mockApplicantDao: ApplicantDao = mock()
-    private lateinit var repository: ApplicantRepository
+    private lateinit var repository: LocalApplicantRepository
     private val testDispatcher = StandardTestDispatcher()
 
     private val applicant = Applicant(
@@ -38,7 +38,7 @@ class ApplicantRepositoryTest {
     @Before
     fun setup(){
         Dispatchers.setMain(testDispatcher)
-        repository = ApplicantRepository(
+        repository = LocalApplicantRepository(
             applicantDao = mockApplicantDao,
             logger = NoOpLogger
         )
@@ -82,4 +82,26 @@ class ApplicantRepositoryTest {
         // Then
         verify(mockApplicantDao).deleteApplicant(applicant)
     }
+
+    @Test
+    fun applicantRepository_UpdateApplicant_CallsDaoUpdateApplicant() = runTest {
+        // When
+        repository.updateApplicant(applicant)
+        testDispatcher.scheduler.advanceUntilIdle()
+        // Then
+        verify(mockApplicantDao).updateApplicant(applicant.copy(
+            normalizedFirstName = applicant.firstName.stripAccents(),
+            normalizedLastName = applicant.lastName.stripAccents()
+        ))
+    }
+
+    @Test
+    fun applicantRepository_GetApplicants_CallsDaoGetApplicants() = runTest {
+        // When
+        repository.getApplicants("Alice Johnson")
+        testDispatcher.scheduler.advanceUntilIdle()
+        // Then
+        verify(mockApplicantDao).getApplicants("alice* johnson*")
+    }
+
 }

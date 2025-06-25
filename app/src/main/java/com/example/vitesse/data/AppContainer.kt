@@ -2,8 +2,8 @@ package com.example.vitesse.data
 
 import android.content.Context
 import com.example.vitesse.data.api.CurrencyApi
-import com.example.vitesse.data.repository.ApplicantRepository
 import com.example.vitesse.data.repository.CurrencyRepository
+import com.example.vitesse.data.repository.LocalApplicantRepository
 import com.example.vitesse.data.repository.WebCurrencyRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.CoroutineScope
@@ -15,7 +15,7 @@ import utils.CURRENCY_API_FALLBACK_URL
 import utils.CURRENCY_API_URL
 
 interface AppContainer {
-    val applicantRepository: ApplicantRepository
+    val localApplicantRepository: LocalApplicantRepository
     val currencyRepository: CurrencyRepository
 }
 
@@ -25,8 +25,8 @@ class AppDatabaseContainer(
 ) : AppContainer {
 
     // applicant repository to get data from ROOM database
-    override val applicantRepository: ApplicantRepository by lazy {
-        ApplicantRepository(
+    override val localApplicantRepository: LocalApplicantRepository by lazy {
+        LocalApplicantRepository(
             applicantDao = VitesseDatabase.getInstance(context, applicationScope).applicantDao(),
             logger = AndroidLogger
         )
