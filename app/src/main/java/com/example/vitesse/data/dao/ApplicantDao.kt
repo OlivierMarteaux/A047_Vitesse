@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.example.vitesse.data.model.Applicant
+import com.example.vitesse.data.model.ApplicantFts
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -14,7 +15,7 @@ interface ApplicantDao {
     fun getAllApplicants(): Flow<List<Applicant>>
 
     @Query("SELECT * FROM applicant WHERE id = :id")
-    fun getApplicantById(id: Int): Flow<Applicant>
+    fun getApplicantById(id: Int): Flow<Applicant?>
 
 // fixed: Avoid using upsert method to avoid hard-to-detect bugs
 //    @Upsert
@@ -22,6 +23,10 @@ interface ApplicantDao {
 
     @Insert
     suspend fun insertApplicant(applicant: Applicant)
+
+    // For instrumented tests only
+    @Insert
+    suspend fun insertApplicantFts(applicantFts: ApplicantFts)
 
     @Update
     suspend fun updateApplicant(applicant: Applicant)

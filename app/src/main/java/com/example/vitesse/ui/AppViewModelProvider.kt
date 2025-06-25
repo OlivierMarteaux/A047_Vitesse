@@ -13,6 +13,7 @@ import com.example.vitesse.ui.screens.addApplicant.AddApplicantViewModel
 import com.example.vitesse.ui.screens.applicantDetail.ApplicantDetailViewModel
 import com.example.vitesse.ui.screens.editApplicant.EditApplicantViewModel
 import com.example.vitesse.ui.screens.home.HomeViewModel
+import utils.AndroidLogger
 
 /**
  * Provides Factory to create instance of ViewModel for the entire Vitesse app
@@ -24,14 +25,14 @@ object AppViewModelProvider {
         // Initializer for HomeViewModel
         initializer {
             HomeViewModel(
-                applicantRepository = vitesseApplication().container.applicantRepository
+                applicantRepository = vitesseApplication().container.localApplicantRepository
             )
         }
 
         // Initializer for AddViewModel
         initializer {
             AddApplicantViewModel(
-                applicantRepository = vitesseApplication().container.applicantRepository
+                applicantRepository = vitesseApplication().container.localApplicantRepository
             )
         }
 
@@ -39,7 +40,7 @@ object AppViewModelProvider {
         initializer {
             EditApplicantViewModel(
                 savedStateHandle = this.createSavedStateHandle(),
-                applicantRepository = vitesseApplication().container.applicantRepository
+                applicantRepository = vitesseApplication().container.localApplicantRepository
             )
         }
 
@@ -47,8 +48,9 @@ object AppViewModelProvider {
         initializer {
             ApplicantDetailViewModel(
                 savedStateHandle = this.createSavedStateHandle(),
-                applicantRepository = vitesseApplication().container.applicantRepository,
-                currencyRepository = vitesseApplication().container.currencyRepository
+                applicantRepository = vitesseApplication().container.localApplicantRepository,
+                currencyRepository = vitesseApplication().container.currencyRepository,
+                logger = AndroidLogger
             )
         }
     }

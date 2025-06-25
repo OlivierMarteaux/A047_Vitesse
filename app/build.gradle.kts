@@ -65,24 +65,16 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    //material3 for custom ripple effect
-    implementation("androidx.compose.material3:material3:1.3.2")
+    implementation(libs.material3)//material3 for custom ripple effect
+    implementation(libs.androidx.activity.ktx)// activity dependency for Google ImagePicker
+    implementation(libs.google.accompanist.systemuicontroller)// Google accompanist for SystemUiController
+    implementation(libs.material)// google material for icons
+    implementation(libs.androidx.navigation.compose)// Navigation
 
-    // activity dependency for Google ImagePicker
-    implementation(libs.androidx.activity.ktx)
     // Coil for image viewing
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.coil.video)
-
-    // Google accompanist for SystemUiController
-    implementation(libs.google.accompanist.systemuicontroller)
-
-    // google material for icons
-    implementation(libs.material)
-
-    // Navigation
-    implementation(libs.androidx.navigation.compose)
 
     // room
     implementation(libs.androidx.room.runtime)
@@ -95,26 +87,25 @@ dependencies {
     implementation(libs.androidx.room.ktx)
 
     // Retrofit for currency conversion API
-    // Retrofit
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.retrofit)
     implementation(libs.okhttp)
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockk) // kotlin mocking framework
+    testImplementation(libs.kotlinx.coroutines.test) // coroutine test (runTest)
+    testImplementation(libs.okhttp3.mockwebserver)// MockWebServer for API testing
+    testImplementation(libs.mockito.kotlin)// Mockito
+
+    androidTestImplementation(libs.turbine)// Flow test
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    // coroutine test (runTest)
-    testImplementation(libs.kotlinx.coroutines.test)
-    // Flow test
-    androidTestImplementation(libs.turbine)
-    // Mockito
-    testImplementation(libs.mockito.kotlin)
 }
 
 /**
