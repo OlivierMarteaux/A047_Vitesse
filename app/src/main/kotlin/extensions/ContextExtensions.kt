@@ -8,11 +8,6 @@ fun Context.callPhoneNumber(phoneNumber: String) {
     val intent = Intent(Intent.ACTION_CALL).apply {
         data = "tel:$phoneNumber".toUri()
     }
-//    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-//        startActivity(intent)
-//    } else {
-//        // Request CALL_PHONE permission first
-//    }
     if (intent.resolveActivity(packageManager) != null) {
         startActivity(intent)
     }

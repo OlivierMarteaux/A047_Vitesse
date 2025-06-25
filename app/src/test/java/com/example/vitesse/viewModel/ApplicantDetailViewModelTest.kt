@@ -30,6 +30,7 @@ import utils.NoOpLogger
 @OptIn(ExperimentalCoroutinesApi::class)
 class ApplicantDetailViewModelTest {
 
+//    private val testDispatcher = UnconfinedTestDispatcher()// for Testrunner with coverage
     private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var applicantRepository: ApplicantRepository
@@ -64,7 +65,9 @@ class ApplicantDetailViewModelTest {
         advanceUntilIdle()
 
         val applicantState = viewModel.uiState.applicant
+        advanceUntilIdle()
         val rateState = viewModel.uiState.exchangeRate
+        advanceUntilIdle()
 
         assert(applicantState is GetDataState.Success && applicantState.data == testApplicant)
         assert(rateState is GetDataState.Success && rateState.data == testExchangeRate)
