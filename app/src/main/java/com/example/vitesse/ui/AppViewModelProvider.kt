@@ -13,6 +13,7 @@ import com.example.vitesse.ui.screens.addApplicant.AddApplicantViewModel
 import com.example.vitesse.ui.screens.applicantDetail.ApplicantDetailViewModel
 import com.example.vitesse.ui.screens.editApplicant.EditApplicantViewModel
 import com.example.vitesse.ui.screens.home.HomeViewModel
+import utils.AndroidLogger
 
 /**
  * Provides Factory to create instance of ViewModel for the entire Vitesse app
@@ -48,7 +49,8 @@ object AppViewModelProvider {
             ApplicantDetailViewModel(
                 savedStateHandle = this.createSavedStateHandle(),
                 applicantRepository = vitesseApplication().container.localApplicantRepository,
-                currencyRepository = vitesseApplication().container.currencyRepository
+                currencyRepository = vitesseApplication().container.currencyRepository,
+                logger = AndroidLogger
             )
         }
     }

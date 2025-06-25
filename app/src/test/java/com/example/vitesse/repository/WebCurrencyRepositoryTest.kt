@@ -1,4 +1,4 @@
-package com.example.vitesse
+package com.example.vitesse.repository
 
 import com.example.vitesse.data.api.CurrencyApi
 import com.example.vitesse.data.model.ExchangeRate

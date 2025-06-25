@@ -3,7 +3,7 @@ package com.example.vitesse.fakes
 import com.example.vitesse.data.model.Applicant
 import java.time.LocalDate
 
-private val fakeApplicantList = listOf(
+val fakeApplicantList = listOf(
     Applicant(
         id = 1,
         firstName = "Alice",

@@ -1,7 +1,6 @@
 package com.example.vitesse.ui.screens.applicantDetail
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
-import utils.debugLog
+import utils.Logger
 import java.util.Locale
 
 data class ApplicantDetailUiState(
@@ -31,6 +30,7 @@ class ApplicantDetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val applicantRepository: ApplicantRepository,
     private val currencyRepository: CurrencyRepository,
+    private val logger: Logger
 ): ViewModel() {
 
     private val applicantId: Int = checkNotNull(savedStateHandle[ApplicantDetailDestination.ApplicantIdArg])
@@ -63,7 +63,7 @@ class ApplicantDetailViewModel(
 
     fun deleteApplicant(applicant: Applicant){
         viewModelScope.launch {
-            Log.d("OM_TAG", "DetailViewModel.delete(): $applicant")
+            logger.d( "DetailViewModel.delete(): $applicant")
             applicantRepository.deleteApplicant(applicant)
         }
     }
@@ -83,7 +83,7 @@ class ApplicantDetailViewModel(
                 else -> GetDataState.Error("Unsupported language")
             }
         } catch (e: Exception) {
-            debugLog("Api Error: ${e.message}")
+            logger.d("Api Error: ${e.message}")
             GetDataState.Error(e.message ?: "Unknown error")
         }
         uiState = uiState.copy(exchangeRate = state)

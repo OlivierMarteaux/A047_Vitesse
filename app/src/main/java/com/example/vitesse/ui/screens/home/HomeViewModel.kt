@@ -34,13 +34,13 @@ class HomeViewModel(private val applicantRepository: ApplicantRepository): ViewM
 
     init {
         viewModelScope.launch {
-            getApplicants().collect { applicants ->
-                uiState = try {
-                    delay(1000) // delay for dev purpose
-                    if (applicants.isEmpty()) HomeUiState.Empty else HomeUiState.Success(applicants)
-                } catch (e: Exception) {
-                    HomeUiState.Error
+            try {
+                getApplicants().collect { applicants ->
+                    delay(1000)
+                    uiState = if (applicants.isEmpty()) HomeUiState.Empty else HomeUiState.Success(applicants)
                 }
+            } catch (e: Exception) {
+                uiState = HomeUiState.Error
             }
         }
     }
