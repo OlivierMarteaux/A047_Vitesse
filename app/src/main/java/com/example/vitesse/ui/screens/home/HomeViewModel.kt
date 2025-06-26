@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vitesse.data.model.Applicant
 import com.example.vitesse.data.repository.ApplicantRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -61,7 +60,7 @@ class HomeViewModel(private val applicantRepository: ApplicantRepository): ViewM
         viewModelScope.launch {
             try {
                 getApplicants().collect { applicants ->
-                    delay(1000)
+//                    delay(1000) // for dev purposes only, remove in production
                     uiState = if (applicants.isEmpty()) HomeUiState.Empty else HomeUiState.Success(applicants)
                 }
             } catch (e: Exception) {
