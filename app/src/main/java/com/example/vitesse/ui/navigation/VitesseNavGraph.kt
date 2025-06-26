@@ -73,10 +73,18 @@ fun VitesseNavHost(
                 type = NavType.IntType})
         ){
             ApplicantDetailScreen(
-                navigateBack = {
-                    navController.popBackStack()
-                    debugLog("NavHost: DetailScreen: Navigating back")
-                               },
+                navigateBack =
+                    // fixed: replace popbackstack by popupto to avoid remanent ghost buttons from
+                    //  previous screen
+//                    {
+//                        navController.popBackStack()
+//                        debugLog("NavHost: DetailScreen: Navigating back")
+//                    },
+                    {
+                        navController.navigate(HomeDestination.route) {
+                            popUpTo(ApplicantDetailDestination.route) { inclusive = true }
+                        }
+                    },
                 navigateToEditApplicant = {
                     navController.navigate("${EditApplicantDestination.route}/$it")
                     debugLog("NavHost: DetailScreen: Navigating to ${EditApplicantDestination.route}/$it")
