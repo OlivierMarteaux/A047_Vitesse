@@ -16,7 +16,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -30,8 +30,8 @@ import utils.NoOpLogger
 @OptIn(ExperimentalCoroutinesApi::class)
 class ApplicantDetailViewModelTest {
 
-//    private val testDispatcher = UnconfinedTestDispatcher()// for Testrunner with coverage
-    private val testDispatcher = StandardTestDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()// for Testrunner with coverage
+//    private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var applicantRepository: ApplicantRepository
     private lateinit var currencyRepository: CurrencyRepository

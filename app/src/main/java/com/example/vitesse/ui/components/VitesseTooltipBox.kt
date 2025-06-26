@@ -7,6 +7,12 @@ import androidx.compose.material3.TooltipScope
 import androidx.compose.material3.TooltipState
 import androidx.compose.runtime.Composable
 
+/**
+ * Wrapper composable to show content with a tooltip.
+ *
+ * @param tooltip Composable content defining the tooltip UI.
+ * @param content Composable content around which the tooltip is displayed.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VitesseTooltipBox(

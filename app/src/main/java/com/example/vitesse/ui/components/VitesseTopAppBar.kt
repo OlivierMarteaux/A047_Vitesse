@@ -12,6 +12,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
+/**
+ * Top app bar with a title, back navigation icon, and optional action buttons.
+ *
+ * @param modifier Optional [Modifier] to style the top app bar.
+ * @param title The title text displayed in the app bar.
+ * @param actions Composable row scope for placing action icons/buttons on the right.
+ * @param navigateBack Callback invoked when the navigation (back) icon is clicked.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VitesseTopAppBar(

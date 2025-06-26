@@ -20,7 +20,25 @@ import com.example.vitesse.ui.screens.home.HomeScreen
 import utils.debugLog
 
 /**
- * Provides Navigation graph for the application.
+ * Navigation host composable that manages the app's navigation graph.
+ *
+ * Defines the navigation routes and their corresponding composable screens, handling
+ * navigation between Home, Applicant Detail, Edit Applicant, and Add Applicant screens.
+ *
+ * Each screen includes callbacks to navigate forward or backward through the app's flow,
+ * with debug logging on navigation actions.
+ *
+ * @param navController The [NavHostController] responsible for navigation commands.
+ * @param modifier Optional [Modifier] to apply to the [NavHost] container.
+ *
+ * Requirements:
+ * - Requires API level 26 (Android O) or higher due to usage of [ApplicantDetailScreen] and related components.
+ *
+ * Navigation destinations:
+ * - Home screen (start destination): allows navigation to applicant details or adding new applicants.
+ * - Applicant Detail screen: shows details of an applicant, supports navigation back and to edit screen.
+ * - Edit Applicant screen: allows editing an applicant and navigating back.
+ * - Add Applicant screen: allows adding a new applicant and navigating back.
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

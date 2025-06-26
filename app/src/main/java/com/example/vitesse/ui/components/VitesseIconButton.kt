@@ -10,6 +10,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import com.example.vitesse.R
 
+/**
+ * Icon button with tooltip support.
+ *
+ * @param icon The icon image vector to display inside the button.
+ * @param onClick Callback invoked when the button is clicked.
+ * @param modifier Optional [Modifier] for styling the button.
+ * @param tooltip Composable content to display as tooltip on hover or long press.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VitesseIconButton(

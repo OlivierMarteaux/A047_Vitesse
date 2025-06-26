@@ -87,6 +87,21 @@ abstract class VitesseDatabase: RoomDatabase() {
             }
         }
 
+        /**
+         * Populates the Room database with a predefined list of [Applicant] entries.
+         *
+         * This method is typically used for initial setup or instrumented testing, providing sample data
+         * to work with in the application.
+         *
+         * Each applicant is inserted using the [ApplicantDao.insertApplicant] method after normalizing
+         * the first and last names (accents removed) for compatibility with full-text search (FTS).
+         *
+         * **Note:** Requires API level [Build.VERSION_CODES.O] or higher due to the usage of [java.time.LocalDate].
+         *
+         * @param applicantDao The [ApplicantDao] through which applicant data is inserted into the database.
+         *
+         * @throws Exception if the database operation fails (e.g., due to I/O or Room exceptions).
+         */
         @RequiresApi(Build.VERSION_CODES.O)
         suspend fun populateDatabase(applicantDao: ApplicantDao) {
             val prepopulatedApplicants = listOf(

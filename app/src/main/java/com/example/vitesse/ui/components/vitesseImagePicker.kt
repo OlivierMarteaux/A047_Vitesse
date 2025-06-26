@@ -12,6 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import utils.copyImageToInternalStorage
 
+/**
+ * Composable returning a launcher for picking images using the system photo picker.
+ *
+ * This launcher supports single image selection and invokes [onImagePicked] with the picked URI.
+ *
+ * @param onImagePicked Callback invoked with the URI of the picked image, or null if none selected.
+ * @return A [ManagedActivityResultLauncher] for launching the photo picker.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun vitesseImagePicker(

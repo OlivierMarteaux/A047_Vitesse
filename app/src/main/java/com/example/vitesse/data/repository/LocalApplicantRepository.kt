@@ -8,12 +8,50 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import utils.Logger
 
+/**
+ * Repository interface for accessing and managing [Applicant] data.
+ *
+ * This abstraction allows data to be retrieved from various sources, such as a database, network,
+ * or in-memory collection (e.g., for testing).
+ */
 interface ApplicantRepository {
+    /**
+     * Retrieves a specific applicant by ID.
+     *
+     * @param id The unique identifier of the applicant.
+     * @return A [Flow] emitting the [Applicant], or `null` if not found.
+     */
     fun getApplicantById(id: Int): Flow<Applicant?>
+    /**
+     * Retrieves all applicants from the data source.
+     *
+     * @return A [Flow] emitting a list of all [Applicant]s.
+     */
     fun getAllApplicants(): Flow<List<Applicant>>
+    /**
+     * Performs a search for applicants whose first or last name matches the given query.
+     *
+     * @param query The search query string.
+     * @return A [Flow] emitting a list of matching [Applicant]s.
+     */
     fun getApplicants(query: String): Flow<List<Applicant>>
+    /**
+     * Inserts a new applicant into the data source.
+     *
+     * @param applicant The [Applicant] to insert.
+     */
     suspend fun insertApplicant(applicant: Applicant)
+    /**
+     * Updates an existing applicant in the data source.
+     *
+     * @param applicant The [Applicant] with updated fields.
+     */
     suspend fun updateApplicant(applicant: Applicant)
+    /**
+     * Deletes an applicant from the data source.
+     *
+     * @param applicant The [Applicant] to remove.
+     */
     suspend fun deleteApplicant(applicant: Applicant)
 }
 

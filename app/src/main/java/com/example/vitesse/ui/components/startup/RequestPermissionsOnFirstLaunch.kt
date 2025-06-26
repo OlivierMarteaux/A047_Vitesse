@@ -19,6 +19,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.content.edit
 import com.example.vitesse.R
 
+/**
+ * Requests runtime permissions the first time the app is launched.
+ *
+ * This composable checks a shared preference (`isFirstLaunch`) to determine if it's the user's first time
+ * using the app. If so, it triggers a system permission request (e.g., for [Manifest.permission.CALL_PHONE]).
+ *
+ * If the user denies the permissions, an [AlertDialog] is displayed to explain why the permissions are needed.
+ *
+ * This pattern helps ensure permissions are only requested once during the initial launch,
+ * avoiding repeated interruptions in future sessions.
+ *
+ * @see ActivityResultContracts.RequestMultiplePermissions
+ * @see LocalContext
+ * @see rememberLauncherForActivityResult
+ */
 @Composable
 fun RequestPermissionsOnFirstLaunch() {
     val context = LocalContext.current
