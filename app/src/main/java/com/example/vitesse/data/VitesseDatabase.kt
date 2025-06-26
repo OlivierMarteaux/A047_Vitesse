@@ -106,6 +106,17 @@ abstract class VitesseDatabase: RoomDatabase() {
         suspend fun populateDatabase(applicantDao: ApplicantDao) {
             val prepopulatedApplicants = listOf(
                 Applicant(
+                    firstName = "Olivier",
+                    lastName = "Marteaux",
+                    phone = "06 32 84 92 70",
+                    email = "olivier_marteaux@hotmail.com",
+                    birthDate = LocalDate.of(1984, 3, 1),
+                    salary = 0.0,
+                    note = "",
+                    photoUri = "file:///android_asset/olivier_marteaux.jpg",
+                    isFavorite = true
+                ),
+                Applicant(
                     firstName = "Camille",
                     lastName = "Dupont",
                     phone = "06 12 34 56 78",

@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
@@ -148,7 +149,7 @@ fun HomeSearchBar(
         },
         expanded = false,
         onExpandedChange = onActiveChange,
-        modifier = modifier.padding(horizontal = 24.dp),
+        modifier = modifier.padding(horizontal = 24.dp).fillMaxWidth(),
         colors = SearchBarDefaults.colors(MaterialTheme.colorScheme.surfaceContainerHigh),
         content = {},
     )
@@ -246,6 +247,23 @@ fun HomeCard(
         }
     }
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+@Preview
+fun HomeCardPreview(){
+    val applicant = Applicant(
+        firstName = "John",
+        lastName = "Doe",
+        note = "This is a note about John Doe.",
+        photoUri = null
+    )
+    HomeCard(
+        applicant = applicant,
+        modifier = Modifier
+    )
+}
+
 
 @Composable
 fun HomeStateColumn(
