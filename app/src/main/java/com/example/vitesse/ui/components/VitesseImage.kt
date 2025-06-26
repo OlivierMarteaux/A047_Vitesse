@@ -16,6 +16,12 @@ import coil3.request.fallback
 import coil3.request.placeholder
 import com.example.vitesse.R
 
+/**
+ * Displays an image from a photo URI with placeholder and error handling.
+ *
+ * @param photoUri The URI string of the image to display. May be null.
+ * @param modifier Optional [Modifier] for styling the image.
+ */
 @Composable
 fun VitesseImage(
     photoUri: String?,

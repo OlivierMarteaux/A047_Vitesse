@@ -9,6 +9,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 
+/**
+ * Toggleable icon button with checked and unchecked states and tooltip.
+ *
+ * @param iconChecked The icon to display when the toggle is checked.
+ * @param iconUnchecked The icon to display when the toggle is unchecked.
+ * @param modifier Optional [Modifier] for styling the toggle button.
+ * @param checked Current checked state.
+ * @param onCheckedChange Lambda invoked when the toggle state changes.
+ * @param tooltip Composable content to display as tooltip on hover or long press.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VitesseIconToggle(

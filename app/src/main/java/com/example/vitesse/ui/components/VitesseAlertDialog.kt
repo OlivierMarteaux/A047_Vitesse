@@ -8,6 +8,17 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
+/**
+ * A custom themed alert dialog with confirm and dismiss buttons.
+ *
+ * @param onConfirm Lambda invoked when the confirm button is clicked.
+ * @param onDismiss Lambda invoked when the dialog is dismissed or dismiss button clicked.
+ * @param modifier Optional [Modifier] for styling the dialog container.
+ * @param title The title text displayed at the top of the dialog.
+ * @param text The main body text content of the dialog.
+ * @param dismissText The text label for the dismiss button.
+ * @param confirmText The text label for the confirm button.
+ */
 @Composable
 fun VitesseAlertDialog(
     onConfirm: () -> Unit,

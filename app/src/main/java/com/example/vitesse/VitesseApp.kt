@@ -14,7 +14,19 @@ import utils.debugLog
 import java.util.Locale
 
 /**
- * Top level composable that represents screens for the application.
+ * Root composable of the Vitesse application that sets up core app behaviors and navigation.
+ *
+ * This composable initializes:
+ * - Permission requests on the first app launch.
+ * - Status bar color customization.
+ * - Keyboard dismissal when tapping outside input fields.
+ * - The main navigation host for navigating between screens.
+ *
+ * @param navController The [NavHostController] used to manage navigation between screens.
+ *                      Defaults to a newly remembered controller.
+ *
+ * Requirements:
+ * - Requires API level 26 (Android O) or higher.
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

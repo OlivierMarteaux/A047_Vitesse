@@ -38,6 +38,34 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
+/**
+ * A composable date picker component that allows the user to select a date from the past or input it manually.
+ *
+ * This component restricts selection to past dates only and displays an icon alongside the date picker.
+ * It supports error display and propagates the selected date to the caller.
+ *
+ * @param modifier Optional [Modifier] to style the outer layout container.
+ * @param initialDate The initially selected [LocalDate], or null if no date is selected.
+ * @param icon The [ImageVector] icon displayed next to the date picker.
+ * @param onValueChange Callback invoked whenever the selected date changes; returns the selected [LocalDate] or null.
+ * @param isError Boolean flag indicating whether to display an error state.
+ * @param errorText The error message string shown below the date input field when [isError] is true.
+ *
+ * Usage example:
+ * ```
+ * VitesseDatePicker(
+ *     initialDate = LocalDate.of(1990, 1, 1),
+ *     icon = Icons.Default.DateRange,
+ *     onValueChange = { date -> /* handle new date */ },
+ *     isError = false,
+ *     errorText = ""
+ * )
+ * ```
+ *
+ * Requirements:
+ * - Requires API level 26 (Android O) or higher.
+ * - Uses Material3 experimental API for DatePicker.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -13,6 +13,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for editing an existing applicant.
+ *
+ * Fetches the applicant by ID and manages UI state for editing.
+ * Extends [AddOrEditApplicantViewModel] to reuse common add/edit logic and validation.
+ *
+ * @property savedStateHandle Provides access to saved state, including the applicant ID argument.
+ * @property applicantRepository Repository to perform data operations on applicants.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 class EditApplicantViewModel (
     savedStateHandle: SavedStateHandle,
@@ -22,6 +31,9 @@ class EditApplicantViewModel (
     private val applicantId: Int = checkNotNull(savedStateHandle[EditApplicantDestination.ApplicantIdArg])
     private val getApplicantById: Flow<Applicant> = applicantRepository.getApplicantById(this.applicantId).filterNotNull()
 
+    /**
+     * Saves the edited applicant by updating the repository with the current UI state data.
+     */
     fun saveEditedApplicant(){
         viewModelScope.launch {
             applicantRepository.updateApplicant((uiState.applicant as GetDataState.Success<Applicant>).data )
