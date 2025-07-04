@@ -52,7 +52,7 @@ class HomeViewModel(private val applicantRepository: ApplicantRepository): ViewM
      * @param query The search query string; empty string returns all applicants.
      * @return A [Flow] emitting lists of applicants matching the query.
      */
-    fun getApplicants(query: String = ""): Flow<List<Applicant>> = with(applicantRepository) {
+    private fun getApplicants(query: String = ""): Flow<List<Applicant>> = with(applicantRepository) {
         if (query.isEmpty()) getAllApplicants() else getApplicants(query)
     }
 

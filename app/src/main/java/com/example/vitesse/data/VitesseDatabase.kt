@@ -106,6 +106,17 @@ abstract class VitesseDatabase: RoomDatabase() {
         suspend fun populateDatabase(applicantDao: ApplicantDao) {
             val prepopulatedApplicants = listOf(
                 Applicant(
+                    firstName = "Olivier",
+                    lastName = "Marteaux",
+                    phone = "06 32 84 92 70",
+                    email = "olivier_marteaux@hotmail.com",
+                    birthDate = LocalDate.of(1984, 3, 1),
+                    salary = 40000.0,
+                    note = "Olivier est un ingénieur expérimenté en reconversion vers le développement Android. Grâce à son parcours structuré et rigoureux dans l'industrie spatiale, il combine de solides compétences en architecture technique avec une passion pour les technologies mobiles, Jetpack Compose et Kotlin. Curieux, autonome et impliqué, il s’investit pleinement dans ses projets, comme en témoigne son portfolio GitHub.",
+                    photoUri = "file:///android_asset/olivier_marteaux.jpg",
+                    isFavorite = true
+                ),
+                Applicant(
                     firstName = "Camille",
                     lastName = "Dupont",
                     phone = "06 12 34 56 78",

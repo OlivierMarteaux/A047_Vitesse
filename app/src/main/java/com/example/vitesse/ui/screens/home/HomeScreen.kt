@@ -31,7 +31,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vitesse.R
@@ -72,7 +72,7 @@ fun HomeScreen(
     navigateToAddApplicant: () -> Unit,
 ) {
     val query = viewModel.query
-    val applicantList by viewModel.getApplicants(query).collectAsState(initial = listOf())
+//    val applicantList by viewModel.getApplicants(query).collectAsState(initial = listOf())
 
     Scaffold(
         modifier = modifier,
@@ -84,7 +84,7 @@ fun HomeScreen(
         }
     ){ innerPadding ->
         HomeBody(
-            applicantList = applicantList,
+//            applicantList = applicantList,
             query = query,
             modifier = Modifier
                 .consumeWindowInsets(innerPadding)
@@ -99,7 +99,7 @@ fun HomeScreen(
 
 @Composable
 private fun HomeBody(
-    applicantList: List<Applicant>,
+//    applicantList: List<Applicant>,
     query: String,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -119,7 +119,7 @@ private fun HomeBody(
         )
         HomeTabs(
             homeUiState = uiState,
-            applicantList = applicantList,
+//            applicantList = applicantList,
             navigateToApplicantDetail = navigateToApplicantDetail,
         )
     }
@@ -148,7 +148,7 @@ fun HomeSearchBar(
         },
         expanded = false,
         onExpandedChange = onActiveChange,
-        modifier = modifier.padding(horizontal = 24.dp),
+        modifier = modifier.padding(horizontal = 24.dp).fillMaxWidth(),
         colors = SearchBarDefaults.colors(MaterialTheme.colorScheme.surfaceContainerHigh),
         content = {},
     )
@@ -158,7 +158,7 @@ fun HomeSearchBar(
 @Composable
 fun HomeTabs(
     homeUiState: HomeUiState,
-    applicantList: List<Applicant>,
+//    applicantList: List<Applicant>,
     navigateToApplicantDetail: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ){
@@ -181,30 +181,42 @@ fun HomeTabs(
         }
     }
     // Tab content
-    when (selectedTabIndex) {
-        0 -> HomeCardList(
-            homeUiState = homeUiState,
-            applicantList = applicantList,
-            navigateToApplicantDetail = navigateToApplicantDetail,
-        )
-
-        1 -> HomeCardList(
-            homeUiState = homeUiState,
-            applicantList = applicantList.filter{it.isFavorite},
-            navigateToApplicantDetail = navigateToApplicantDetail,
-        )
+    when (homeUiState) {
+        is Success -> {
+            HomeCardList(
+                applicantList = if (selectedTabIndex == 0) homeUiState.applicants else homeUiState.applicants.filter{it.isFavorite},
+                navigateToApplicantDetail = navigateToApplicantDetail,
+            )
+        }
+        is Loading -> { HomeStateColumn(modifier) { CircularProgressIndicator() } }
+        is Empty -> { HomeStateColumn(modifier) { TextBodyLarge(stringResource(R.string.no_candidate)) } }
+        is Error -> { HomeStateColumn(modifier) { TextBodyLarge(stringResource(R.string.error))} }
     }
+
+//    when (selectedTabIndex) {
+//        0 -> HomeCardList(
+//            homeUiState = homeUiState,
+////            applicantList = applicantList,
+//            navigateToApplicantDetail = navigateToApplicantDetail,
+//        )
+//
+//        1 -> HomeCardList(
+//            homeUiState = homeUiState,
+////            applicantList = applicantList.filter{it.isFavorite},
+//            navigateToApplicantDetail = navigateToApplicantDetail,
+//        )
+//    }
 }
 
 @Composable
 fun HomeCardList(
-    homeUiState: HomeUiState,
+//    homeUiState: HomeUiState,
     applicantList: List<Applicant>,
     navigateToApplicantDetail: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ){
-    when (homeUiState) {
-        is Success -> {
+//    when (homeUiState) {
+//        is Success -> {
             LazyColumn(modifier) {
                 items(applicantList) { applicant ->
                     val interactionSource = remember { MutableInteractionSource() }
@@ -217,11 +229,11 @@ fun HomeCardList(
                         )
                 }
             }
-        }
-        is Loading -> { HomeStateColumn(modifier) { CircularProgressIndicator() } }
-        is Empty -> { HomeStateColumn(modifier) { TextBodyLarge(stringResource(R.string.no_candidate)) } }
-        is Error -> { HomeStateColumn(modifier) { TextBodyLarge(stringResource(R.string.error))} }
-    }
+//        }
+//        is Loading -> { HomeStateColumn(modifier) { CircularProgressIndicator() } }
+//        is Empty -> { HomeStateColumn(modifier) { TextBodyLarge(stringResource(R.string.no_candidate)) } }
+//        is Error -> { HomeStateColumn(modifier) { TextBodyLarge(stringResource(R.string.error))} }
+//    }
 }
 
 @Composable
@@ -246,6 +258,23 @@ fun HomeCard(
         }
     }
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+@Preview
+fun HomeCardPreview(){
+    val applicant = Applicant(
+        firstName = "John",
+        lastName = "Doe",
+        note = "This is a note about John Doe.",
+        photoUri = null
+    )
+    HomeCard(
+        applicant = applicant,
+        modifier = Modifier
+    )
+}
+
 
 @Composable
 fun HomeStateColumn(
