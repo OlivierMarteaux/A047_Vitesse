@@ -166,7 +166,7 @@ fun SuccessDetailScreen(
                 snackbarData = data,
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .clip(MaterialTheme.shapes.medium),
+                    .clip(MaterialTheme.shapes.large),
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 actionColor = MaterialTheme.colorScheme.onPrimary
