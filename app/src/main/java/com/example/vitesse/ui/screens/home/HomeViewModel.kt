@@ -44,7 +44,18 @@ class HomeViewModel(private val applicantRepository: ApplicantRepository): ViewM
      *
      * @param query The new search query string.
      */
-    fun updateQuery(query: String) { this.query = query }
+    fun updateQuery(query: String) {
+        this.query = query
+        viewModelScope.launch {
+            try {
+                getApplicants(query).collect { applicants ->
+                    uiState = if (applicants.isEmpty()) HomeUiState.Empty else HomeUiState.Success(applicants)
+                }
+            } catch (e: Exception) {
+                uiState = HomeUiState.Error
+            }
+        }
+    }
 
     /**
      * Returns a [Flow] emitting lists of applicants filtered by the given query.
