@@ -20,7 +20,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
         ksp.apply {
             // Enables exporting database schemas into JSON files in the given directory.
             // arg("room.schemaLocation", "$projectDir/schemas")
