@@ -55,7 +55,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun homViewModel_initWithEmptyApplicantList_EmptyUiState() = testScope.runTest {
+    fun homeViewModel_initWithEmptyApplicantList_EmptyUiState() = testScope.runTest {
         // Given an empty repository
         val fakeRepository = FakeApplicantRepository()
         val viewModel = HomeViewModel(fakeRepository)

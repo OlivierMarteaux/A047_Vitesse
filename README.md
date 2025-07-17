@@ -64,23 +64,19 @@ Visit the following link to browse screenshots of the Vitesse application:
 
 To install the Vitesse application on your physical Android device:
 
-1. **Download the APK**
+1. **Download the APK from your smartphone**
    - Go to the [Releases](https://github.com/your-repo/vitesse/releases) section of this repository.
-   - Download the latest `vitesse-release.apk` file.
+   - Download the latest `app-release.apk` file.
 
-2. **Transfer the APK to your device**
-   - Connect your device to your computer using a USB cable.
-   - Copy the APK file to a folder on your device (e.g., `Downloads`).
-
-3. **Enable Unknown Sources**
+2**Enable Unknown Sources**
    - On your device, go to `Settings` > `Security`.
    - Enable **Install from unknown sources** (you can disable it again after installation).
 
-4. **Install the APK**
+3**Install the APK**
    - Use a file explorer app on your device to locate the APK file.
    - Tap on it and follow the prompts to install the app.
 
-5. **Launch the App**
+4**Launch the App**
    - Once installed, open the app from your launcher and start using Vitesse!
 
 > ⚠️ Note: You may need to allow permissions during the first launch.
