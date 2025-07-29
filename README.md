@@ -65,8 +65,8 @@ Visit the following link to browse screenshots of the Vitesse application:
 To install the Vitesse application on your physical Android device:
 
 1. **Download the APK from your smartphone**
-   - Go to the [Releases](https://github.com/your-repo/vitesse/releases) section of this repository.
-   - Download the latest `app-release.apk` file.
+   - Go to the [Releases](https://github.com/OlivierMarteaux/A047_Vitesse/releases) section of this repository.
+   - Download the latest ` Vitesse.apk ` file.
 
 2. **Enable Unknown Sources**
    - On your device, go to `Settings` > `Security`.
@@ -100,7 +100,7 @@ Vitesse/
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/oliviermarteaux/Vitesse.git
+   git clone https://github.com/OlivierMarteaux/A047_Vitesse.git
    ```
 
 2. Open in **Android Studio**

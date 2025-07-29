@@ -32,7 +32,9 @@ fun VitesseAlertDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(text = title) },
+        titleContentColor = MaterialTheme.colorScheme.onPrimary,
         text = { Text(text) },
+        textContentColor = MaterialTheme.colorScheme.onPrimary,
         confirmButton = {
             TextButton(
                 onClick = onConfirm,

@@ -35,7 +35,7 @@ fun VitesseIconToggle(
             onCheckedChange = onCheckedChange,
             modifier = modifier,
             colors = IconButtonDefaults.iconToggleButtonColors(
-                checkedContentColor = MaterialTheme.colorScheme.onPrimary
+                checkedContentColor = MaterialTheme.colorScheme.onSecondaryContainer
             )
         ) {
             if (checked) VitesseIcon(iconChecked)
