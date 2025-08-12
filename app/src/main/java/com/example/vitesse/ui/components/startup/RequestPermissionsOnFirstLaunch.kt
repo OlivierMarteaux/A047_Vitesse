@@ -70,6 +70,8 @@ fun RequestPermissionsOnFirstLaunch() {
             confirmButton = { TextButton(onClick = { alertDialog = false }) { Text(text = stringResource(
                 R.string.ok), color = MaterialTheme.colorScheme.onPrimary) } },
             containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            textContentColor = MaterialTheme.colorScheme.onPrimary
         )
     }
 }

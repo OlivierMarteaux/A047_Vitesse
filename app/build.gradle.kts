@@ -19,8 +19,8 @@ android {
         applicationId = "com.example.vitesse"
         minSdk = 24
         targetSdk = 35
-        versionCode = 4
-        versionName = "2.0.2"
+        versionCode = 5
+        versionName = "2.0.3"
         ksp.apply {
             // Enables exporting database schemas into JSON files in the given directory.
             // arg("room.schemaLocation", "$projectDir/schemas")
