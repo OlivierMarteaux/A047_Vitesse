@@ -180,7 +180,7 @@ fun AddOrEditApplicantBody(
             AddOrEditApplicantTextField(
                 icon = Icons.Outlined.Edit,
                 label = stringResource(R.string.notes),
-                modifier = Modifier.padding(bottom = 10.dp),
+                modifier = Modifier.padding(bottom = 30.dp),
                 onValueChange = { onApplicantEdit(copy(note = it)) },
                 value = note,
                 imeAction = ImeAction.Done,
@@ -250,7 +250,7 @@ fun AddOrEditApplicantFab(
         onClick = if (enabled) onClick else ({}),
         shape = CircleShape,
         modifier = modifier
-            .height(40.dp)
+            .height(60.dp)
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
             .padding(bottom = 16.dp)
